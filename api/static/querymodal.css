@@ -1,0 +1,167 @@
+/*.card-content
+{
+	margin: 50px auto;
+	width:70%;
+	border:none;
+	border-radius: 25px;
+}*/
+/*.modal-content-custom{
+	border: none;
+	box-sizing: 0px;
+
+}*/
+.modal-custom{
+	max-width: 70%;
+	
+}
+.header-custom{
+	border: none;
+}
+.close-custom{
+    float: right;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .5;
+	padding-top:15px;
+	padding-right: 15px;
+	background-color: transparent;
+	border:0px;
+}
+.left-block{
+	background-image: linear-gradient(to right, #033E8C , #0059BF);
+	
+	color: white;
+	text-align: center;
+	padding: 110px 100px;
+}
+
+.right-block{
+	margin: 40px 30px;
+}
+
+.reg-para{
+	padding: 5px 30px;
+}
+
+.login{
+	font-family: 'Playfair Display', serif;
+	font-size: 35px;
+}
+p{
+	font-family: 'Raleway';
+
+}
+body{
+	background-color: rgba(3,62,140,0.55);
+}
+
+a{
+	color: #033E8C;
+	font-weight: bold;
+	font-family: 'Raleway';
+	padding: 6px 8px;
+	display: block;
+}
+
+#forgot{
+	text-align: center;
+	font-size: 14px;
+
+}
+	
+}
+a:hover{
+	color: #0059BF;
+}
+
+.button-custom{
+	background-image: linear-gradient(to right, #033E8C , #0059BF);
+	color: white;
+	margin-top: 20px;
+	border-radius: 10px;
+	margin-bottom: 20px;
+
+}
+.but{
+	text-align: center;
+}
+
+input{
+	margin: 20px auto;
+}
+
+.create{
+	text-align: center; 
+	margin-top: 40px;
+	margin-bottom: 20px;
+}
+
+
+.topright {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 40px;
+  color: #033E8C;
+}
+
+.custom{
+	
+	padding: 20px 30px;
+}
+@media (max-width: 767px) {
+	.close-custom {
+		
+		padding-bottom: 283px;
+		background-color: #0059BF;
+		opacity: 1;
+		color: white;
+	}
+}
+@media (max-width: 735px) {
+	.close-custom {
+		
+		padding-bottom: 283px;
+		
+	}
+}
+@media (max-width: 718px) {
+	.close-custom {
+		
+		padding-bottom: 307px;
+		
+	}
+}
+@media (max-width: 523px) {
+	.close-custom {
+		
+		padding-bottom: 331px;
+		
+	}
+}
+@media (max-width: 486px) {
+	.close-custom {
+		
+		padding-bottom: 383px;
+		
+	}
+}
+@media (max-width: 432px) {
+	.close-custom {
+		
+		padding-bottom: 407px;
+		
+	}
+}
+@media (max-width: 396px) {
+	.close-custom {
+		
+		padding-bottom: 431px;
+		
+	}
+}
+
+

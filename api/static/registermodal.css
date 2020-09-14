@@ -1,0 +1,178 @@
+.modal-custom{
+	max-width: 80%;
+	
+}
+.card-content
+{
+	margin: 0px auto;
+	max-width: 100%;
+	border:none;
+	border-radius: 25px;
+}
+.close-custom{
+    float: right;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .5;
+	padding-top:15px;
+	padding-right: 15px;
+	background-color: transparent;
+	border:0px;
+}
+.left-block{
+	background-image: linear-gradient(to right, #033E8C , #0059BF);
+	
+	color: white;
+	text-align: center;
+	padding: 80px 90px;
+}
+
+.reg-para{
+	padding: 5px 30px;
+}
+
+.register{
+	font-family: 'Playfair Display', serif;
+	font-size: 35px;
+}
+
+p{
+	font-family: 'Raleway';
+}
+
+body{
+	background-color: rgba(3,62,140,0.55);
+}
+
+a{
+	color: #34ebe5;
+	font-family: 'Raleway';
+	font-weight: bold;
+	padding: 6px 8px;
+	display: block;
+}
+
+a:hover{
+	color: lightgray;
+}
+
+.form-row{
+	margin-top: 20px;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.button-custom{
+	background-image: linear-gradient(to right, #033E8C , #0059BF);
+	color: white;
+	border-radius: 10px;
+}
+
+.but{
+	text-align: center;
+}
+
+.pass{
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-bottom: 5px;
+}
+
+.right-custom{
+	padding-left: 500px;
+}
+
+.login{
+	font-family: 'Raleway';
+	font-weight: bold;
+	font-size: 15px;
+	text-align: right;
+}
+
+.acc2{
+	margin-top: -15px;
+	text-align: center;
+}
+
+.topright {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 40px;
+  color: #033E8C;
+}
+
+label{
+	font-family: 'Raleway';
+	font-weight: 700;
+	font-size: 14px;
+}
+
+option{
+	font-family: 'Raleway';
+	font-size: 14px;
+}
+
+@media (max-width: 768px) {
+	.left-block {
+		padding: 20px 20px;
+	}
+}
+@media (max-width: 767px) {
+	.close-custom {
+		
+		padding-bottom: 283px;
+		background-color: #0059BF;
+		opacity: 1;
+		color: white;
+	}
+}
+
+@media (max-width: 735px) {
+	.close-custom {
+		
+		padding-bottom: 283px;
+		
+	}
+}
+@media (max-width: 718px) {
+	.close-custom {
+		
+		padding-bottom: 307px;
+		
+	}
+}
+@media (max-width: 523px) {
+	.close-custom {
+		
+		padding-bottom: 331px;
+		
+	}
+}
+@media (max-width: 486px) {
+	.close-custom {
+		
+		padding-bottom: 383px;
+		
+	}
+}
+@media (max-width: 432px) {
+	.close-custom {
+		
+		padding-bottom: 407px;
+		
+	}
+}
+@media (max-width: 396px) {
+	.close-custom {
+		
+		padding-bottom: 431px;
+		
+	}
+}
+
+
+

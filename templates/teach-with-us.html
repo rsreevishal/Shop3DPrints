@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <title>CMS Online Academy | Teach With Us</title>
+{% endblock %}
+
+{% block body %}
+    <!-- YOUR TURN -->
+    <section class="your-turn text-white ">
+        <div class="row container">
+            <div class="d-none d-md-block col-md-3">
+                <img src="{% static 'images/instructor3.png' %}" class="img_ran">
+            </div>
+            <div class="col-10 col-sm-6 col-md-4 text-white my-auto ml-5 p-0">
+                <h1 class="sub">It's your turn</h1>
+                <span class="lead">Become an instructor</span>
+            </div>
+            <div class="col-10 col-sm-2 col-md-2 my-auto py-3 text-sm-right ml-5 px-0">
+                <button type="button" class="btn btn-outline-light br-3 sub">Get Started</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- UNLEASH POTENTIAL -->
+    <section class="unleash pt-4">
+        <h1 class="text-center pb-2">Unleash your potential</h1>
+        <div class="row justify-content-around mx-0">
+            <div class="col-2">
+            </div>
+            <div class="col-sm-2 text-center">
+                <p class="heading">Earn</p>
+                <img src="{% static 'images/15.png' %}" class="icons">
+                <p>Earn money for every class you take.</p>
+            </div>
+            <div class="col-sm-2 text-center">
+                <p class="heading">Inspire</p>
+                <img src="{% static 'images/16.png' %}" class="icons">
+                <p>Inspire kids around the world</p>
+            </div>
+            <div class="col-sm-2 text-center">
+                <p class="heading">Explore</p>
+                <img src="{% static 'images/17.png' %}" class="icons">
+                <p>Explore your expertise in various fields</p>
+            </div>
+            <div class="col-2 p-0">
+                <img src="{% static 'images/instructor4.png' %}" class="img_ran d-none d-lg-block">
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- WE ARE HERE -->
+    <section class="we-are-here pt-4">
+        <center><h1 class="head">We are here for you</h1></center>
+        <div class="row justify-content-around mx-0">
+
+            <div class="col-2 p-0">
+                <img src="{% static 'images/instructor1.png' %}" class="img_ran d-none d-lg-inline">
+            </div>
+            <div class="col-8 text-center pb-3 my-auto">
+                <p class="lead">Your Vision. Our Mission.</p>
+                <p class="why-us-con">Tailor your teaching schedule according to your preference. <br> We are all about
+                    collaboration. We understand your needs. <br>Join us in instilling creativity and confidence in
+                    young minds.</p>
+                <div class="why-us-con d-none d-lg-block">
+                    <img src="{% static 'images/13.png' %}" class="smaller-icons">Fill the form
+                    <img src="{% static 'images/14.png' %}" class="smaller-icons">Call Interview
+                    <img src="{% static 'images/11.png' %}" class="smaller-icons">Video Interview
+                </div>
+                <div class="why-us-con d-block d-lg-none">
+                    <img src="{% static 'images/13.png' %}" class="smaller-icons">Fill the form <br><br>
+                    <img src="{% static 'images/14.png' %}" class="smaller-icons">Call Interview<br><br>
+                    <img src="{% static 'images/11.png' %}" class="smaller-icons">Video Interview<br><br>
+                </div>
+            </div>
+            <div class="col-2">
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!--  BECOME INS-->
+    <section class="become-ins pt-3 text-center">
+        <div class="row justify-content-around mx-0">
+            <div class="col-2">
+            </div>
+            <div class="col-8 text-center px-0 py-5">
+                <h1>Become an instructor today</h1>
+                <br>
+                <p class="lead">Let's make learning fruitful</p>
+                <button type="button" class="btn text-light custom-btn">Book a free trial</button>
+            </div>
+            <div class="col-2 p-0">
+                <img src="{% static 'images/instructor2.png' %}" class="img_ran d-none d-lg-inline">
+            </div>
+
+        </div>
+    </section>
+{% endblock %}
