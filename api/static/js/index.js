@@ -14,14 +14,6 @@ function EnableDisable1(category) {
 		            course.focus();
 		        }
 		    }
-function EnableDisableTiming(batch) {
-		        var selectedValue = batch.options[batch.selectedIndex].value;
-		        var timing = document.getElementById("timing");
-		        timing.disabled = selectedValue == "mwf"?false:true;
-		        if (!timing.disabled) {
-		            timing.focus();
-		        }
-		    }
 
 function EnableDisableBtop() {
 	var selectedValue = timing.options[timing.selectedIndex].value;

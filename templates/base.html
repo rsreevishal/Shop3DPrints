@@ -16,8 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap"
           rel="stylesheet">
     <!-- CSS FILE -->
-    <link rel="stylesheet" type="text/css" href="{% static 'index.css' %}">
-    <script type="text/javascript" src="{% static 'index.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/index.css' %}">
     {% block head %}{% endblock %}
 </head>
 <body>
@@ -25,6 +24,8 @@
 
 {% block body %}
 {% endblock %}
+
+{% include 'landing/modals/query.html' %}
 
 {% include 'footer.html' %}
 
@@ -38,5 +39,9 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
         crossorigin="anonymous"></script>
+<script type="text/javascript" src="{% static 'js/index.js' %}"></script>
+
+{% block script %}
+{% endblock %}
 </body>
 </html>

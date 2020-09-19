@@ -1,0 +1,369 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <title>CMS Online Academy | Profile</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/student.css' %}">
+{% endblock %}
+
+
+{% block body %}
+    <!-- LEFT NAV -->
+
+    <nav class="side-nav">
+
+        <!-- LEFT NAV TAB MENUS -->
+        <div class="nav flex-md-column nav-pills justify-content-around text-medium" id="v-pills-tab" role="tablist"
+             aria-orientation="vertical">
+            <a class="nav-link active" id="v-pills-courses-tab" data-toggle="pill" href="#v-pills-courses" role="tab"
+               aria-controls="courses" aria-selected="true">Courses</a>
+            <a class="nav-link" id="v-pills-schedule-tab" data-toggle="pill" href="#v-pills-schedule" role="tab"
+               aria-controls="schedule" aria-selected="true">Schedule</a>
+            <a class="nav-link" id="v-pills-progress-tab" data-toggle="pill" href="#v-pills-progress" role="tab"
+               aria-controls="progress" aria-selected="true">Progress</a>
+            <a class="nav-link mb-md-5" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab"
+               aria-controls="profile" aria-selected="true">Profile</a>
+        </div>
+        <!-- TAB CONTENTS -->
+        <div class="tab-content side-nav-content" id="v-pills-tabContent">
+
+            <!-- COURSES TAB CONTENTS -->
+            <div class="tab-pane fade show active" id="v-pills-courses" role="tabpanel" aria-labelledby="courses-tab">
+
+                <!-- CURRENT AND HISTORY COURSE TABS -->
+                <nav>
+                    <div class="courses-tabs nav nav-tabs" id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link active ml-5" id="nav-current-course-tab" data-toggle="tab"
+                           href="#nav-current-course" role="tab" aria-controls="nav-current-course"
+                           aria-selected="true">Current</a>
+                        <a class="nav-item nav-link" id="nav-history-course-tab" data-toggle="tab"
+                           href="#nav-history-course" role="tab" aria-controls="nav-history-course"
+                           aria-selected="false">History</a>
+                    </div>
+                </nav>
+
+                <!--  CURRENT AND HISTORY COURSE TAB CONTENT-->
+                <div class="tab-content ml-sm-4 mx-md-5" id="courses">
+
+                    <!-- CURRENT COURSE TAB CONTENT -->
+                    <div class="tab-pane active" id="nav-current-course" role="tabpanel"
+                         aria-labelledby="nav-current-course-tab">
+                        <div class="card-columns mx-auto">
+
+                            <a id="v-pills-assignments-tab" data-toggle="pill" href="#v-pills-assignments"
+                               aria-controls="assignments" aria-selected="true">
+                                <div class="card my-3 mx-auto ">
+                                    <div class="card-body pb-0">
+                                        <h5 class="card-title text-large">Python Level 1</h5>
+                                        <ul class="list-unstyled text-small">
+                                            <li><strong>Programming</strong></li>
+                                            <li>Grade: <strong>5-7</strong></li>
+                                            <li>Level: <strong>1</strong></li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-footer">
+                                        <ul class="list-unstyled text-small mb-0" style="color:#0060CF">
+                                            <li>Mon, Wed, Fri</li>
+                                            <li>5PM - 6PM</li>
+                                            <li>Sept 13 - Oct 7</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- HISTORY COURSE TAB CONTENT -->
+                    <div class="tab-pane" id="nav-history-course" role="tabpanel"
+                         aria-labelledby="nav-history-course-tab">
+                        <div class="card-columns mx-auto">
+
+                            <div class="card my-3 mx-auto ">
+                                <div class="card-body pb-0">
+                                    <h5 class="card-title text-large">Python Level 1</h5>
+                                    <ul class="list-unstyled text-small">
+                                        <li><strong>Programming</strong></li>
+                                        <li>Grade: <strong>5-7</strong></li>
+                                        <li>Level: <strong>1</strong></li>
+                                    </ul>
+                                </div>
+                                <div class="card-footer">
+                                    <ul class="list-unstyled text-small mb-0" style="color:#0060CF">
+                                        <li>Mon, Wed, Fri</li>
+                                        <li>5PM - 6PM</li>
+                                        <li>Sept 13 - Oct 7</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- END HISTORY AND CURRENT TAB CONTENT  -->
+                </div>
+                <!-- END COURSES TAB CONTENTS -->
+            </div>
+
+            <!-- PROFILE TAB CONTENTS -->
+            <div class="tab-pane fade show" id="v-pills-schedule" role="tabpanel" aria-labelledby="schedule-tab">
+                <p>Hello</p>
+            </div>
+
+            <!-- PROGRESS TAB CONTENTS -->
+            <div class="tab-pane fade show" id="v-pills-progress" role="tabpanel" aria-labelledby="progress-tab">
+
+                <!-- COURSE LIST TABS -->
+                <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="pills-course1-tab" data-toggle="pill" href="#pills-course1"
+                           role="tab" aria-controls="pills-course1" aria-selected="true">Course1</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-course1-tab" data-toggle="pill" href="#pills-course2" role="tab"
+                           aria-controls="pills-course2" aria-selected="true">Course2</a>
+                    </li>
+                </ul>
+
+                <!-- COURSE LIST TAB CONTENTS -->
+                <div class="tab-content" id="pills-tabContent">
+
+                    <!-- COURSE1 TAB CONTENTS -->
+                    <div class="tab-pane fade show active" id="pills-course1" role="tabpanel"
+                         aria-labelledby="pills-course1-tab">
+                        <div class="row">
+
+                            <div class="col-lg-6 text-center">
+                                <div class="text-center text-large">
+                                    <p>Assignment Tracker</p>
+                                </div>
+                                <table class="assign-table text-normal mx-auto">
+                                    <tr>
+                                        <td>Assignment 1</td>
+                                        <td style="color: green;">Completed</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Assignment 1</td>
+                                        <td style="color: red;">Incomplete</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="text-center text-large">
+                                    <p>Test Tracker</p>
+                                </div>
+                                <table class="assign-table text-normal mx-auto">
+                                    <tr>
+                                        <td>Test 1</td>
+                                        <td style="color: green;">Completed</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Test 1</td>
+                                        <td style="color: red;">Incomplete</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COURSE2 TAB CONTENTS -->
+                    <div class="tab-pane fade show" id="pills-course2" role="tabpane2"
+                         aria-labelledby="pills-course2-tab">
+                        <div class="row">
+
+                            <div class="col-lg-6 text-center">
+                                <div class="text-center text-large">
+                                    <p>Assignment Tracker</p>
+                                </div>
+                                <table class="assign-table text-normal mx-auto">
+                                    <tr>
+                                        <td>Assignment 1</td>
+                                        <td style="color: green;">Completed</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Assignment 1</td>
+                                        <td style="color: red;">Incomplete</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="text-center text-large">
+                                    <p>Test Tracker</p>
+                                </div>
+                                <table class="assign-table text-normal mx-auto">
+                                    <tr>
+                                        <td>Test 1</td>
+                                        <td style="color: green;">Completed</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Test 1</td>
+                                        <td style="color: red;">Incomplete</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END COURSE LIST TAB CONTENTS -->
+                </div>
+                <!-- END PROGRESS TAB CONTENTS -->
+            </div>
+
+            <!-- PROFILE TAB CONTENTS -->
+            <div class="tab-pane fade show" id="v-pills-profile" role="tabpanel" aria-labelledby="profile-tab">
+                <p>Hello</p>
+            </div>
+
+            <!-- ASSIGNMENTS HIDDEN TAB CONTENTS -->
+            <div class="tab-pane fade show" id="v-pills-assignments" role="tabpanel" aria-labelledby="assignments-tab">
+
+                <!-- COURSE TITLE-->
+                <div>
+                    <h1 class="text-center">
+                        <a data-toggle="pill" href="#v-pills-courses" role="tab" aria-controls="courses"
+                           aria-selected="true">
+                            <i class="fas fa-arrow-circle-left" style="float: left;"></i>
+                        </a>
+                        Python Level 1
+                    </h1>
+                </div>
+
+                <!-- TESTS, ASSIGNMENTS, OVERVIEW TABS -->
+                <nav>
+                    <div class="courses-tabs nav nav-tabs" id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link active ml-1" id="nav-tests-tab" data-toggle="tab" href="#nav-tests"
+                           role="tab" aria-controls="nav-tests" aria-selected="true">Tests</a>
+                        <a class="nav-item nav-link" id="nav-projects-tab" data-toggle="tab" href="#nav-projects"
+                           role="tab" aria-controls="nav-projects" aria-selected="false">Assignments</a>
+                        <a class="nav-item nav-link" id="nav-overview-tab" data-toggle="tab" href="#nav-overview"
+                           role="tab" aria-controls="nav-overview" aria-selected="false">Overview</a>
+                    </div>
+                </nav>
+
+                <!-- TEST,ASSIGNMENTS, OVERVIEW TAB CONTENTS -->
+                <div class="tab-content">
+
+                    <!-- TEST TAB CONTENTS -->
+                    <div class="assignments tab-pane active" id="nav-tests" role="tabpanel"
+                         aria-labelledby="nav-tests-tab">
+
+                        <div class="card-columns mx-auto">
+
+                            <div class="card my-3 mx-auto mx-sm-none">
+                                <div class="card-body pb-0">
+                                    <h5 class="card-title text-large">Python MCQ 2</h5>
+                                    <ul class="list-unstyled text-small">
+                                        <li><strong>Session 7</strong></li>
+                                        <li>Status: <strong style="color:red">Incomplete</strong></li>
+                                        <li>Score: <strong>N/A</strong></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="card my-3 mx-auto mx-sm-none">
+                                <div class="card-body pb-0">
+                                    <h5 class="card-title text-large">Python MCQ 1</h5>
+                                    <ul class="list-unstyled text-small">
+                                        <li><strong>Session 4</strong></li>
+                                        <li>Status: <strong style="color:green">Complete</strong></li>
+                                        <li>Score: <strong>10/10</strong></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- END TEST TAB CONTENTS -->
+                    </div>
+
+                    <!-- ASSIGNMENTS TAB CONTENTS -->
+                    <div class="assignments tab-pane" id="nav-projects" role="tabpanel"
+                         aria-labelledby="nav-projects-tab">
+                        <div class="card-columns mx-auto">
+
+                            <div class="card my-3 mx-auto mx-sm-none">
+                                <div class="card-body pb-0">
+                                    <h5 class="card-title text-large">Snake Game</h5>
+                                    <ul class="list-unstyled text-small">
+                                        <li><strong>Session 7</strong></li>
+                                        <li>Status: <strong style="color:red">Incomplete</strong></li>
+                                        <div class="text-center">
+                                            <button type="button" class="form-btn custom-btn">Upload</button>
+                                        </div>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="card my-3 mx-auto mx-sm-none">
+                                <div class="card-body pb-0">
+                                    <h5 class="card-title text-large">Color Picker</h5>
+                                    <ul class="list-unstyled text-small">
+                                        <li><strong>Session 4</strong></li>
+                                        <li>Status: <strong style="color:green">Complete</strong></li>
+                                        <div class="text-center">
+                                            <button type="button" class="form-btn custom-btn">View</button>
+                                        </div>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END ASSIGNMENT TAB CONTENTS -->
+                    </div>
+
+                    <!-- OVERVIEW TAB CONTENTS -->
+                    <div class="tab-pane" id="nav-overview" role="tabpanel" aria-labelledby="nav-overview-tab">
+
+                        <div class="container mx-3">
+                            <div class="row">
+                                <div class="col-md-4 col-lg-3">
+                                    <h3 class="h3">Course Name</h3>
+                                </div>
+                                <div class="col-md-5 col-lg-4">
+                                    <p class="text-normal">Grade: <strong>5-7</strong>&nbsp&nbsp&nbsp&nbspLevel:
+                                        <strong>1</strong></p>
+                                </div>
+                            </div>
+                            <p class="text-normal">Category</p>
+                            <p class="text-medium ">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+                                eiusmod
+                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                consequat. Duis aute irure dolor in reprehenderit .</p>
+
+                        </div>
+                        <div class="row mx-2">
+
+                            <div class="col-sm-6 col-md-5 highlights text-medium">
+                                <p class="text-large">Highlights</p>
+                                <ul class="list-unstyled " style="line-height: 30px;">
+                                    <li><i class="fas fa-check"></i> Lorem Ipsum Dolor</li>
+                                    <li><i class="fas fa-check"></i> Lorem Ipsum Dolor</li>
+                                    <li><i class="fas fa-check"></i> Lorem Ipsum Dolor</li>
+                                    <li><i class="fas fa-check"></i> Lorem Ipsum Dolor</li>
+                                    <li><i class="fas fa-check"></i> Lorem Ipsum Dolor</li>
+                                </ul>
+                            </div>
+
+                            <div class="col-sm-6  pl-sm-5 text-medium">
+                                <p class="text-large">Prerequisites</p>
+                                <ul class="list-unstyled " style="line-height: 30px;">
+                                    <li><i class="fas fa-hand-point-right fa-sm"></i> Lorem Ipsum lorem ipsum Dolor</li>
+                                    <li><i class="fas fa-hand-point-right fa-sm"></i> Lorem Ipsum Dolor</li>
+                                    <li><i class="fas fa-hand-point-right fa-sm"></i> Lorem Ipsum Dolor</li>
+
+                                </ul>
+                            </div>
+
+                        </div>
+
+                        <!-- END OVERVIEW TAB CONTENTS -->
+                    </div>
+                    <!-- END TEST,ASSIGNMENTS, OVERVIEW TAB CONTENTS -->
+                </div>
+                <!-- END ASSIGNMENTS HIDDEN TAB CONTENTS -->
+            </div>
+
+
+            <!--END SIDE-NAV TAB CONTENTS -->
+        </div>
+        <!-- END SIDE NAV -->
+    </nav>
+{% endblock %}

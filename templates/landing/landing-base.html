@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+    {% block landing-body %}
+    {% endblock %}
+
+    {% include 'landing/modals/forgot-password.html' %}
+    {% include 'landing/modals/login.html' %}
+    {% include 'landing/modals/register.html' %}
+{% endblock %}

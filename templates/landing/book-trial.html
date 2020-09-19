@@ -1,17 +1,19 @@
-{% extends 'base.html' %}
+{% extends 'landing/landing-base.html' %}
 {% load static %}
 
 {% block head %}
     <title>CMS Online Academy | Book a Free Trial</title>
 {% endblock %}
 
-{% block body %}
-    <section class="book-form container py-3 px-5">
+{% block landing-body %}
+    <!-- Book trial Form -->
+
+    <section class="book-form container py-3 px-3">
         <div class="text-center centered">
             <h1 class="head">Book a free trial</h1>
             <p class="text-small"> Book a 60-minute FREE trial class for your kid</p>
         </div>
-        <form class="centered mx-auto">
+        <form class="centered mx-auto" id="book-trial-form" onsubmit="openModal()">
             <div class="form-row">
                 <div class="col-6 col-md-3">
                     <label for="pfname">Parent's First Name</label>
@@ -40,7 +42,7 @@
                 </div>
                 <div class="col-4 col-md-2">
                     <label for="cc">Country Code</label>
-                    <select name="countryCode" id="cc" class="form-control form-control-sm">
+                    <select name="countryCode" id="cc" class="form-control form-control-sm" required>
                         <option value="" selected disabled>Select Code</option>
                         <option data-countryCode="GB" value="44">UK (+44)</option>
                         <option data-countryCode="US" value="1">USA (+1)</option>
@@ -261,19 +263,17 @@
                             <option data-countryCode="ZW" value="263">Zimbabwe (+263)</option>
                         </optgroup>
                     </select>
-
-
                 </div>
                 <div class="col-8 col-md-4">
                     <label for="cn">Contact Number</label>
-                    <input type="tel" id="cn" class="form-control form-control-sm" placeholder="9999999999" required>
+                    <input type="tel" id="cn" class="form-control form-control-sm" placeholder="9999999999"
+                           pattern="[0-9]{10}" required>
                 </div>
             </div>
-
             <div class="form-row">
                 <div class="col-12 col-md-4 mx-auto">
                     <label for="grade">Select Grade</label>
-                    <select id="grade" class="form-control form-control-sm" onchange="EnableDisable(this)">
+                    <select id="grade" class="form-control form-control-sm" required onchange="EnableDisable(this)">
                         <option value="" selected disabled>Select Grade</option>
                         <option value="1">Grade 1</option>
                         <option value="2">Grade 2</option>
@@ -292,7 +292,7 @@
                 </div>
                 <div class="col-12 col-md-4 mx-auto">
                     <label for="category">Select Category</label>
-                    <select id="category" class="form-control form-control-sm" disabled="disabled"
+                    <select id="category" class="form-control form-control-sm" disabled required
                             onchange="EnableDisable1(this)">
                         <option value="" selected disabled>Select Category</option>
                         <option value="tech">Technology</option>
@@ -307,17 +307,84 @@
                 </div>
                 <div class="col-12 col-md-4 mx-auto">
                     <label for="course">Select Course</label>
-                    <select id="course" class="form-control form-control-sm" disabled="disabled">
+                    <select id="course" class="form-control form-control-sm" disabled required>
                         <option value="" selected disabled>Select Course</option>
                         <option>Course1</option>
                         <option>Course2</option>
                         <option>Course3</option>
                         <option>Course4</option>
                     </select>
-
                 </div>
             </div>
 
+            <div class="form-row">
+                <div class="col-12 col-md-4 mx-auto">
+                    <div class="mx-auto">
+                        <label for="pick-date">Pick a date within the next 10 days</label>
+                        <input id="pick-date" type="date" min="2020-09-13" max="2020-10-13" required>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4 mx-auto">
+                    <div class="mx-auto">
+                        <label for="course">Select Time</label>
+                        <select id="course" class="form-control form-control-sm" required>
+                            <option value="" selected disabled>Select Time</option>
+                            <option>4PM-5PM</option>
+                            <option disabled>5PM-6PM</option>
+                            <option>4PM-5PM</option>
+                            <option>4PM-5PM</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn custom-btn text-white">Book Trial</button>
+            </div>
         </form>
     </section>
+    <!-- CONGRATS MODAL -->
+    <div class="modal fade" id="congrats-popup" data-backdrop="static" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-sm modal-reg" role="document">
+            <div class="card modal-content ">
+
+                <div class="row no-gutters congrats-con">
+                    <div class="card-body  text-center text-large text-white">
+                        <div class="py-2 px-2">
+                            <i class="fas fa-laugh-beam fa-2x pb-2" style="color: #ffd400"></i>
+                            <h3>Congratulations!</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row no-gutters">
+                    <div class="card-body  text-center text-small">
+                        <p>You have successfully signed up for a free trial class!</p>
+                        <p>We will send you a mail shortly</p>
+                        <div class="text-center">
+                            <button id="ok-submit" class="form-btn custom-btn"><a href="index.html" class="text-white">OK</a>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+		$("#book-trial-form").submit(function(e)
+		{
+			$('#congrats-popup').modal('show');
+			return false;
+		});
+
+      	$('#ok-submit').click(function()
+      	{
+     		/* when the ok button in the modal is clicked, submit the form */
+	    	$('#book-trial-form').submit();
+		});
+      </script>
 {% endblock %}
