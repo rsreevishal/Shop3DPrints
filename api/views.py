@@ -8,11 +8,12 @@ def standard_view(template_name, ctx=None):
     if ctx is None:
         ctx = {}
 
-    def view(request):
+    def view(request, **kwargs):
         template = loader.get_template(template_name)
         context = {
             'me': AcademyUser.get_for(request.user),
             'all_categories': Course.Category.choices,
+            **kwargs,
             **ctx,
         }
         return HttpResponse(template.render(context, request))

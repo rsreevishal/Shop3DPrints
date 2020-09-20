@@ -33,14 +33,9 @@
                     Courses
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{% url 'courses-offered' %}">Technology</a>
-                    <a class="dropdown-item" href="{% url 'courses-offered' %}">Creative</a>
-                    <a class="dropdown-item" href="{% url 'courses-offered' %}">Education</a>
-                    <a class="dropdown-item" href="{% url 'courses-offered' %}">Games & Development</a>
-                    <a class="dropdown-item" href="{% url 'courses-offered' %}">Language & Culture</a>
-                    <a class="dropdown-item" href="{% url 'courses-offered' %}">Music & Dance</a>
-                    <a class="dropdown-item" href="{% url 'courses-offered' %}">Lifestyle</a>
-                    <a class="dropdown-item" href="{% url 'courses-offered' %}">Professional Development</a>
+                    {% for category in all_categories %}
+                        <a class="dropdown-item" href="{% url 'courses-offered' category.0.lower %}">{{ category.1 }}</a>
+                    {% endfor %}
                 </div>
             </li>
             <li class="nav-item"><a class="nav-link text-light" href="{% url 'teach-with-us' %}">Teach with us</a></li>
