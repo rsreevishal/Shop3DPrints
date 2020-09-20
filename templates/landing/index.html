@@ -116,30 +116,30 @@
         <h1 class="head" style="font-size: 25px;">Find what fascinates you</h1>
         <ul class="icon-text list-unstyled list-inline py-2">
 
-            <a href="{% url 'courses-offered' %}">
+            <a href="{% url 'courses-offered' 't' %}">
                 <li class="list-inline-item text-center"><img src="{% static 'images/1.png' %}"><br>Technology</li>
             </a>
-            <a href="{% url 'courses-offered' %}">
+            <a href="{% url 'courses-offered' 'c' %}">
                 <li class="list-inline-item text-center"><img src="{% static 'images/2.png' %}"><br>Creative</li>
             </a>
-            <a href="{% url 'courses-offered' %}">
+            <a href="{% url 'courses-offered' 'e' %}">
                 <li class="list-inline-item text-center"><img src="{% static 'images/3.png' %}"><br>Education</li>
             </a>
-            <a href="{% url 'courses-offered' %}">
+            <a href="{% url 'courses-offered' 'g' %}">
                 <li class="list-inline-item text-center"><img src="{% static 'images/4.png' %}"><br>Games & Development
                 </li>
             </a>
-            <a href="{% url 'courses-offered' %}">
+            <a href="{% url 'courses-offered' 'l' %}">
                 <li class="list-inline-item text-center"><img src="{% static 'images/5.png' %}"><br>Language & Culture
                 </li>
             </a>
-            <a href="{% url 'courses-offered' %}">
+            <a href="{% url 'courses-offered' 'm' %}">
                 <li class="list-inline-item text-center"><img src="{% static 'images/6.png' %}"><br>Music & Dance</li>
             </a>
-            <a href="{% url 'courses-offered' %}">
+            <a href="{% url 'courses-offered' 'l' %}">
                 <li class="list-inline-item text-center"><img src="{% static 'images/18.png' %}"><br>Lifestyle</li>
             </a>
-            <a href="{% url 'courses-offered' %}">
+            <a href="{% url 'courses-offered' 'p' %}">
                 <li class="list-inline-item text-center"><img src="{% static 'images/19.png' %}"><br>Professional
                     Development
                 </li>
@@ -151,37 +151,23 @@
 
     <!-- TRENDING COURSES -->
     <section class="card-group py-5">
-        <div class=" card trending-course" id="blue-trend" style="margin-bottom: 0px;">
-            <img src="{% static 'images/banner1.jpg' %}" class="card-img" alt="course-img">
-            <div class="card-img-overlay">
-                <div class="ribbon-container">
-                    <div class="ribbon">trending</div>
+        {% for course in trending %}
+            <div class=" card trending-course" id="{% if forloop.counter0 %}pink{% else %}blue{% endif %}-trend" style="margin-bottom: 0px;">
+                <img src="{% static 'images/banner1.jpg' %}" class="card-img" alt="course-img">
+                <div class="card-img-overlay">
+                    <div class="ribbon-container">
+                        <div class="ribbon">trending</div>
+                    </div>
+                    <h5 class="text-white">{{ course.name }}</h5>
+                    <ul class="list-unstyled text-small text-white">
+                        <li>Category: <strong>{{ course.get_category_display }}</strong></li>
+                        <li>Grade: <strong>{{ course.get_grade_display }}</strong></li>
+                        <li>Level: <strong>{{ course.level }}</strong></li>
+                    </ul>
+                    <button type="button" class="btn btn-outline-light find-out-btn-light p-1 px-3">Find out more</button>
                 </div>
-                <h5 class="text-white">INTRODUCTION TO PYTHON</h5>
-                <ul class="list-unstyled text-small text-white">
-                    <li>Category: <strong>Programming</strong></li>
-                    <li>Grade: <strong>5-7</strong></li>
-                    <li>Level: <strong>1</strong></li>
-                </ul>
-                <button type="button" class="btn btn-outline-light find-out-btn-light p-1 px-3">Find out more</button>
             </div>
-        </div>
-
-        <div class=" card trending-course" id="pink-trend" style="margin-bottom: 0px;">
-            <img src="{% static 'images/640x360.png' %}" class="card-img" alt="course-img">
-            <div class="card-img-overlay">
-                <div class="ribbon-container">
-                    <div class="ribbon">trending</div>
-                </div>
-                <h5>INTRODUCTION TO PYTHON</h5>
-                <ul class="list-unstyled text-small">
-                    <li>Category: <strong>Programming</strong></li>
-                    <li>Grade: <strong>5-7</strong></li>
-                    <li>Level: <strong>1</strong></li>
-                </ul>
-                <button type="button" class="btn btn-outline-dark find-out-btn-dark p-1 px-3">Find out more</button>
-            </div>
-        </div>
+        {% endfor %}
     </section>
 
 
@@ -193,55 +179,23 @@
             </div>
             <div class="col-12 col-lg-10 centered text-center">
                 <div class="row justify-content-around">
-
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                        <a href="#">
-                            <div class="card fresh-course hvr-grow">
-                                <img src="{% static 'images/300.png' %}" class="card-img" alt="course-img">
-                                <div class="card-img-overlay img__overlay-fresh">
-                                    <h5>INTRODUCTION TO PYTHON</h5>
-                                    <ul class="list-unstyled text-small">
-                                        <li><strong>Programming</strong></li>
-                                        <li>Grade: <strong>5-7</strong></li>
-                                        <li>Level: <strong>1</strong></li>
-                                    </ul>
+                    {% for course in fresh %}
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                            <a href="#">
+                                <div class="card fresh-course hvr-grow">
+                                    <img src="{% static 'images/300.png' %}" class="card-img" alt="course-img">
+                                    <div class="card-img-overlay img__overlay-fresh">
+                                        <h5>{{ course.name }}</h5>
+                                        <ul class="list-unstyled text-small">
+                                            <li><strong>{{ course.get_category_display }}</strong></li>
+                                            <li>Grade: <strong>{{ course.get_grade_display }}</strong></li>
+                                            <li>Level: <strong>{{ course.level }}</strong></li>
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                        <a href="#">
-                            <div class="card fresh-course hvr-grow">
-                                <img src="{% static 'images/300.png' %}" class="card-img" alt="course-img">
-                                <div class="card-img-overlay img__overlay-fresh">
-                                    <h5>INTRODUCTION TO PYTHON</h5>
-                                    <ul class="list-unstyled text-small">
-                                        <li><strong>Programming</strong></li>
-                                        <li>Grade: <strong>5-7</strong></li>
-                                        <li>Level: <strong>1</strong></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="col-12 col-md-4 col-lg-3 d-inline d-sm-none d-md-inline">
-                        <a href="#">
-                            <div class="card fresh-course hvr-grow">
-                                <img src="{% static 'images/300.png' %}" class="card-img" alt="course-img">
-                                <div class="card-img-overlay img__overlay-fresh">
-                                    <h5>INTRODUCTION TO PYTHON</h5>
-                                    <ul class="list-unstyled text-small">
-                                        <li><strong>Programming</strong></li>
-                                        <li>Grade: <strong>5-7</strong></li>
-                                        <li>Level: <strong>1</strong></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-
+                            </a>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>

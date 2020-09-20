@@ -1,9 +1,9 @@
 from django.urls import path
 
-from api.views import standard_view
+from api.views import *
 
 urlpatterns = [
-    path('', standard_view('landing/index.html'), name='index'),
+    path('', index, name='index'),
     path('about-us', standard_view('landing/about-us.html'), name='about-us'),
     path('faq', standard_view('landing/faq.html'), name='faq'),
     path('courses-offered', standard_view('landing/courses-offered.html'), name='courses-offered'),
