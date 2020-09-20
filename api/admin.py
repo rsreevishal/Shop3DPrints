@@ -1,10 +1,12 @@
 from django.contrib import admin
 
-from api.models import Student, Course, Exam, Project, ExamGrade, ProjectSubmission
+from api.models import Course, Enrollment, ExamGrade, Exam, Instructor, ProjectSubmission, Project, Student
 
-admin.site.register(Student)
 admin.site.register(Course)
-admin.site.register(Exam)
+admin.site.register(Enrollment)
 admin.site.register(ExamGrade)
-admin.site.register(Project)
+admin.site.register(Exam)
+admin.site.register(Instructor)
 admin.site.register(ProjectSubmission)
+admin.site.register(Project)
+admin.site.register(Student)
