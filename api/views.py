@@ -2,7 +2,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
 
-from api.models import AcademyUser, Course
+from api.models import AcademyUser, Course, Enrollment
 
 
 def redirect_view(path_name):
@@ -36,4 +36,22 @@ def index(request):
     return standard_view('landing/index.html', {
         'trending': trending,
         'fresh': fresh,
+    })(request)
+
+
+def student_courses(request):
+    me = AcademyUser.get_for(request.user)
+    enrollments = Enrollment.objects.filter(student=me)
+
+    return standard_view('student/courses.html', {
+        'enrollments': enrollments
+    })(request)
+
+
+def student_course(request, course_id):
+    me = AcademyUser.get_for(request.user)
+    enrollment = Enrollment.objects.get(student=me, course_id=course_id)
+
+    return standard_view('student/course.html', {
+        'enrollment': enrollment
     })(request)
