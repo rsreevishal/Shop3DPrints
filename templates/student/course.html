@@ -1,19 +1,19 @@
 {% extends 'student/student-base.html' %}
 {% load static %}
+{% load api_extras %}
 
 {% block student-head %}
-    <title>CMS Online Academy | COURSE_NAME</title>
+    <title>CMS Online Academy | {{ enrollment.course.name }}</title>
 {% endblock %}
 
 {% block student-body %}
     <!-- COURSE TITLE-->
     <div>
         <h1 class="text-center">
-            <a data-toggle="pill" href="#v-pills-courses" role="tab" aria-controls="courses"
-               aria-selected="true">
+            <a href="{% url 'student-courses' %}">
                 <i class="fas fa-arrow-circle-left" style="float: left;"></i>
             </a>
-            Python Level 1
+            {{ enrollment.course.name }}
         </h1>
     </div>
 
@@ -38,27 +38,21 @@
 
             <div class="card-columns mx-auto">
 
-                <div class="card my-3 mx-auto mx-sm-none">
-                    <div class="card-body pb-0">
-                        <h5 class="card-title text-large">Python MCQ 2</h5>
-                        <ul class="list-unstyled text-small">
-                            <li><strong>Session 7</strong></li>
-                            <li>Status: <strong style="color:red">Incomplete</strong></li>
-                            <li>Score: <strong>N/A</strong></li>
-                        </ul>
+                {% for exam in enrollment.course.exam_set.all %}
+                    <div class="card my-3 mx-auto mx-sm-none">
+                        <div class="card-body pb-0">
+                            <h5 class="card-title text-large">{{ exam.name }}</h5>
+                            <ul class="list-unstyled text-small">
+                                <li><strong>Session 7</strong></li>
+                                {% status exam me as status %}
+                                <li>Status: <strong
+                                        style="color:{% if status == 'complete' %}green{% else %}red{% endif %}">{{ status | title }}</strong>
+                                </li>
+                                <li>Score: <strong>{{ exam | grade:me }}</strong></li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-
-                <div class="card my-3 mx-auto mx-sm-none">
-                    <div class="card-body pb-0">
-                        <h5 class="card-title text-large">Python MCQ 1</h5>
-                        <ul class="list-unstyled text-small">
-                            <li><strong>Session 4</strong></li>
-                            <li>Status: <strong style="color:green">Complete</strong></li>
-                            <li>Score: <strong>10/10</strong></li>
-                        </ul>
-                    </div>
-                </div>
+                {% endfor %}
 
             </div>
             <!-- END TEST TAB CONTENTS -->
@@ -69,31 +63,23 @@
              aria-labelledby="nav-projects-tab">
             <div class="card-columns mx-auto">
 
-                <div class="card my-3 mx-auto mx-sm-none">
-                    <div class="card-body pb-0">
-                        <h5 class="card-title text-large">Snake Game</h5>
-                        <ul class="list-unstyled text-small">
-                            <li><strong>Session 7</strong></li>
-                            <li>Status: <strong style="color:red">Incomplete</strong></li>
-                            <div class="text-center">
-                                <button type="button" class="form-btn custom-btn">Upload</button>
-                            </div>
-                        </ul>
+                {% for project in enrollment.course.project_set.all %}
+                    <div class="card my-3 mx-auto mx-sm-none">
+                        <div class="card-body pb-0">
+                            <h5 class="card-title text-large">{{ project.name }}</h5>
+                            <ul class="list-unstyled text-small">
+                                <li><strong>Session 7</strong></li>
+                                {% status project me as status %}
+                                <li>Status: <strong
+                                        style="color:{% if status == 'complete' %}green{% else %}red{% endif %}">{{ status | title }}</strong>
+                                </li>
+                                <div class="text-center">
+                                    <button type="button" class="form-btn custom-btn">Upload</button>
+                                </div>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-
-                <div class="card my-3 mx-auto mx-sm-none">
-                    <div class="card-body pb-0">
-                        <h5 class="card-title text-large">Color Picker</h5>
-                        <ul class="list-unstyled text-small">
-                            <li><strong>Session 4</strong></li>
-                            <li>Status: <strong style="color:green">Complete</strong></li>
-                            <div class="text-center">
-                                <button type="button" class="form-btn custom-btn">View</button>
-                            </div>
-                        </ul>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
             <!-- END ASSIGNMENT TAB CONTENTS -->
         </div>
@@ -104,14 +90,14 @@
             <div class="container mx-3">
                 <div class="row">
                     <div class="col-md-4 col-lg-3">
-                        <h3 class="h3">Course Name</h3>
+                        <h3 class="h3">{{ enrollment.course.name }}</h3>
                     </div>
                     <div class="col-md-5 col-lg-4">
-                        <p class="text-normal">Grade: <strong>5-7</strong>&nbsp&nbsp&nbsp&nbspLevel:
-                            <strong>1</strong></p>
+                        <p class="text-normal">Grade: <strong>{{ enrollment.course.get_grade_display }}</strong>&nbsp&nbsp&nbsp&nbspLevel:
+                            <strong>{{ enrollment.course.level }}</strong></p>
                     </div>
                 </div>
-                <p class="text-normal">Category</p>
+                <p class="text-normal">{{ enrollment.course.get_category_display }}</p>
                 <p class="text-medium ">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
                     eiusmod
                     tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,

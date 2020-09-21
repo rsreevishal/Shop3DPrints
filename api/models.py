@@ -75,6 +75,10 @@ class Enrollment(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
 
+    def get_days_display(self):
+        return ', '.join(
+            map(lambda day: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][int(day)], self.days.split(',')))
+
     def __str__(self):
         return f'{self.student.name} in {self.course.name}'
 
@@ -96,15 +100,15 @@ class Enrollment(models.Model):
 
 class Project(models.Model):
     name = models.CharField(max_length=128)
-    course = models.ForeignKey(Course, related_name='projects', on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
 
 
 class ProjectSubmission(models.Model):
-    student = models.ForeignKey(Student, related_name='project_submissions', on_delete=models.CASCADE)
-    project = models.ForeignKey(Project, related_name='submissions', on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     file = models.FileField()
 
     def __str__(self):
@@ -113,7 +117,7 @@ class ProjectSubmission(models.Model):
 
 class Exam(models.Model):
     name = models.CharField(max_length=128)
-    course = models.ForeignKey(Course, related_name='exams', on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
     total_points = models.PositiveSmallIntegerField()
 
     def __str__(self):
@@ -121,8 +125,8 @@ class Exam(models.Model):
 
 
 class ExamGrade(models.Model):
-    student = models.ForeignKey(Student, related_name='exam_grades', on_delete=models.CASCADE)
-    exam = models.ForeignKey(Exam, related_name='grades', on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
     grade = models.PositiveSmallIntegerField()
 
     def __str__(self):

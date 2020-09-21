@@ -20,32 +20,31 @@
 
     <!--  CURRENT AND HISTORY COURSE TAB CONTENT-->
     <div class="tab-content ml-sm-4 mx-md-5" id="courses">
-
         <!-- CURRENT COURSE TAB CONTENT -->
         <div class="tab-pane active" id="nav-current-course" role="tabpanel"
              aria-labelledby="nav-current-course-tab">
             <div class="card-columns mx-auto">
-
-                <a id="v-pills-assignments-tab" data-toggle="pill" href="#v-pills-assignments"
-                   aria-controls="assignments" aria-selected="true">
-                    <div class="card my-3 mx-auto ">
-                        <div class="card-body pb-0">
-                            <h5 class="card-title text-large">Python Level 1</h5>
-                            <ul class="list-unstyled text-small">
-                                <li><strong>Programming</strong></li>
-                                <li>Grade: <strong>5-7</strong></li>
-                                <li>Level: <strong>1</strong></li>
-                            </ul>
+                {% for enrollment in enrollments %}
+                    <a href="{% url 'student-course' enrollment.course.id %}">
+                        <div class="card my-3 mx-auto ">
+                            <div class="card-body pb-0">
+                                <h5 class="card-title text-large">{{ enrollment.course.name }}</h5>
+                                <ul class="list-unstyled text-small">
+                                    <li><strong>{{ enrollment.course.get_category_display }}</strong></li>
+                                    <li>Grade: <strong>{{ enrollment.course.get_grade_display }}</strong></li>
+                                    <li>Level: <strong>{{ enrollment.course.level }}</strong></li>
+                                </ul>
+                            </div>
+                            <div class="card-footer">
+                                <ul class="list-unstyled text-small mb-0" style="color:#0060CF">
+                                    <li>{{ enrollment.get_days_display }}</li>
+                                    <li>{{ enrollment.start_time }} - {{ enrollment.end_time }}</li>
+                                    <li>Sept 13 - Oct 7</li>
+                                </ul>
+                            </div>
                         </div>
-                        <div class="card-footer">
-                            <ul class="list-unstyled text-small mb-0" style="color:#0060CF">
-                                <li>Mon, Wed, Fri</li>
-                                <li>5PM - 6PM</li>
-                                <li>Sept 13 - Oct 7</li>
-                            </ul>
-                        </div>
-                    </div>
-                </a>
+                    </a>
+                {% endfor %}
             </div>
         </div>
 
@@ -53,7 +52,6 @@
         <div class="tab-pane" id="nav-history-course" role="tabpanel"
              aria-labelledby="nav-history-course-tab">
             <div class="card-columns mx-auto">
-
                 <div class="card my-3 mx-auto ">
                     <div class="card-body pb-0">
                         <h5 class="card-title text-large">Python Level 2</h5>
@@ -73,7 +71,5 @@
                 </div>
             </div>
         </div>
-
-        <!-- END HISTORY AND CURRENT TAB CONTENT  -->
     </div>
 {% endblock %}
