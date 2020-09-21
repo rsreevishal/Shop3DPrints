@@ -1,7 +1,15 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
+from django.urls import reverse
 
 from api.models import AcademyUser, Course
+
+
+def redirect_view(path_name):
+    def view(request, **kwargs):
+        return HttpResponseRedirect(reverse(path_name))
+
+    return view
 
 
 def standard_view(template_name, ctx=None):

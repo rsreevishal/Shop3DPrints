@@ -1,0 +1,152 @@
+{% extends 'student/student-base.html' %}
+{% load static %}
+
+{% block student-head %}
+    <title>CMS Online Academy | COURSE_NAME</title>
+{% endblock %}
+
+{% block student-body %}
+    <!-- COURSE TITLE-->
+    <div>
+        <h1 class="text-center">
+            <a data-toggle="pill" href="#v-pills-courses" role="tab" aria-controls="courses"
+               aria-selected="true">
+                <i class="fas fa-arrow-circle-left" style="float: left;"></i>
+            </a>
+            Python Level 1
+        </h1>
+    </div>
+
+    <!-- TESTS, ASSIGNMENTS, OVERVIEW TABS -->
+    <nav>
+        <div class="courses-tabs nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active ml-1" id="nav-tests-tab" data-toggle="tab" href="#nav-tests"
+               role="tab" aria-controls="nav-tests" aria-selected="true">Tests</a>
+            <a class="nav-item nav-link" id="nav-projects-tab" data-toggle="tab" href="#nav-projects"
+               role="tab" aria-controls="nav-projects" aria-selected="false">Assignments</a>
+            <a class="nav-item nav-link" id="nav-overview-tab" data-toggle="tab" href="#nav-overview"
+               role="tab" aria-controls="nav-overview" aria-selected="false">Overview</a>
+        </div>
+    </nav>
+
+    <!-- TEST,ASSIGNMENTS, OVERVIEW TAB CONTENTS -->
+    <div class="tab-content">
+
+        <!-- TEST TAB CONTENTS -->
+        <div class="assignments tab-pane active" id="nav-tests" role="tabpanel"
+             aria-labelledby="nav-tests-tab">
+
+            <div class="card-columns mx-auto">
+
+                <div class="card my-3 mx-auto mx-sm-none">
+                    <div class="card-body pb-0">
+                        <h5 class="card-title text-large">Python MCQ 2</h5>
+                        <ul class="list-unstyled text-small">
+                            <li><strong>Session 7</strong></li>
+                            <li>Status: <strong style="color:red">Incomplete</strong></li>
+                            <li>Score: <strong>N/A</strong></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card my-3 mx-auto mx-sm-none">
+                    <div class="card-body pb-0">
+                        <h5 class="card-title text-large">Python MCQ 1</h5>
+                        <ul class="list-unstyled text-small">
+                            <li><strong>Session 4</strong></li>
+                            <li>Status: <strong style="color:green">Complete</strong></li>
+                            <li>Score: <strong>10/10</strong></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+            <!-- END TEST TAB CONTENTS -->
+        </div>
+
+        <!-- ASSIGNMENTS TAB CONTENTS -->
+        <div class="assignments tab-pane" id="nav-projects" role="tabpanel"
+             aria-labelledby="nav-projects-tab">
+            <div class="card-columns mx-auto">
+
+                <div class="card my-3 mx-auto mx-sm-none">
+                    <div class="card-body pb-0">
+                        <h5 class="card-title text-large">Snake Game</h5>
+                        <ul class="list-unstyled text-small">
+                            <li><strong>Session 7</strong></li>
+                            <li>Status: <strong style="color:red">Incomplete</strong></li>
+                            <div class="text-center">
+                                <button type="button" class="form-btn custom-btn">Upload</button>
+                            </div>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card my-3 mx-auto mx-sm-none">
+                    <div class="card-body pb-0">
+                        <h5 class="card-title text-large">Color Picker</h5>
+                        <ul class="list-unstyled text-small">
+                            <li><strong>Session 4</strong></li>
+                            <li>Status: <strong style="color:green">Complete</strong></li>
+                            <div class="text-center">
+                                <button type="button" class="form-btn custom-btn">View</button>
+                            </div>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- END ASSIGNMENT TAB CONTENTS -->
+        </div>
+
+        <!-- OVERVIEW TAB CONTENTS -->
+        <div class="tab-pane" id="nav-overview" role="tabpanel" aria-labelledby="nav-overview-tab">
+
+            <div class="container mx-3">
+                <div class="row">
+                    <div class="col-md-4 col-lg-3">
+                        <h3 class="h3">Course Name</h3>
+                    </div>
+                    <div class="col-md-5 col-lg-4">
+                        <p class="text-normal">Grade: <strong>5-7</strong>&nbsp&nbsp&nbsp&nbspLevel:
+                            <strong>1</strong></p>
+                    </div>
+                </div>
+                <p class="text-normal">Category</p>
+                <p class="text-medium ">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+                    eiusmod
+                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                    consequat. Duis aute irure dolor in reprehenderit .</p>
+
+            </div>
+            <div class="row mx-2">
+
+                <div class="col-sm-6 col-md-5 highlights text-medium">
+                    <p class="text-large">Highlights</p>
+                    <ul class="list-unstyled " style="line-height: 30px;">
+                        <li><i class="fas fa-check"></i> Lorem Ipsum Dolor</li>
+                        <li><i class="fas fa-check"></i> Lorem Ipsum Dolor</li>
+                        <li><i class="fas fa-check"></i> Lorem Ipsum Dolor</li>
+                        <li><i class="fas fa-check"></i> Lorem Ipsum Dolor</li>
+                        <li><i class="fas fa-check"></i> Lorem Ipsum Dolor</li>
+                    </ul>
+                </div>
+
+                <div class="col-sm-6  pl-sm-5 text-medium">
+                    <p class="text-large">Prerequisites</p>
+                    <ul class="list-unstyled " style="line-height: 30px;">
+                        <li><i class="fas fa-hand-point-right fa-sm"></i> Lorem Ipsum lorem ipsum Dolor</li>
+                        <li><i class="fas fa-hand-point-right fa-sm"></i> Lorem Ipsum Dolor</li>
+                        <li><i class="fas fa-hand-point-right fa-sm"></i> Lorem Ipsum Dolor</li>
+
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- END OVERVIEW TAB CONTENTS -->
+        </div>
+        <!-- END TEST,ASSIGNMENTS, OVERVIEW TAB CONTENTS -->
+    </div>
+    <!-- END ASSIGNMENTS HIDDEN TAB CONTENTS -->
+{% endblock %}

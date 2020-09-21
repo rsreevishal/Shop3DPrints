@@ -10,6 +10,11 @@ urlpatterns = [
     path('course-details', standard_view('landing/course-details.html'), name='course-details'),
     path('teach-with-us', standard_view('landing/teach-with-us.html'), name='teach-with-us'),
     path('book-trial', standard_view('landing/book-trial.html'), name='book-trial'),
-    path('student', standard_view('student/student.html'), name='student'),
+    path('student', redirect_view('student-courses'), name='student'),
+    path('student/course/<int:course_id>', standard_view('student/course.html'), name='student-course'),
+    path('student/courses', standard_view('student/courses.html'), name='student-courses'),
+    path('student/profile', standard_view('student/profile.html'), name='student-profile'),
+    path('student/progress', standard_view('student/progress.html'), name='student-progress'),
+    path('student/schedule', standard_view('student/schedule.html'), name='student-schedule'),
     # Template: path('template_name', standard_view('template_name.html'), name='template_name')
 ]
