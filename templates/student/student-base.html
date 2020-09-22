@@ -10,10 +10,10 @@
 {% block body %}
     <nav class="side-nav">
         <div class="nav flex-md-column nav-pills justify-content-around text-medium" role="tablist" aria-orientation="vertical">
-            <a class="nav-link active" href="{% url 'student-courses' %}" role="tab">Courses</a>
+            <a class="nav-link" href="{% url 'student-courses' %}" role="tab" >Courses</a>
             <a class="nav-link" href="{% url 'student-schedule' %}" role="tab">Schedule</a>
             <a class="nav-link" href="{% url 'student-progress' %}" role="tab">Progress</a>
-            <a class="nav-link mb-md-5" href="{% url 'student-profile' %}" role="tab">Profile</a>
+            <a class="nav-link mb-md-5" href="{% url 'student-profile' %}" role="tab" id="profile-link">Profile</a>
         </div>
       <!--   <div class="nav flex-md-column nav-pills justify-content-around text-medium" id="v-pills-tab" role="tablist" aria-orientation="vertical">
           <a class="nav-link active" id="v-pills-courses-tab" data-toggle="pill" href="{% url 'student-courses' %}" role="tab" aria-controls="courses" aria-selected="true">Courses</a>

@@ -147,7 +147,7 @@ font-family: 'Raleway', sans-serif;
   color: rgba(255,255,255,0.5);
   text-transform: uppercase;
 }
-.side-nav .flex-md-column .nav-link.active{
+#profile-tab-con .side-nav #profile-link {
   background-color: #0060CF;
   color: white;
   border-radius: 0px;
