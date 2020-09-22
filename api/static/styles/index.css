@@ -538,7 +538,30 @@ hr{
 
 }
 
-
+.ribbon-container {
+  width:120px;
+  height:120px;
+  overflow: hidden;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}
+.ribbon {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 300;
+  font-size:16px;
+  color:#936F00;
+  background-color:#FFCE39;
+  text-align: center;
+  text-transform: uppercase; 
+  transform: rotate(45deg);
+  position: relative;
+  padding: 5px;
+  left: -10px;
+  top: 25px;
+  width: 180px;
+  box-shadow:0px 0px 3px rgba(0,0,0,0.3);
+}
 
 
 /*FAQ*/
