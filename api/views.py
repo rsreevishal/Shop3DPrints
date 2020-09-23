@@ -85,6 +85,16 @@ def student_progress(request):
     })(request)
 
 
+def student_profile(request):
+    me = AcademyUser.get_for(request.user)
+
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST, instance=me)
+        form.save()
+
+    return standard_view('student/profile.html')(request)
+
+
 def register(request):
     form = RegistrationForm(request.POST)
     print(form.errors)
