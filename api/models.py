@@ -74,7 +74,23 @@ class Course(models.Model):
     category = models.CharField(max_length=1, choices=Category.choices)
     grade = models.CharField(max_length=1, choices=Grade.choices)
     level = models.PositiveSmallIntegerField()
+    description = models.TextField()
+    highlights = models.TextField(help_text='Put each item on its own line')
+    prerequisites = models.TextField(help_text='Put each item on its own line')
+    sessions = models.TextField(help_text='Put each item on its own line')
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
+
+    @property
+    def highlight_list(self):
+        return self.highlights.split('\n')
+
+    @property
+    def prerequisite_list(self):
+        return self.prerequisites.split('\n')
+
+    @property
+    def session_list(self):
+        return self.sessions.split('\n')
 
     def __str__(self):
         return self.name

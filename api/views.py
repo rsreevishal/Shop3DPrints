@@ -41,6 +41,14 @@ def index(request):
     })(request)
 
 
+def course_details(request, course_id):
+    course = Course.objects.get(id=course_id)
+
+    return standard_view('landing/course-details.html', {
+        'course': course,
+    })(request)
+
+
 def student_courses(request):
     me = AcademyUser.get_for(request.user)
     enrollments = Enrollment.objects.filter(student=me)
