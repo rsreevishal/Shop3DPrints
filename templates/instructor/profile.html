@@ -1,11 +1,11 @@
-{% extends 'student/student-base.html' %}
+{% extends 'instructor/instructor-base.html' %}
 {% load static %}
 
-{% block student-head %}
+{% block instructor-head %}
     <title>CMS Online Academy | Profile</title>
 {% endblock %}
 
-{% block student-body %}
+{% block instructor-body %}
     <div class="tab-pane fade show active" role="tabpanel" >
         <div class="row profile mx-2">
             <div class="col-md-3 text-center">
@@ -18,26 +18,13 @@
                 <form class="pt-lg-4" action="{% url 'student-profile' %}" method="post">
                     <div class="form-row">
                         <div class="col-6">
-                            <label for="pfname">Parent's First Name</label>
-                            <input type="text" id="pfname" name="parent_first_name"
-                                   class="form-control form-control-sm " placeholder="ex) John"
-                                   required value="{{ me.parent_first_name }}">
-                        </div>
-                        <div class="col-6">
-                            <label for="plname">Parent's Last Name</label>
-                            <input type="text" id="plname" name="parent_last_name" class="form-control form-control-sm"
-                                   placeholder="ex) Doe" required value="{{ me.parent_last_name }}">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="col-6">
-                            <label for="sfname">Student's First Name</label>
+                            <label for="sfname">First Name</label>
                             <input type="text" id="sfname" name="student_first_name"
                                    class="form-control form-control-sm" placeholder="ex John" required
                                    value="{{ me.student_first_name }}">
                         </div>
                         <div class="col-6">
-                            <label for="slname">Student's Last Name</label>
+                            <label for="slname">Last Name</label>
                             <input type="text" id="slname" name="student_last_name" class="form-control form-control-sm"
                                    placeholder="ex Doe" required value="{{ me.student_last_name }}">
                         </div>
@@ -83,70 +70,71 @@
                                             {% if me.country == 244 %}selected{% endif %}>Angola (+244)
                                     </option>
                                     <option data-countryCode="AI" value="1264"
-                                            {% if me.country == 1264 %}selected{% endif %}>Anguilla (+1264)</option>
+                                            {% if me.country == 1264 %}selected{% endif %}
+                                    ">Anguilla (+1264)</option>
                                     <option data-countryCode="AG" value="1268"
                                             {% if me.country == 1268 %}selected{% endif %}
-                                    >Antigua &amp; Barbuda (+1268)</option>
+                                    ">Antigua &amp; Barbuda (+1268)</option>
                                     <option data-countryCode="AR" value="54"
                                             {% if me.country == 54 %}selected{% endif %}
-                                    >Argentina (+54)</option>
+                                    ">Argentina (+54)</option>
                                     <option data-countryCode="AM" value="374"
                                             {% if me.country == 374 %}selected{% endif %}
-                                    >Armenia (+374)</option>
+                                    ">Armenia (+374)</option>
                                     <option data-countryCode="AW" value="297"
                                             {% if me.country == 297 %}selected{% endif %}
-                                    >Aruba (+297)</option>
+                                    ">Aruba (+297)</option>
                                     <option data-countryCode="AU" value="61"
                                             {% if me.country == 61 %}selected{% endif %}
-                                    >Australia (+61)</option>
+                                    ">Australia (+61)</option>
                                     <option data-countryCode="AT" value="43"
                                             {% if me.country == 43 %}selected{% endif %}
-                                    >Austria (+43)</option>
+                                    ">Austria (+43)</option>
                                     <option data-countryCode="AZ" value="994"
                                             {% if me.country == 994 %}selected{% endif %}
-                                    >Azerbaijan (+994)</option>
+                                    ">Azerbaijan (+994)</option>
                                     <option data-countryCode="BS" value="1242"
                                             {% if me.country == 1242 %}selected{% endif %}
-                                    >Bahamas (+1242)</option>
+                                    ">Bahamas (+1242)</option>
                                     <option data-countryCode="BH" value="973"
                                             {% if me.country == 973 %}selected{% endif %}
-                                    >Bahrain (+973)</option>
+                                    ">Bahrain (+973)</option>
                                     <option data-countryCode="BD" value="880"
                                             {% if me.country == 880 %}selected{% endif %}
-                                    >Bangladesh (+880)</option>
+                                    ">Bangladesh (+880)</option>
                                     <option data-countryCode="BB" value="1246"
                                             {% if me.country == 1246 %}selected{% endif %}
-                                    >Barbados (+1246)</option>
+                                    ">Barbados (+1246)</option>
                                     <option data-countryCode="BY" value="375"
                                             {% if me.country == 375 %}selected{% endif %}
-                                    >Belarus (+375)</option>
+                                    ">Belarus (+375)</option>
                                     <option data-countryCode="BE" value="32"
                                             {% if me.country == 32 %}selected{% endif %}
-                                    >Belgium (+32)</option>
+                                    ">Belgium (+32)</option>
                                     <option data-countryCode="BZ" value="501"
                                             {% if me.country == 501 %}selected{% endif %}
-                                    >Belize (+501)</option>
+                                    ">Belize (+501)</option>
                                     <option data-countryCode="BJ" value="229"
                                             {% if me.country == 229 %}selected{% endif %}
-                                    >Benin (+229)</option>
+                                    ">Benin (+229)</option>
                                     <option data-countryCode="BM" value="1441"
                                             {% if me.country == 1441 %}selected{% endif %}
-                                    >Bermuda (+1441)</option>
+                                    ">Bermuda (+1441)</option>
                                     <option data-countryCode="BT" value="975"
                                             {% if me.country == 975 %}selected{% endif %}
-                                    >Bhutan (+975)</option>
+                                    ">Bhutan (+975)</option>
                                     <option data-countryCode="BO" value="591"
                                             {% if me.country == 591 %}selected{% endif %}
-                                    >Bolivia (+591)</option>
+                                    ">Bolivia (+591)</option>
                                     <option data-countryCode="BA" value="387"
                                             {% if me.country == 387 %}selected{% endif %}
-                                    >Bosnia Herzegovina (+387)</option>
+                                    ">Bosnia Herzegovina (+387)</option>
                                     <option data-countryCode="BW" value="267"
                                             {% if me.country == 267 %}selected{% endif %}
-                                    >Botswana (+267)</option>
+                                    ">Botswana (+267)</option>
                                     <option data-countryCode="BR" value="55"
                                             {% if me.country == 55 %}selected{% endif %}
-                                    >Brazil (+55)</option>
+                                    ">Brazil (+55)</option>
                                     <option data-countryCode="BN" value="673"
                                             {% if me.country == 673 %}selected{% endif %}>Brunei (+673)
                                     </option>
