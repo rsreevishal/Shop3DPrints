@@ -61,17 +61,32 @@ class Instructor(AcademyUser):
         return f'{self.name} ({self.django_user.username})'
 
 
-class Course(models.Model):
-    class Category(models.TextChoices):
-        Programming = 'P', 'Programming'
-        ArtsAndCrafts = 'A', 'Arts & Crafts'
-        MusicAndDance = 'M', 'Music & Dance'
-        Language = 'L', 'Language'
-        Education = 'E', 'Education'
-        Games = 'G', 'Games'
+class Category(models.Model):
+    name = models.CharField(max_length=64)
 
+    @property
+    def slug(self):
+        return self.name.split(' ')[0].lower()
+
+    @property
+    def image(self):
+        return f'images/{self.slug}.png'
+
+    def __str__(self):
+        return self.name
+
+
+class Subcategory(models.Model):
+    name = models.CharField(max_length=64)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.name} ({self.category.name})'
+
+
+class Course(models.Model):
     name = models.CharField(max_length=50)
-    category = models.CharField(max_length=1, choices=Category.choices)
+    category = models.ForeignKey(Subcategory, on_delete=models.CASCADE)
     grade = models.CharField(max_length=1, choices=Grade.choices)
     level = models.PositiveSmallIntegerField()
     description = models.TextField()

@@ -31,7 +31,7 @@
                             <div class="card-body pb-0">
                                 <h5 class="card-title text-large">{{ enrollment.course.name }}</h5>
                                 <ul class="list-unstyled text-small">
-                                    <li><strong>{{ enrollment.course.get_category_display }}</strong></li>
+                                    <li><strong>{{ enrollment.course.category.category }}</strong></li>
                                     <li>Grade: <strong>{{ enrollment.course.get_grade_display }}</strong></li>
                                     <li>Level: <strong>{{ enrollment.course.level }}</strong></li>
                                 </ul>

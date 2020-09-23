@@ -115,35 +115,12 @@
     <section class="container mb-3 centered text-center">
         <h1 class="head" style="font-size: 25px;">Find what fascinates you</h1>
         <ul class="icon-text list-unstyled list-inline py-2">
-
-            <a href="{% url 'courses-offered' 't' %}">
-                <li class="list-inline-item text-center"><img src="{% static 'images/1.png' %}"><br>Technology</li>
-            </a>
-            <a href="{% url 'courses-offered' 'c' %}">
-                <li class="list-inline-item text-center"><img src="{% static 'images/2.png' %}"><br>Creative</li>
-            </a>
-            <a href="{% url 'courses-offered' 'e' %}">
-                <li class="list-inline-item text-center"><img src="{% static 'images/3.png' %}"><br>Education</li>
-            </a>
-            <a href="{% url 'courses-offered' 'g' %}">
-                <li class="list-inline-item text-center"><img src="{% static 'images/4.png' %}"><br>Games & Development
-                </li>
-            </a>
-            <a href="{% url 'courses-offered' 'l' %}">
-                <li class="list-inline-item text-center"><img src="{% static 'images/5.png' %}"><br>Language & Culture
-                </li>
-            </a>
-            <a href="{% url 'courses-offered' 'm' %}">
-                <li class="list-inline-item text-center"><img src="{% static 'images/6.png' %}"><br>Music & Dance</li>
-            </a>
-            <a href="{% url 'courses-offered' 'l' %}">
-                <li class="list-inline-item text-center"><img src="{% static 'images/18.png' %}"><br>Lifestyle</li>
-            </a>
-            <a href="{% url 'courses-offered' 'p' %}">
-                <li class="list-inline-item text-center"><img src="{% static 'images/19.png' %}"><br>Professional
-                    Development
-                </li>
-            </a>
+            {% for category in all_categories %}
+                <a href="{% url 'courses-offered' category.id %}">
+                    <li class="list-inline-item text-center"><img
+                            src="{% static category.image %}"><br>{{ category.name }}</li>
+                </a>
+            {% endfor %}
         </ul>
     </section>
 
@@ -152,7 +129,8 @@
     <!-- TRENDING COURSES -->
     <section class="card-group py-5">
         {% for course in trending %}
-            <div class=" card trending-course" id="{% if forloop.counter0 %}pink{% else %}blue{% endif %}-trend" style="margin-bottom: 0px;">
+            <div class=" card trending-course" id="{% if forloop.counter0 %}pink{% else %}blue{% endif %}-trend"
+                 style="margin-bottom: 0px;">
                 <img src="{% static 'images/banner1.jpg' %}" class="card-img" alt="course-img">
                 <div class="card-img-overlay">
                     <div class="ribbon-container">
@@ -160,11 +138,12 @@
                     </div>
                     <h5 class="text-white">{{ course.name }}</h5>
                     <ul class="list-unstyled text-small text-white">
-                        <li>Category: <strong>{{ course.get_category_display }}</strong></li>
+                        <li>Category: <strong>{{ course.category.category }}</strong></li>
                         <li>Grade: <strong>{{ course.get_grade_display }}</strong></li>
                         <li>Level: <strong>{{ course.level }}</strong></li>
                     </ul>
-                    <button type="button" class="btn btn-outline-light find-out-btn-light p-1 px-3">Find out more</button>
+                    <button type="button" class="btn btn-outline-light find-out-btn-light p-1 px-3">Find out more
+                    </button>
                 </div>
             </div>
         {% endfor %}
@@ -187,7 +166,7 @@
                                     <div class="card-img-overlay img__overlay-fresh">
                                         <h5>{{ course.name }}</h5>
                                         <ul class="list-unstyled text-small">
-                                            <li><strong>{{ course.get_category_display }}</strong></li>
+                                            <li><strong>{{ course.category.category }}</strong></li>
                                             <li>Grade: <strong>{{ course.get_grade_display }}</strong></li>
                                             <li>Level: <strong>{{ course.level }}</strong></li>
                                         </ul>

@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
 
-from api.models import AcademyUser, Course, Enrollment, Student
+from api.models import AcademyUser, Category, Course, Enrollment, Student, Subcategory
 
 
 def redirect_view(path_name):
@@ -22,7 +22,7 @@ def standard_view(template_name, ctx=None):
         template = loader.get_template(template_name)
         context = {
             'me': AcademyUser.get_for(request.user),
-            'all_categories': Course.Category.choices,
+            'all_categories': Category.objects.all(),
             **kwargs,
             **ctx,
         }
@@ -38,6 +38,14 @@ def index(request):
     return standard_view('landing/index.html', {
         'trending': trending,
         'fresh': fresh,
+    })(request)
+
+
+def courses_offered(request, category_id):
+    category = Category.objects.get(id=category_id)
+
+    return standard_view('landing/courses-offered.html', {
+        'category': category,
     })(request)
 
 

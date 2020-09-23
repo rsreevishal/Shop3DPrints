@@ -6,296 +6,45 @@
 {% endblock %}
 
 {% block landing-body %}
-    <h1 class="text-center pt-3">Technology Courses</h1>
+    <h1 class="text-center pt-3">{{ category.name }} Courses</h1>
     <section class="container py-3">
         <ul class="list-unstyled list-inline " id="sub-cat">
-            <center>
-                <a href="#comp-basics">
-                    <li class="list-inline-item heading text-center">Computer Basics for Kids</p></li>
-                </a>
-                <a href="#prog-lang">
-                    <li class="list-inline-item heading text-center">Programming Languages</p></li>
-                </a>
-                <a href="#web-dev">
-                    <li class="list-inline-item heading text-center">Web Development</p></li>
-                </a>
-                <a href="#cyber-sec">
-                    <li class="list-inline-item heading text-center">Cyber Security</p></li>
-                </a>
-                <a href="#block-chain">
-                    <li class="list-inline-item heading text-center">Blockchain</p></li>
-                </a>
-                <a href="#ai-prog">
-                    <li class="list-inline-item heading text-center">AI Programming</p></li>
-                </a>
-                <a href="#lego-code">
-                    <li class="list-inline-item heading text-center">Lego Coding</p></li>
-                </a>
-                <a href="#vr-ar">
-                    <li class="list-inline-item heading text-center">VR & AR Coding</p></li>
-                </a>
-            </center>
+            <div class="text-center">
+                {% for subcategory in category.subcategory_set.all %}
+                    <a href="#{{ forloop.counter }}">
+                        <li class="list-inline-item heading text-center"><p>{{ subcategory.name }}</p></li>
+                    </a>
+                {% endfor %}
+            </div>
         </ul>
         <div data-spy="scroll" data-target="#sub-cat" data-offset="50">
-            <section class="sub-cat-deck" id="comp-basics">
-                <br>
-                <h3 class="heading pt-5"> Computer Basics for kids </h3>
-                <hr>
-                <div class="card-deck sub-cat-cards justify-content-center py-2">
-
-                    <div class="card mx-auto">
-                        <a href="{% url 'course-details' %}">
-                            <img src="{% static 'images/300.png' %}" class="card-img-top" alt="course-img">
-                            <div class="card-body">
-                                <h5>INTRODUCTION TO PYTHON</h5>
-                                <ul class="list-unstyled text-small">
-                                    <li>Category: <strong>Programming</strong></li>
-                                    <li>Grade: <strong>5-7</strong></li>
-                                    <li>Level: <strong>1</strong></li>
-                                </ul>
+            {% for subcategory in category.subcategory_set.all %}
+                <section class="sub-cat-deck" id="{{ forloop.counter }}">
+                    <br>
+                    <h3 class="heading pt-5">{{ subcategory.name }}</h3>
+                    <hr>
+                    <div class="card-deck sub-cat-cards justify-content-center py-2">
+                        {% for course in subcategory.course_set.all %}
+                            <div class="card mx-auto">
+                                <a href="{% url 'course-details' course.id %}">
+                                    <img src="{% static 'images/300.png' %}" class="card-img-top" alt="course-img">
+                                    <div class="card-body">
+{#                                        <div class="ribbon-container">#}
+{#                                            <div class="ribbon">trending</div>#}
+{#                                        </div>#}
+                                        <h5>{{ course.name.upper }}</h5>
+                                        <ul class="list-unstyled text-small">
+                                            <li>Category: <strong>{{ course.category.category }}</strong></li>
+                                            <li>Grade: <strong>{{ course.get_grade_display }}</strong></li>
+                                            <li>Level: <strong>{{ course.level }}</strong></li>
+                                        </ul>
+                                    </div>
+                                </a>
                             </div>
-                        </a>
+                        {% endfor %}
                     </div>
-
-                    <div class="card mx-auto">
-                        <a href="{% url 'course-details' %}">
-                            <img src="{% static 'images/300.png' %}" class="card-img-top" alt="course-img">
-                            <div class="card-body">
-                                <div class="ribbon-container">
-                                    <div class="ribbon">trending</div>
-                                </div>
-                                <h5>INTRODUCTION TO PYTHON</h5>
-                                <ul class="list-unstyled text-small">
-                                    <li>Category: <strong>Programming</strong></li>
-                                    <li>Grade: <strong>5-7</strong></li>
-                                    <li>Level: <strong>1</strong></li>
-                                </ul>
-                            </div>
-                        </a>
-                    </div>
-
-
-                    <div class="card mx-auto">
-                        <a href="{% url 'course-details' %}">
-                            <img src="{% static 'images/300.png' %}" class="card-img-top" alt="course-img">
-                            <div class="card-body">
-                                <div class="ribbon-container">
-                                    <div class="ribbon">new</div>
-                                </div>
-                                <h5>INTRODUCTION TO PYTHON</h5>
-                                <ul class="list-unstyled text-small">
-                                    <li>Category: <strong>Programming</strong></li>
-                                    <li>Grade: <strong>5-7</strong></li>
-                                    <li>Level: <strong>1</strong></li>
-                                </ul>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="card mx-auto">
-                        <a href="{% url 'course-details' %}">
-                            <img src="{% static 'images/300.png' %}" class="card-img-top" alt="course-img">
-                            <div class="card-body">
-                                <h5>INTRODUCTION TO PYTHON</h5>
-                                <ul class="list-unstyled text-small">
-                                    <li>Category: <strong>Programming</strong></li>
-                                    <li>Grade: <strong>5-7</strong></li>
-                                    <li>Level: <strong>1</strong></li>
-                                </ul>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="card mx-auto">
-                        <a href="{% url 'course-details' %}">
-                            <img src="{% static 'images/300.png' %}" class="card-img-top" alt="course-img">
-                            <div class="card-body">
-                                <h5>INTRODUCTION TO PYTHON</h5>
-                                <ul class="list-unstyled text-small">
-                                    <li>Category: <strong>Programming</strong></li>
-                                    <li>Grade: <strong>5-7</strong></li>
-                                    <li>Level: <strong>1</strong></li>
-                                </ul>
-                            </div>
-                        </a>
-                    </div>
-
-                </div>
-            </section>
-
-            <section class="sub-cat-deck" id="prog-lang">
-                <br>
-                <h3 class="heading pt-5"> Programming Languages </h3>
-                <hr>
-                <div class="card-deck sub-cat-cards justify-content-center py-2">
-
-                    <div class="card mx-auto">
-                        <a href="{% url 'course-details' %}">
-                            <img src="{% static 'images/300.png' %}" class="card-img-top" alt="course-img">
-                            <div class="card-body">
-                                <h5>INTRODUCTION TO PYTHON</h5>
-                                <ul class="list-unstyled text-small">
-                                    <li>Category: <strong>Programming</strong></li>
-                                    <li>Grade: <strong>5-7</strong></li>
-                                    <li>Level: <strong>1</strong></li>
-                                </ul>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="card mx-auto">
-                        <a href="{% url 'course-details' %}">
-                            <img src="{% static 'images/300.png' %}" class="card-img-top" alt="course-img">
-                            <div class="card-body">
-                                <div class="ribbon-container">
-                                    <div class="ribbon">trending</div>
-                                </div>
-                                <h5>INTRODUCTION TO PYTHON</h5>
-                                <ul class="list-unstyled text-small">
-                                    <li>Category: <strong>Programming</strong></li>
-                                    <li>Grade: <strong>5-7</strong></li>
-                                    <li>Level: <strong>1</strong></li>
-                                </ul>
-                            </div>
-                        </a>
-                    </div>
-
-
-                    <div class="card mx-auto">
-                        <a href="{% url 'course-details' %}">
-                            <img src="{% static 'images/300.png' %}" class="card-img-top" alt="course-img">
-                            <div class="card-body">
-                                <div class="ribbon-container">
-                                    <div class="ribbon">new</div>
-                                </div>
-                                <h5>INTRODUCTION TO PYTHON</h5>
-                                <ul class="list-unstyled text-small">
-                                    <li>Category: <strong>Programming</strong></li>
-                                    <li>Grade: <strong>5-7</strong></li>
-                                    <li>Level: <strong>1</strong></li>
-                                </ul>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="card mx-auto">
-                        <a href="{% url 'course-details' %}">
-                            <img src="{% static 'images/300.png' %}" class="card-img-top" alt="course-img">
-                            <div class="card-body">
-                                <h5>INTRODUCTION TO PYTHON</h5>
-                                <ul class="list-unstyled text-small">
-                                    <li>Category: <strong>Programming</strong></li>
-                                    <li>Grade: <strong>5-7</strong></li>
-                                    <li>Level: <strong>1</strong></li>
-                                </ul>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="card mx-auto">
-                        <a href="{% url 'course-details' %}">
-                            <img src="{% static 'images/300.png' %}" class="card-img-top" alt="course-img">
-                            <div class="card-body">
-                                <h5>INTRODUCTION TO PYTHON</h5>
-                                <ul class="list-unstyled text-small">
-                                    <li>Category: <strong>Programming</strong></li>
-                                    <li>Grade: <strong>5-7</strong></li>
-                                    <li>Level: <strong>1</strong></li>
-                                </ul>
-                            </div>
-                        </a>
-                    </div>
-
-                </div>
-            </section>
-
-            <section class="sub-cat-deck" id="web-dev">
-                <br>
-                <h3 class="heading pt-5">Web Development</h3>
-                <hr>
-                <div class="card-deck sub-cat-cards justify-content-center py-2">
-
-                    <div class="card mx-auto">
-                        <a href="{% url 'course-details' %}">
-                            <img src="{% static 'images/300.png' %}" class="card-img-top" alt="course-img">
-                            <div class="card-body">
-                                <h5>INTRODUCTION TO PYTHON</h5>
-                                <ul class="list-unstyled text-small">
-                                    <li>Category: <strong>Programming</strong></li>
-                                    <li>Grade: <strong>5-7</strong></li>
-                                    <li>Level: <strong>1</strong></li>
-                                </ul>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="card mx-auto">
-                        <a href="course-details.html">
-                            <img src="{% static 'images/300.png' %}" class="card-img-top" alt="course-img">
-                            <div class="card-body">
-                                <div class="ribbon-container">
-                                    <div class="ribbon">trending</div>
-                                </div>
-                                <h5>INTRODUCTION TO PYTHON</h5>
-                                <ul class="list-unstyled text-small">
-                                    <li>Category: <strong>Programming</strong></li>
-                                    <li>Grade: <strong>5-7</strong></li>
-                                    <li>Level: <strong>1</strong></li>
-                                </ul>
-                            </div>
-                        </a>
-                    </div>
-
-
-                    <div class="card mx-auto">
-                        <a href="{% url 'course-details' %}">
-                            <img src="{% static 'images/300.png' %}" class="card-img-top" alt="course-img">
-                            <div class="card-body">
-                                <div class="ribbon-container">
-                                    <div class="ribbon">new</div>
-                                </div>
-                                <h5>INTRODUCTION TO PYTHON</h5>
-                                <ul class="list-unstyled text-small">
-                                    <li>Category: <strong>Programming</strong></li>
-                                    <li>Grade: <strong>5-7</strong></li>
-                                    <li>Level: <strong>1</strong></li>
-                                </ul>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="card mx-auto">
-                        <a href="{% url 'course-details' %}">
-                            <img src="{% static 'images/300.png' %}" class="card-img-top" alt="course-img">
-                            <div class="card-body">
-                                <h5>INTRODUCTION TO PYTHON</h5>
-                                <ul class="list-unstyled text-small">
-                                    <li>Category: <strong>Programming</strong></li>
-                                    <li>Grade: <strong>5-7</strong></li>
-                                    <li>Level: <strong>1</strong></li>
-                                </ul>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="card mx-auto">
-                        <a href="{% url 'course-details' %}">
-                            <img src="{% static 'images/300.png' %}" class="card-img-top" alt="course-img">
-                            <div class="card-body">
-                                <h5>INTRODUCTION TO PYTHON</h5>
-                                <ul class="list-unstyled text-small">
-                                    <li>Category: <strong>Programming</strong></li>
-                                    <li>Grade: <strong>5-7</strong></li>
-                                    <li>Level: <strong>1</strong></li>
-                                </ul>
-                            </div>
-                        </a>
-                    </div>
-
-                </div>
-            </section>
-
-
+                </section>
+            {% endfor %}
         </div>
     </section>
 {% endblock %}
