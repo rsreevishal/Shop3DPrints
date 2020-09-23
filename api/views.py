@@ -76,6 +76,15 @@ def student_course(request, course_id):
     })(request)
 
 
+def student_progress(request):
+    me = AcademyUser.get_for(request.user)
+    enrollments = Enrollment.objects.filter(student=me)
+
+    return standard_view('student/progress.html', {
+        'enrollments': enrollments
+    })(request)
+
+
 def register(request):
     form = RegistrationForm(request.POST)
     print(form.errors)

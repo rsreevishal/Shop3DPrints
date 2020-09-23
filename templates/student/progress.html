@@ -1,104 +1,59 @@
 {% extends 'student/student-base.html' %}
 {% load static %}
+{% load api_extras %}
 
 {% block student-head %}
     <title>CMS Online Academy | Progress</title>
 {% endblock %}
 
 {% block student-body %}
-    <!-- COURSE LIST TABS -->
     <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" id="pills-course1-tab" data-toggle="pill" href="#pills-course1"
-               role="tab" aria-controls="pills-course1" aria-selected="true">Course1</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="pills-course1-tab" data-toggle="pill" href="#pills-course2" role="tab"
-               aria-controls="pills-course2" aria-selected="true">Course2</a>
-        </li>
+        {% for enrollment in enrollments %}
+            <li class="nav-item">
+                <a class="nav-link{% if forloop.first %} active{% endif %}" id="pills-{{ enrollment.course.id }}-tab"
+                   data-toggle="pill" href="#pills-{{ enrollment.course.id }}"
+                   role="tab" aria-controls="pills-{{ enrollment.course.id }}"{% if forloop.first %}
+                   aria-selected="true"{% endif %}>{{ enrollment.course.name }}</a>
+            </li>
+        {% endfor %}
     </ul>
-
-    <!-- COURSE LIST TAB CONTENTS -->
     <div class="tab-content" id="pills-tabContent">
-
-        <!-- COURSE1 TAB CONTENTS -->
-        <div class="tab-pane fade show active" id="pills-course1" role="tabpanel"
-             aria-labelledby="pills-course1-tab">
-            <div class="row">
-
-                <div class="col-lg-6 text-center">
-                    <div class="text-center text-large">
-                        <p>Assignment Tracker</p>
+        {% for enrollment in enrollments %}
+            <div class="tab-pane fade show{% if forloop.first %} active{% endif %}"
+                 id="pills-{{ enrollment.course.id }}"
+                 role="tabpanel"
+                 aria-labelledby="pills-{{ enrollment.course.id }}-tab">
+                <div class="row">
+                    <div class="col-lg-6 text-center">
+                        <div class="text-center text-large">
+                            <p>Assignment Tracker</p>
+                        </div>
+                        <table class="assign-table text-normal mx-auto">
+                            {% for project in enrollment.course.project_set.all %}
+                                <tr>
+                                    <td>{{ project.name }} 1</td>
+                                    {% status project me as status %}
+                                    <td style="color: {% if status == 'complete' %}green{% else %}red{% endif %};">{{ status | title }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
                     </div>
-                    <table class="assign-table text-normal mx-auto">
-                        <tr>
-                            <td>Assignment 1</td>
-                            <td style="color: green;">Completed</td>
-                        </tr>
-                        <tr>
-                            <td>Assignment 1</td>
-                            <td style="color: red;">Incomplete</td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div class="col-lg-6">
-                    <div class="text-center text-large">
-                        <p>Test Tracker</p>
+                    <div class="col-lg-6">
+                        <div class="text-center text-large">
+                            <p>Test Tracker</p>
+                        </div>
+                        <table class="assign-table text-normal mx-auto">
+                            {% for exam in enrollment.course.exam_set.all %}
+                                <tr>
+                                    <td>{{ exam.name }}</td>
+                                    {% status exam me as status %}
+                                    <td style="color: {% if status == 'complete' %}green{% else %}red{% endif %};">{{ status | title }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
                     </div>
-                    <table class="assign-table text-normal mx-auto">
-                        <tr>
-                            <td>Test 1</td>
-                            <td style="color: green;">Completed</td>
-                        </tr>
-                        <tr>
-                            <td>Test 1</td>
-                            <td style="color: red;">Incomplete</td>
-                        </tr>
-                    </table>
                 </div>
             </div>
-        </div>
-
-        <!-- COURSE2 TAB CONTENTS -->
-        <div class="tab-pane fade show" id="pills-course2" role="tabpane2"
-             aria-labelledby="pills-course2-tab">
-            <div class="row">
-
-                <div class="col-lg-6 text-center">
-                    <div class="text-center text-large">
-                        <p>Assignment Tracker</p>
-                    </div>
-                    <table class="assign-table text-normal mx-auto">
-                        <tr>
-                            <td>Assignment 1</td>
-                            <td style="color: green;">Completed</td>
-                        </tr>
-                        <tr>
-                            <td>Assignment 1</td>
-                            <td style="color: red;">Incomplete</td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div class="col-lg-6">
-                    <div class="text-center text-large">
-                        <p>Test Tracker</p>
-                    </div>
-                    <table class="assign-table text-normal mx-auto">
-                        <tr>
-                            <td>Test 1</td>
-                            <td style="color: green;">Completed</td>
-                        </tr>
-                        <tr>
-                            <td>Test 1</td>
-                            <td style="color: red;">Incomplete</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <!-- END COURSE LIST TAB CONTENTS -->
+        {% endfor %}
     </div>
-    <!-- END PROGRESS TAB CONTENTS -->
 {% endblock %}
