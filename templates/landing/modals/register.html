@@ -30,26 +30,26 @@
                             <div class="form-row">
                                 <div class="col-6">
                                     <label for="pfname">Parent's First Name</label>
-                                    <input type="text" id="pfname" class="form-control form-control-sm "
-                                           placeholder="ex) John" required>
+                                    <input type="text" id="pfname" name="parent_first_name"
+                                           class="form-control form-control-sm " placeholder="ex) John" required>
                                 </div>
                                 <div class="col-6">
                                     <label for="plname">Parent's Last Name</label>
-                                    <input type="text" id="plname" class="form-control form-control-sm"
-                                           placeholder="ex) Doe" required>
+                                    <input type="text" id="plname" name="parent_last_name"
+                                           class="form-control form-control-sm" placeholder="ex) Doe" required>
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="col-6">
                                     <label for="sfname">Student's First Name</label>
-                                    <input type="text" id="sfname" class="form-control form-control-sm"
-                                           placeholder="ex John" required>
+                                    <input type="text" id="sfname" name="student_first_name"
+                                           class="form-control form-control-sm" placeholder="ex John" required>
                                 </div>
                                 <div class="col-6">
                                     <label for="slname">Student's Last Name</label>
-                                    <input type="text" id="slname" class="form-control form-control-sm"
-                                           placeholder="ex Doe" required>
+                                    <input type="text" id="slname" name="student_last_name"
+                                           class="form-control form-control-sm" placeholder="ex Doe" required>
                                 </div>
                             </div>
 
@@ -61,20 +61,20 @@
                                 </div>
                                 <div class="col-6">
                                     <label for="grade">Grade</label>
-                                    <select id="grade" class="form-control form-control-sm">
-                                        <option selected>Grade 1</option>
-                                        <option>Grade 2</option>
-                                        <option>Grade 3</option>
-                                        <option>Grade 4</option>
-                                        <option>Grade 5</option>
-                                        <option>Grade 6</option>
-                                        <option>Grade 7</option>
-                                        <option>Grade 8</option>
-                                        <option>Grade 9</option>
-                                        <option>Grade 10</option>
-                                        <option>Grade 11</option>
-                                        <option>Grade 12</option>
-                                        <option>College Student</option>
+                                    <select id="grade" name="grade" class="form-control form-control-sm">
+                                        <option value="1" selected>Grade 1</option>
+                                        <option value="2">Grade 2</option>
+                                        <option value="3">Grade 3</option>
+                                        <option value="4">Grade 4</option>
+                                        <option value="5">Grade 5</option>
+                                        <option value="6">Grade 6</option>
+                                        <option value="7">Grade 7</option>
+                                        <option value="8">Grade 8</option>
+                                        <option value="9">Grade 9</option>
+                                        <option value="10">Grade 10</option>
+                                        <option value="11">Grade 11</option>
+                                        <option value="12">Grade 12</option>
+                                        <option value="13">College Student</option>
                                     </select>
                                 </div>
                             </div>
@@ -83,7 +83,7 @@
                             <div class="form-row">
                                 <div class="col-4">
                                     <label for="cc">Country Code</label>
-                                    <select name="countryCode" id="cc" class="form-control form-control-sm">
+                                    <select name="country" id="cc" class="form-control form-control-sm">
                                         <option data-countryCode="GB" value="44">UK (+44)</option>
                                         <option data-countryCode="US" value="1" selected>USA (+1)</option>
                                         <optgroup label="Other countries">
@@ -319,7 +319,7 @@
                                 </div>
                                 <div class="col-6">
                                     <label for="cn">Contact Number</label>
-                                    <input type="tel" id="cn" class="form-control form-control-sm"
+                                    <input type="tel" id="cn" name="phone_number" class="form-control form-control-sm"
                                            placeholder="9999999999" required>
                                 </div>
                             </div>
@@ -336,7 +336,8 @@
 
                             <div class="form-row">
                                 <div class="col-6">
-                                    <input type="Password" id="Password" name="password" class="form-control form-control-sm"
+                                    <input type="Password" id="Password" name="password"
+                                           class="form-control form-control-sm"
                                            placeholder="Enter Password"
                                            required> <!-- pattern="(?=.*d)(?=.*[a-z])(?=.*[A-Z]).{8,}" -->
                                 </div>

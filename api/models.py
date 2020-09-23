@@ -34,15 +34,15 @@ class AcademyUser(models.Model):
 
 class Student(AcademyUser):
     class Country(models.TextChoices):
-        US = 'US', 'United States'
-        IN = 'IN', 'India'
+        US = 1, 'United States'
+        IN = 98, 'India'
 
     student_first_name = models.CharField(max_length=25)
     student_last_name = models.CharField(max_length=25)
     parent_first_name = models.CharField(max_length=25)
     parent_last_name = models.CharField(max_length=25)
 
-    grade = models.CharField(max_length=1, choices=Grade.choices)
+    grade = models.PositiveSmallIntegerField()
     country = models.CharField(max_length=2, choices=Country.choices)
     phone_number = models.CharField(max_length=50)
 

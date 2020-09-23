@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
 
+from api.forms import RegistrationForm
 from api.models import AcademyUser, Category, Course, Enrollment, Student, Subcategory
 
 
@@ -76,8 +77,16 @@ def student_course(request, course_id):
 
 
 def register(request):
+    form = RegistrationForm(request.POST)
+    print(form.errors)
+    student = form.save(commit=False)
+
     user = User.objects.create_user(username=request.POST['email'], password=request.POST['password'])
-    student = Student.objects.create(django_user=user)
+    student.django_user = user
+
+    student.save()
+    form.save_m2m()
+
     django_login(request, user)
     return HttpResponseRedirect(reverse('student'))
 
