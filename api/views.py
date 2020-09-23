@@ -1,8 +1,10 @@
+from django.contrib.auth import login as django_login, logout as django_logout
+from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
 
-from api.models import AcademyUser, Course, Enrollment
+from api.models import AcademyUser, Course, Enrollment, Student
 
 
 def redirect_view(path_name):
@@ -55,3 +57,15 @@ def student_course(request, course_id):
     return standard_view('student/course.html', {
         'enrollment': enrollment
     })(request)
+
+
+def register(request):
+    user = User.objects.create_user(username=request.POST['email'], password=request.POST['password'])
+    student = Student.objects.create(django_user=user)
+    django_login(request, user)
+    return HttpResponseRedirect(reverse('student'))
+
+
+def logout(request):
+    django_logout(request)
+    return HttpResponseRedirect(reverse('index'))

@@ -14,7 +14,6 @@ class AcademyUser(models.Model):
         abstract = True
 
     django_user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    name = models.CharField(max_length=50)
 
     @classmethod
     def get_for(cls, user: User):
@@ -30,7 +29,7 @@ class AcademyUser(models.Model):
                 pass
 
     def __str__(self):
-        return f'{self.name} ({self.django_user.username})'
+        return f'{self.django_user.username}'
 
 
 class Student(AcademyUser):
@@ -38,14 +37,28 @@ class Student(AcademyUser):
         US = 'US', 'United States'
         IN = 'IN', 'India'
 
+    student_first_name = models.CharField(max_length=25)
+    student_last_name = models.CharField(max_length=25)
+    parent_first_name = models.CharField(max_length=25)
+    parent_last_name = models.CharField(max_length=25)
+
     grade = models.CharField(max_length=1, choices=Grade.choices)
     country = models.CharField(max_length=2, choices=Country.choices)
-    parents_name = models.CharField(max_length=50)
     phone_number = models.CharField(max_length=50)
+
+    @property
+    def name(self):
+        return self.django_user.username
+
+    def __str__(self):
+        return f'{self.student_first_name} {self.student_last_name} ({self.django_user.username})'
 
 
 class Instructor(AcademyUser):
-    pass
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f'{self.name} ({self.django_user.username})'
 
 
 class Course(models.Model):

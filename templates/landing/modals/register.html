@@ -26,7 +26,7 @@
                         <div class="close-btn close d-none d-lg-inline" data-dismiss="modal" aria-label="Close">
                             &times;
                         </div>
-                        <form class="pt-lg-4">
+                        <form class="pt-lg-4" action="{% url 'register' %}" method="post">
                             <div class="form-row">
                                 <div class="col-6">
                                     <label for="pfname">Parent's First Name</label>
@@ -56,7 +56,7 @@
                             <div class="form-row">
                                 <div class="col-6">
                                     <label for="email">Email</label>
-                                    <input type="email" class="form-control form-control-sm" id="email"
+                                    <input type="email" class="form-control form-control-sm" id="email" name="email"
                                            placeholder="example@email.com" required>
                                 </div>
                                 <div class="col-6">
@@ -336,9 +336,9 @@
 
                             <div class="form-row">
                                 <div class="col-6">
-                                    <input type="Password" id="Password" class="form-control form-control-sm"
-                                           placeholder="Enter Password" pattern="(?=.*d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                                           required>
+                                    <input type="Password" id="Password" name="password" class="form-control form-control-sm"
+                                           placeholder="Enter Password"
+                                           required> <!-- pattern="(?=.*d)(?=.*[a-z])(?=.*[A-Z]).{8,}" -->
                                 </div>
                                 <div class="col-6">
                                     <input type="Password" id="Password" class="form-control form-control-sm"
@@ -348,8 +348,7 @@
                             <div class="text-center">
                                 <button type="submit" class="form-btn custom-btn">Register</button>
                             </div>
-
-
+                            {% csrf_token %}
                         </form>
                         <p class="text-small text-right">Already have an account?
                             <button class="form-btn custom-btn" role="button" data-toggle="modal"
