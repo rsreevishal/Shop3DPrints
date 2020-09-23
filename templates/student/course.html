@@ -8,13 +8,13 @@
 
 {% block student-body %}
     <!-- COURSE TITLE-->
-    <div>
-        <h1 class="text-center">
+    <div class="px-3">
+        <h3 class="text-center">
             <a href="{% url 'student-courses' %}">
                 <i class="fas fa-arrow-circle-left" style="float: left;"></i>
             </a>
-            {{ enrollment.course.name }}
-        </h1>
+             {{ enrollment.course.name }}
+        </h3>
     </div>
 
     <!-- TESTS, ASSIGNMENTS, OVERVIEW TABS -->
@@ -84,7 +84,7 @@
         <!-- OVERVIEW TAB CONTENTS -->
         <div class="tab-pane" id="nav-overview" role="tabpanel" aria-labelledby="nav-overview-tab">
 
-            <div class="container mx-3 my-3">
+            <div class="mx-5 my-3">
                 <div class="row">
                     <div class="col-md-4 col-lg-3">
                         <h3 class="h3">{{ enrollment.course.name }}</h3>
@@ -115,7 +115,7 @@
                     </ul>
                 </div>
             </div>
-            <section class="time-line-box py-4 mx-4">
+            <section class="time-line-box py-4 px-3 ml-3">
                 <p class="text-large">Course Overview</p>
                 <div class="swiper-container py-4">
                     <div class="swiper-wrapper">
