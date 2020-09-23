@@ -50,10 +50,11 @@ a, a:hover, a:active{
     background-image: linear-gradient(to right, #033E8C , #0059BF);
     border-radius: 15px 0px 0px 15px;
   }
-  .congrats-con{
+  .congrats-con, .prompt-con{
      background-image: linear-gradient(to right, #033E8C , #0059BF);
     border-radius: 15px 15px 0px 0px;
   }
+
 
   .close,  .close-btn, .close-btn:hover{
     cursor: pointer;
@@ -67,6 +68,12 @@ a, a:hover, a:active{
     opacity: 100%;
     color: #001127;
   }
+  @media (min-width: 992px) and (max-width: 1199.98px) { 
+.navbar-custom .search-bar{
+  width: 150px;
+}
+
+ }
 
   @media (max-width: 991.98px) {
     .reg-con{

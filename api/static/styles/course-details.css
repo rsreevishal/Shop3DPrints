@@ -49,7 +49,7 @@ a, a:hover, a:active{
     background-image: linear-gradient(to right, #033E8C , #0059BF);
     border-radius: 15px 0px 0px 15px;
   }
-  .congrats-con{
+  .congrats-con, .prompt-con{
      background-image: linear-gradient(to right, #033E8C , #0059BF);
     border-radius: 15px 15px 0px 0px;
   }

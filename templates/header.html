@@ -54,6 +54,8 @@
                 </li>
                 <li class="nav-item"><a class="nav-link text-light" href="{% url 'logout' %}">Logout</a></li>
             {% else %}
+                <li class="nav-item"><a class="nav-link text-light " data-toggle="modal" data-target="#login-popup">Login</a>
+                </li>
                 <li class="nav-item"><a class="nav-link text-light " data-toggle="modal" data-target="#register-popup">Register</a>
                 </li>
             {% endif %}
