@@ -81,11 +81,7 @@ WSGI_APPLICATION = 'academy_backend.wsgi.application'
 
 # Use SQLITE for local dev
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    # },
-    'default': {
+    'postgres': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.getenv("POSTGRES_NAME"),
         'USER': os.getenv('POSTGRES_USER'),
@@ -93,7 +89,14 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': os.getenv('POSTGRES_PORT')
     },
+    'debug': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    },
 }
+
+default_database = os.getenv('DJANGO_DATABASE', 'postgres')
+DATABASES['default'] = DATABASES[default_database]
 
 
 # Password validation
