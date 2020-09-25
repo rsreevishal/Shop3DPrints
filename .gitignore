@@ -2,6 +2,7 @@
 *.pyc
 *.env
 __pycache__/
+db.sqlite3
 
 # Distribution / packaging
 .Python
@@ -26,3 +27,6 @@ MANIFEST
 
 # IDE
 .idea/
+
+# Other
+.DS_store
