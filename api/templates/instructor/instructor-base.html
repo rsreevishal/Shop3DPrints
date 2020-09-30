@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/student.css' %}">
+    <style type="text/css">
+        @media(max-width: 400px){
+
+             .side-nav .flex-md-column{
+              height: 36px; 
+              }
+              .side-nav .flex-md-column .nav-link{
+                padding-top: 10px;
+                padding-bottom: 8px;
+                font-size: 10px;
+              }
+              .side-nav-content{
+                margin-left: 0px;
+                margin-top: 50px;
+              }
+        }
+    </style>
+    {% block instructor-head %}
+    {% endblock %}
+
+{% endblock %}
+
+{% block body %}
+    <nav class="side-nav">
+        <div class="nav flex-md-column nav-pills justify-content-around text-medium" role="tablist" aria-orientation="vertical">
+            <a class="nav-link active" href="{% url 'instructor-courses' %}" role="tab" >Courses</a>
+            <a class="nav-link" href="{% url 'instructor-demo' %}" role="tab" >Demo classes</a>
+            <a class="nav-link" href="{% url 'instructor-schedule' %}" role="tab">Schedule</a>
+            <a class="nav-link" href="{% url 'instructor-progress' %}" role="tab">Progress</a>
+            <a class="nav-link mb-md-5" href="{% url 'instructor-profile' %}" role="tab">Profile</a>
+        </div>
+        <div class="tab-content side-nav-content">
+            
+                {% block instructor-body %} {# lol #}
+                {% endblock %}
+        </div>
+    </nav> 
+{% endblock %}

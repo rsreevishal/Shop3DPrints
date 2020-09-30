@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/student.css' %}">
+    {% block student-head %}
+    {% endblock %}
+{% endblock %}
+
+{% block body %}
+    <nav class="side-nav">
+        <div class="nav flex-md-column nav-pills justify-content-around text-medium" role="tablist" aria-orientation="vertical">
+            <a class="nav-link active" href="{% url 'student-courses' %}" role="tab" >Courses</a>
+            <a class="nav-link" href="{% url 'student-schedule' %}" role="tab">Schedule</a>
+            <a class="nav-link" href="{% url 'student-progress' %}" role="tab">Progress</a>
+            <a class="nav-link mb-md-5" href="{% url 'student-profile' %}" role="tab" id="profile-link">Profile</a>
+        </div>
+        <div class="tab-content side-nav-content">
+            
+                {% block student-body %} {# lol #}
+                {% endblock %}
+        </div>
+    </nav>
+{% endblock %}

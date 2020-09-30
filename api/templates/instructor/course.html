@@ -1,0 +1,172 @@
+{% extends 'instructor/instructor-base.html' %}
+{% load static %}
+{% load api_extras %}
+
+{% block instructor-head %}
+    <title>CMS Online Academy | {{ enrollment.course.name }}</title>
+{% endblock %}
+
+{% block instructor-body %}
+    <!-- COURSE TITLE-->
+    <div class="px-3">
+        <h3 class="text-center">
+            <a href="{% url 'student-courses' %}">
+                <i class="fas fa-arrow-circle-left" style="float: left;"></i>
+            </a>
+             {{ enrollment.course.name }}
+        </h3>
+    </div>
+
+    <!-- TESTS, ASSIGNMENTS, OVERVIEW TABS -->
+    <nav>
+        <div class="courses-tabs nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active ml-1" id="nav-tests-tab" data-toggle="tab" href="#nav-tests"
+               role="tab" aria-controls="nav-tests" aria-selected="true">Tests</a>
+            <a class="nav-item nav-link" id="nav-projects-tab" data-toggle="tab" href="#nav-projects"
+               role="tab" aria-controls="nav-projects" aria-selected="false">Assignments</a>
+            <a class="nav-item nav-link" id="nav-overview-tab" data-toggle="tab" href="#nav-overview"
+               role="tab" aria-controls="nav-overview" aria-selected="false">Overview</a>
+        </div>
+    </nav>
+
+    <!-- TEST,ASSIGNMENTS, OVERVIEW TAB CONTENTS -->
+    <div class="tab-content">
+
+        <!-- TEST TAB CONTENTS -->
+        <div class="assignments tab-pane active" id="nav-tests" role="tabpanel"
+             aria-labelledby="nav-tests-tab">
+
+            <div class="card-columns mx-auto px-3">
+
+                {% for exam in enrollment.course.exam_set.all %}
+                    <div class="card my-3  my-3 mx-auto">
+                        <div class="card-body pb-0">
+                            <h5 class="card-title text-large">{{ exam.name }}</h5>
+                            <ul class="list-unstyled text-small">
+                                <li><strong>Session 7</strong></li>
+                                {% status exam me as status %}
+                                <li>Status: <strong
+                                        style="color:{% if status == 'complete' %}green{% else %}red{% endif %}">{{ status | title }}</strong>
+                                </li>
+                                <li>Score: <strong>{{ exam | grade:me }}</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                {% endfor %}
+
+            </div>
+            <!-- END TEST TAB CONTENTS -->
+        </div>
+
+        <!-- ASSIGNMENTS TAB CONTENTS -->
+        <div class="assignments tab-pane" id="nav-projects" role="tabpanel" aria-labelledby="nav-projects-tab">
+            <div class="card-columns mx-auto px-3">
+                {% for project in enrollment.course.project_set.all %}
+                    <div class="card my-3 mx-auto">
+                        <div class="card-body pb-0">
+                            <h5 class="card-title text-large">{{ project.name }}</h5>
+                            <ul class="list-unstyled text-small">
+                                <li><strong>Session 7</strong></li>
+                                {% status project me as status %}
+                                <li>Status: <strong
+                                        style="color:{% if status == 'complete' %}green{% else %}red{% endif %}">{{ status | title }}</strong>
+                                </li>
+                                <div class="text-center">
+                                    <button type="button" class="form-btn custom-btn">Button</button>
+                                </div>
+                            </ul>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <!-- END ASSIGNMENT TAB CONTENTS -->
+        </div>
+        <!-- OVERVIEW TAB CONTENTS -->
+        <div class="tab-pane" id="nav-overview" role="tabpanel" aria-labelledby="nav-overview-tab">
+
+            <div class="mx-5 my-3">
+                <div class="row">
+                    <div class="col-md-4 col-lg-3">
+                        <h3 class="h3">{{ enrollment.course.name }}</h3>
+                    </div>
+                    <div class="col-md-5 col-lg-4">
+                        <p class="text-normal">Grade: <strong>{{ enrollment.course.get_grade_display }}</strong>&nbsp&nbsp&nbsp&nbspLevel:
+                            <strong>{{ enrollment.course.level }}</strong></p>
+                    </div>
+                </div>
+                <p class="text-normal">{{ enrollment.course.category.category }}</p>
+                <p class="text-medium mx-2">{{ enrollment.course.description }}</p>
+            </div>
+            <div class="row mx-4">
+                <div class="col-sm-6 col-md-5 highlights text-medium">
+                    <p class="text-large">Highlights</p>
+                    <ul class="list-unstyled " style="line-height: 30px;">
+                        {% for highlight in enrollment.course.highlight_list %}
+                            <li><i class="fas fa-check"></i> {{ highlight }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-sm-6  pl-sm-5 text-medium">
+                    <p class="text-large">Prerequisites</p>
+                    <ul class="list-unstyled " style="line-height: 30px;">
+                        {% for prereq in enrollment.course.prerequisite_list %}
+                            <li><i class="fas fa-hand-point-right fa-sm"></i> {{ prereq }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <section class="time-line-box py-4 px-3 ml-3">
+                <p class="text-large">Course Overview</p>
+                <div class="swiper-container py-4">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <div class="topic-title my-auto "><i class="fas fa-flag-checkered fa-3x"
+                                                                 style="color: #80c904"></i></div>
+                            <div class="topic-overview text-medium"><span></span></div>
+                        </div>
+                        {% for session in enrollment.course.session_list %}
+                            <div class="swiper-slide">
+                                <div class="topic-title my-auto text-large">Session {{ forloop.counter }}</div>
+                                <div class="topic-overview text-medium "><span>{{ session }}</span></div>
+                            </div>
+                        {% endfor %}
+                        <div class="swiper-slide">
+                            <div class="topic-title my-auto"><i class="fas fa-certificate fa-3x"
+                                                                style="color: #ffd400"></i></div>
+                            <div class="topic-overview text-medium"><span></span></div>
+                        </div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </section>
+            <section class="projects py-3 mx-4">
+                <p class="text-large">Projects you will complete</p>
+                <div class="card-columns mx-auto">
+                    {% for project in enrollment.course.project_set.all %}
+                        <div class="card h-100 mx-auto">
+                            <div class="card-body">
+                                <h5>{{ project.name }}</h5>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+            <section class="tests pt-3 mx-4">
+                <p class="text-large">Tests you will take</p>
+                <div class="card-columns mx-auto">
+                    {% for exam in enrollment.course.exam_set.all %}
+                        <div class="card h-100 mx-auto">
+                            <div class="card-body">
+                                <h5>{{ exam.name }}</h5>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <!-- END OVERVIEW TAB CONTENTS -->
+        </div>
+        <!-- END TEST,ASSIGNMENTS, OVERVIEW TAB CONTENTS -->
+    </div>
+    <!-- END ASSIGNMENTS HIDDEN TAB CONTENTS -->
+{% endblock %}

@@ -1,0 +1,49 @@
+<!-- LOGIN -->
+<div class="modal fade" id="login-popup" data-backdrop="static" tabindex="-1" aria-labelledby="staticBackdropLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-reg">
+        <div class="card modal-content ">
+            <div class="row no-gutters">
+                <div class="col-lg-6 reg-con">
+                    <div class="card-body  text-center text-white text-medium">
+                        <div class="close-btn close d-inline d-lg-none" data-dismiss="modal" aria-label="Close">
+                            &times;
+                        </div>
+                        <div class="py-3 px-2">
+                            <h1>Login</h1>
+                            <br>
+                            <p>Good to see you again!</p>
+                            <p>Login to your account to see your progress, attend classes, book courses, receive
+                                personalized recommendations, and more!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 reg-form">
+                    <div class="card-body ">
+                        <div class="close-btn close d-none d-lg-inline" data-dismiss="modal" aria-label="Close">
+                            &times;
+                        </div>
+                        <form class="px-5 pt-lg-4"
+                        ">
+                        <input type="email" class="form-row form-control form-control-sm" id="email"
+                               placeholder="example@email.com" required>
+                        <input type="Password" id="Password" class="form-row form-control form-control-sm"
+                               placeholder="Enter Password" required>
+                        <a href="#forgot-popup" data-toggle="modal" data-target="	#forgot-popup" data-dismiss="modal"
+                           class="text-small" style="font-weight: 600">Forgot Password?</a>
+                        <div class="text-center">
+                            <button type="submit" class="form-btn custom-btn">Login</button>
+                        </div>
+                        </form>
+                        <p class="text-small text-right">New user? Create account
+                            <button class="form-btn custom-btn" role="button" data-toggle="modal"
+                                    data-target="#register-popup" data-dismiss="modal">Register
+                            </button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

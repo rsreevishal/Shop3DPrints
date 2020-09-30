@@ -1,0 +1,179 @@
+{% extends 'landing/landing-base.html' %}
+{% load static %}
+
+{% block head %}
+    <title>CMS Online Academy | Course Details</title>
+    <link rel="stylesheet" href="{% static 'styles/course-details.css' %}">
+{% endblock %}
+
+{% block landing-body %}
+    <section class="your-turn text-white px-2 py-3 ">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-lg-3">
+                    <h3 class="h3">{{ course.name }}</h3>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <p class="text-normal">Grade: <strong>{{ course.get_grade_display }}</strong>&nbsp&nbsp&nbsp&nbspLevel:
+                        <strong>{{ course.level }}</strong></p>
+                </div>
+            </div>
+            <p class="text-normal">{{ course.category.category }}</p>
+            <p class="text-medium">{{ course.description }}</p>
+            <button type="button" class="btn btn-outline-light text-normal"><a href="#enroll-now">Enroll Now</a>
+            </button>
+            <button type="button" class="btn btn-warning text-normal"><a href="book-trial.html">Free Trial</a></button>
+
+        </div>
+    </section>
+
+    <section class="container px-5 px-sm-3 pt-4">
+        <div class="row">
+
+            <div class="col-sm-6 col-md-5 col-lg-3 highlights text-medium">
+                <p class="text-large">Highlights</p>
+                <ul class="list-unstyled " style="line-height: 30px;">
+                    {% for highlight in course.highlight_list %}
+                        <li><i class="fas fa-check"></i> {{ highlight }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="col-sm-6  pl-sm-5 text-medium">
+                <p class="text-large">Prerequisites</p>
+                <ul class="list-unstyled " style="line-height: 30px;">
+                    {% for prereq in course.prerequisite_list %}
+                        <li><i class="fas fa-hand-point-right fa-sm"></i> {{ prereq }}</li>
+                    {% endfor %}
+
+                </ul>
+            </div>
+
+        </div>
+        <section class="time-line-box py-4">
+            <p class="text-large">Course Overview</p>
+            <div class="swiper-container text-center py-4">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <div class="topic-title my-auto "><i class="fas fa-flag-checkered fa-3x"
+                                                             style="color: #80c904"></i></div>
+                        <div class="topic-overview text-medium"><span></span></div>
+                    </div>
+                    {% for session in course.session_list %}
+                        <div class="swiper-slide">
+                            <div class="topic-title my-auto text-large">Session {{ forloop.counter }}</div>
+                            <div class="topic-overview text-medium "><span>{{ session }}</span></div>
+                        </div>
+                    {% endfor %}
+                    <div class="swiper-slide">
+                        <div class="topic-title my-auto"><i class="fas fa-certificate fa-3x" style="color: #ffd400"></i>
+                        </div>
+                        <div class="topic-overview text-medium"><span></span></div>
+                    </div>
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </section>
+        <section class="projects py-3">
+            <p class="text-large">Projects you will complete</p>
+            <div class="card-columns mx-auto">
+                {% for project in course.project_set.all %}
+                    <div class="card h-100 mx-auto">
+                        <div class="card-body">
+                            <h5>{{ project.name }}</h5>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+        <section class="tests pt -3">
+            <p class="text-large">Tests you will take</p>
+            <div class="card-columns mx-auto">
+                {% for exam in course.exam_set.all %}
+                    <div class="card h-100 mx-auto">
+                        <div class="card-body">
+                            <h5>{{ exam.name }}</h5>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </section>
+    <section class="enroll-form container pb-5 px-5 my-4" id="enroll-now">
+        <br><br>
+        <div class="text-center centered">
+            <h1 class="head">Enroll Now</h1>
+            <p class="text-medium">Book a class for your kid!</p>
+        </div>
+        <form class="centered mx-auto">
+            <div class="form-row">
+                <div class="col-12 col-md-4 mx-auto">
+                    <label for="batch">Select Batch</label>
+                    <select id="batch" class="form-control form-control-sm" required>
+                        <option value="" selected disabled>Pick Batch</option>
+                        <option value="mwf">Mon-Wed-Fri</option>
+                        <option value="sat-sun">Sat-Sun</option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-4 mx-auto">
+                    <label for="pick-date">Select a date within the next 15 days</label>
+                    <input id="pick-date" type="date" min="2020-09-13" max="2020-10-13" required>
+                </div>
+                <div class="col-12 col-md-4 mx-auto" onchange="EnableDisableBtop()">
+                    <label for="timing">Select Timings</label>
+                    <select id="timing" class="form-control form-control-sm" required>
+                        <option value="" selected disabled>Pick Timings</option>
+                        <option value="eve">4PM-5PM</option>
+                        <option value="nit">7PM-8PM</option>
+                    </select>
+                </div>
+
+            </div>
+            <div id="btop" class="text-center mx-auto mb-3">
+                <ul class="list-group">
+                    <li class="list-group-item">Session 1: <span class="sub">Sept 20, 2020&nbsp&nbspMonday</span></li>
+                    <li class="list-group-item">Session 1: <span class="sub">Sept 20, 2020&nbsp&nbspMonday</span></li>
+                    <li class="list-group-item">Session 1: <span class="sub">Sept 20, 2020&nbsp&nbspMonday</span></li>
+                    <li class="list-group-item">Session 1: <span class="sub">Sept 20, 2020&nbsp&nbspMonday</span></li>
+                    <li class="list-group-item">Session 1: <span class="sub">Sept 20, 2020&nbsp&nbspMonday</span></li>
+                </ul>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class=" btn text-white custom-btn" >Enroll</button>
+            </div>
+        </form>
+    </section>
+    <!-- PROMPT MODAL -->
+    <div class="modal fade" id="prompt-popup" data-backdrop="static" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-sm modal-reg" role="document">
+            <div class="card modal-content ">
+
+                <div class="row no-gutters congrats-con">
+                    <div class="card-body  text-center text-large text-white">
+                        <div class="py-2 px-2">
+                            <i class="fas fa-laugh-beam fa-2x pb-2" style="color: #ffd400"></i>
+                            <h3>Please login or register to enroll</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row no-gutters">
+                    <div class="card-body  text-center text-small">
+                        <p class="text-small text-right">Already have an account?
+                            <button class="form-btn custom-btn" role="button" data-toggle="modal"
+                                    data-target="#login-popup" data-dismiss="modal">Login
+                            </button>
+                        </p>
+                        <p class="text-small text-right">New User?
+                            <button class="form-btn custom-btn" role="button" data-toggle="modal"
+                                    data-target="#register-popup" data-dismiss="modal">Register
+                            </button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
