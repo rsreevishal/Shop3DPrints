@@ -434,6 +434,21 @@ font-family: 'Raleway', sans-serif;
   text-align: center;
   padding: 8px;
 }
+.schedule-table{
+   border-collapse: collapse;
+  width: 90%;
+  margin-bottom: 30px;
+}
+.schedule-table th, .schedule-table td{
+  text-align: center;
+  width: 5%;
+  height: 30px;
+}
+.schedule-table td{
+  border: 1px solid rgba(0,0,0,0.2);
+  text-align: center;
+  padding: 8px;
+}
 .profile{
   font-size: 16px;
 }

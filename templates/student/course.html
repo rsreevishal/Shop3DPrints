@@ -43,7 +43,6 @@
                         <div class="card-body pb-0">
                             <h5 class="card-title text-large">{{ exam.name }}</h5>
                             <ul class="list-unstyled text-small">
-                                <li><strong>Session 7</strong></li>
                                 {% status exam me as status %}
                                 <li>Status: <strong
                                         style="color:{% if status == 'complete' %}green{% else %}red{% endif %}">{{ status | title }}</strong>
@@ -66,13 +65,12 @@
                         <div class="card-body pb-0">
                             <h5 class="card-title text-large">{{ project.name }}</h5>
                             <ul class="list-unstyled text-small">
-                                <li><strong>Session 7</strong></li>
                                 {% status project me as status %}
                                 <li>Status: <strong
                                         style="color:{% if status == 'complete' %}green{% else %}red{% endif %}">{{ status | title }}</strong>
                                 </li>
                                 <div class="text-center">
-                                    <button type="button" class="form-btn custom-btn">Button</button>
+                                    <button type="button" class="form-btn custom-btn">View</button>
                                 </div>
                             </ul>
                         </div>
