@@ -478,6 +478,11 @@ font-family: 'Raleway', sans-serif;
   font-size: 16px;
   color:#001127;
 }
+.img_ran1{
+  object-fit: cover;
+  width: auto;
+  height: 280px;
+}
 .img_ran{
   object-fit: cover;
   width: 100%;

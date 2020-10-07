@@ -4,6 +4,17 @@
 {% block head %}
     <title>CMS Online Academy | Course Details</title>
     <link rel="stylesheet" href="{% static 'styles/course-details.css' %}">
+    <link href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" rel="Stylesheet"
+        type="text/css" />
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <script language="javascript">
+        $(document).ready(function () {
+            $("#txtdate2").datepicker({
+                minDate: 0
+            });
+        });
+    </script>
 {% endblock %}
 
 {% block landing-body %}
@@ -116,8 +127,8 @@
                     </select>
                 </div>
                 <div class="col-12 col-md-4 mx-auto">
-                    <label for="pick-date">Select a date within the next 15 days</label>
-                    <input id="pick-date" type="date" min="2020-09-13" max="2020-10-13" required>
+                    <label for="txtdate2">Select a date within the next 15 days</label>
+                    <input id="txtdate2" type="text" required>
                 </div>
                 <div class="col-12 col-md-4 mx-auto" onchange="EnableDisableBtop()">
                     <label for="timing">Select Timings</label>
