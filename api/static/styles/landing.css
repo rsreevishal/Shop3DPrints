@@ -281,6 +281,7 @@ font-family: 'Raleway', sans-serif;
 
 .why-us .list-group-item{
   border: none;
+  background-color: transparent;
   } 
   .scrollable::-webkit-scrollbar-track{
    background:#a8a8a8b6;
@@ -289,11 +290,10 @@ font-family: 'Raleway', sans-serif;
   width: 2px;
 }
 .scrollable::-webkit-scrollbar-thumb{
-   background: #001127 !important;
+   background: white !important;
 }
 #why-us .active{ 
     background-color: transparent;
-    color: #001127;
     font-size: 24px;
     white-space: nowrap;
   }
