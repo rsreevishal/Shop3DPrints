@@ -295,6 +295,7 @@ font-family: 'Raleway', sans-serif;
 #why-us .active{ 
     background-color: transparent;
     font-size: 24px;
+    font-weight: 600;
     white-space: nowrap;
   }
 .why-us-con{
