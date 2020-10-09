@@ -1,4 +1,6 @@
-from django.contrib.auth import login as django_login, logout as django_logout
+import json
+
+from django.contrib.auth import authenticate, login as django_login, logout as django_logout
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
@@ -93,6 +95,17 @@ def student_profile(request):
         form.save()
 
     return standard_view('student/profile.html')(request)
+
+
+def login(request):
+    user: User = authenticate(username=request.POST['email'], password=request.POST['password'])
+
+    if user and user.is_authenticated and user.is_active:
+        django_login(request, user)
+        return HttpResponseRedirect(reverse('student'))
+
+    else:
+        return HttpResponse(json.dumps({'success': False}))
 
 
 def register(request):

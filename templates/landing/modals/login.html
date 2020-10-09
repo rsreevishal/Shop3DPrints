@@ -24,16 +24,17 @@
                         <div class="close-btn close d-none d-lg-inline" data-dismiss="modal" aria-label="Close">
                             &times;
                         </div>
-                        <form class="px-5 pt-lg-4">
-                        <input type="email" class="form-row form-control form-control-sm" id="email"
-                               placeholder="example@email.com" required>
-                        <input type="Password" id="Password" class="form-row form-control form-control-sm"
-                               placeholder="Enter Password" required>
-                      <!--   <a href="#forgot-popup" data-toggle="modal" data-target="	#forgot-popup" data-dismiss="modal"
-                           class="text-small" style="font-weight: 600">Forgot Password?</a> -->
-                        <div class="text-center">
-                            <button type="submit" class="form-btn custom-btn">Login</button>
-                        </div>
+                        <form class="px-5 pt-lg-4" action="{% url 'login' %}" method="post">
+                            <input type="email" class="form-row form-control form-control-sm" id="email" name="email"
+                                   placeholder="example@email.com" required>
+                            <input type="Password" id="Password" class="form-row form-control form-control-sm"
+                                   name="password" placeholder="Enter Password" required>
+                            <!--   <a href="#forgot-popup" data-toggle="modal" data-target="	#forgot-popup" data-dismiss="modal"
+                                 class="text-small" style="font-weight: 600">Forgot Password?</a> -->
+                            {% csrf_token %}
+                            <div class="text-center">
+                                <button type="submit" class="form-btn custom-btn">Login</button>
+                            </div>
                         </form>
                         <p class="text-small text-center">New user? Create account
                             <button class="form-btn custom-btn" role="button" data-toggle="modal"

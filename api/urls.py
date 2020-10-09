@@ -16,6 +16,7 @@ urlpatterns = [
     path('student/profile', student_profile, name='student-profile'),
     path('student/progress', student_progress, name='student-progress'),
     path('student/schedule', standard_view('student/schedule.html'), name='student-schedule'),
+    path('api/login', login, name='login'),
     path('api/register', register, name='register'),
     path('api/logout', logout, name='logout'),
     # Template: path('template_name', standard_view('template_name.html'), name='template_name')
