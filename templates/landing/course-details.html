@@ -5,7 +5,7 @@
     <title>CMS Online Academy | Course Details</title>
     <link rel="stylesheet" href="{% static 'styles/course-details.css' %}">
     <link href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" rel="Stylesheet"
-        type="text/css" />
+          type="text/css"/>
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
     <script language="javascript">
@@ -116,44 +116,53 @@
             <h1 class="head">Enroll Now</h1>
             <p class="text-medium">Book a class for your kid!</p>
         </div>
-        <form class="centered mx-auto">
-            <div class="form-row">
-                <div class="col-12 col-md-4 mx-auto">
-                    <label for="batch">Select Batch</label>
-                    <select id="batch" class="form-control form-control-sm" required>
-                        <option value="" selected disabled>Pick Batch</option>
-                        <option value="mwf">Mon-Wed-Fri</option>
-                        <option value="sat-sun">Sat-Sun</option>
-                    </select>
+        {% if me %}
+            <form class="centered mx-auto">
+                <div class="form-row">
+                    <div class="col-12 col-md-4 mx-auto">
+                        <label for="batch">Select Batch</label>
+                        <select id="batch" class="form-control form-control-sm" required>
+                            <option value="" selected disabled>Pick Batch</option>
+                            <option value="mwf">Mon-Wed-Fri</option>
+                            <option value="sat-sun">Sat-Sun</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-4 mx-auto">
+                        <label for="txtdate2">Select a date within the next 15 days</label>
+                        <input id="txtdate2" type="text" required>
+                    </div>
+                    <div class="col-12 col-md-4 mx-auto" onchange="EnableDisableBtop()">
+                        <label for="timing">Select Timings</label>
+                        <select id="timing" class="form-control form-control-sm" required>
+                            <option value="" selected disabled>Pick Timings</option>
+                            <option value="eve">4PM-5PM</option>
+                            <option value="nit">7PM-8PM</option>
+                        </select>
+                    </div>
+
                 </div>
-                <div class="col-12 col-md-4 mx-auto">
-                    <label for="txtdate2">Select a date within the next 15 days</label>
-                    <input id="txtdate2" type="text" required>
-                </div>
-                <div class="col-12 col-md-4 mx-auto" onchange="EnableDisableBtop()">
-                    <label for="timing">Select Timings</label>
-                    <select id="timing" class="form-control form-control-sm" required>
-                        <option value="" selected disabled>Pick Timings</option>
-                        <option value="eve">4PM-5PM</option>
-                        <option value="nit">7PM-8PM</option>
-                    </select>
+                <div id="btop" class="text-center mx-auto mb-3">
+                    <ul class="list-group">
+                        <li class="list-group-item">Session 1: <span class="sub">Sept 20, 2020&nbsp&nbspMonday</span>
+                        </li>
+                        <li class="list-group-item">Session 1: <span class="sub">Sept 20, 2020&nbsp&nbspMonday</span>
+                        </li>
+                        <li class="list-group-item">Session 1: <span class="sub">Sept 20, 2020&nbsp&nbspMonday</span>
+                        </li>
+                        <li class="list-group-item">Session 1: <span class="sub">Sept 20, 2020&nbsp&nbspMonday</span>
+                        </li>
+                        <li class="list-group-item">Session 1: <span class="sub">Sept 20, 2020&nbsp&nbspMonday</span>
+                        </li>
+                    </ul>
                 </div>
 
-            </div>
-            <div id="btop" class="text-center mx-auto mb-3">
-                <ul class="list-group">
-                    <li class="list-group-item">Session 1: <span class="sub">Sept 20, 2020&nbsp&nbspMonday</span></li>
-                    <li class="list-group-item">Session 1: <span class="sub">Sept 20, 2020&nbsp&nbspMonday</span></li>
-                    <li class="list-group-item">Session 1: <span class="sub">Sept 20, 2020&nbsp&nbspMonday</span></li>
-                    <li class="list-group-item">Session 1: <span class="sub">Sept 20, 2020&nbsp&nbspMonday</span></li>
-                    <li class="list-group-item">Session 1: <span class="sub">Sept 20, 2020&nbsp&nbspMonday</span></li>
-                </ul>
-            </div>
-
-            <div class="text-center">
-                <button type="submit" class=" btn text-white custom-btn" >Enroll</button>
-            </div>
-        </form>
+                <div class="text-center">
+                    <button type="submit" class=" btn text-white custom-btn">Enroll</button>
+                </div>
+            </form>
+        {% else %}
+            <p>Please login or register to enroll in a course.</p>
+        {% endif %}
     </section>
     <!-- PROMPT MODAL -->
     <div class="modal fade" id="prompt-popup" data-backdrop="static" tabindex="-1"
