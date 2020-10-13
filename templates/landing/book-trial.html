@@ -3,17 +3,7 @@
 
 {% block head %}
     <title>CMS Online Academy | Book a Free Trial</title>
-    <link href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" rel="Stylesheet"
-        type="text/css" />
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
-    <script type="text/javascript" src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-    <script language="javascript">
-        $(document).ready(function () {
-            $("#txtdate").datepicker({
-                minDate: 0
-            });
-        });
-    </script>
+    
 {% endblock %}
 
 {% block landing-body %}
@@ -331,8 +321,9 @@
             <div class="form-row">
                 <div class="col-12 col-md-4 mx-auto">
                     <div class="mx-auto calendarDate">
-                        <label for="txtdate">Pick a date within the next 10 days</label>
-                        <input id="txtdate" type="text" required>
+                        <label for="txtdate">Pick a date within the next 15 days</label>
+                        <br>
+                        <input class="form-control-sm" id="txtdate" type="text" placeholder="Select Date" required style="border: 1px solid rgba(0,0,0,0.2); width: 100%;">
                     </div>
                 </div>
                 <div class="col-12 col-md-4 mx-auto">
@@ -402,4 +393,15 @@
 	    	$('#book-trial-form').submit();
 		});
       </script>
+      <link href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" rel="Stylesheet"
+        type="text/css" />
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <script language="javascript">
+        $(document).ready(function () {
+            $("#txtdate").datepicker({
+                minDate: 0
+            });
+        });
+    </script>
 {% endblock %}
