@@ -333,19 +333,15 @@
                                         contain at least one number, one uppercase, and one lowercase letter.</p>
                                 </div>
                             </div>
-
                             <div class="form-row">
-                                <div class="col-6">
-                                    <input type="Password" id="Password" name="password"
-                                           class="form-control form-control-sm"
-                                           placeholder="Enter Password"
-                                           required pattern="(?=.*d)(?=.*[a-z])(?=.*[A-Z]).{8,}">
-                                </div>
-                                <div class="col-6">
-                                    <input type="Password" id="Password" class="form-control form-control-sm"
-                                           placeholder="Confirm Password" required>
-                                </div>
+                            <div class="col-6">
+                              <input type="text" id="password1" class="form-control form-control-sm" placeholder="Enter Password" 
+                              required pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" value >
+                              </div>
+                            <div class="col-6">
+                              <input type="text" id="confirm_password1" class="form-control form-control-sm" placeholder="Confirm Password" required>
                             </div>
+                          </div>
                             <div class="text-center">
                                 <button type="submit" class="form-btn custom-btn">Register</button>
                             </div>
@@ -362,3 +358,18 @@
         </div>
     </div>
 </div>
+<script>
+    var password = document.getElementById("password1")
+  , confirm_password = document.getElementById("confirm_password1");
+
+function validatePassword(){
+  if(password.value != confirm_password.value) {
+    confirm_password.setCustomValidity("Passwords Don't Match");
+  } else {
+    confirm_password.setCustomValidity('');
+  }
+}
+
+password.onchange = validatePassword;
+confirm_password.onkeyup = validatePassword;
+</script>
