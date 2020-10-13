@@ -62,7 +62,8 @@
                                 <div class="col-6">
                                     <label for="grade">Grade</label>
                                     <select id="grade" name="grade" class="form-control form-control-sm">
-                                        <option value="1" selected>Grade 1</option>
+                                        <option value="" selected disabled>Select Grade</option>
+                                        <option value="1">Grade 1</option>
                                         <option value="2">Grade 2</option>
                                         <option value="3">Grade 3</option>
                                         <option value="4">Grade 4</option>
@@ -84,8 +85,9 @@
                                 <div class="col-4">
                                     <label for="cc">Country Code</label>
                                     <select name="country" id="cc" class="form-control form-control-sm">
+                                        <option value="" selected disabled>Select Code</option>
                                         <option data-countryCode="GB" value="44">UK (+44)</option>
-                                        <option data-countryCode="US" value="1" selected>USA (+1)</option>
+                                        <option data-countryCode="US" value="1">USA (+1)</option>
                                         <optgroup label="Other countries">
                                             <option data-countryCode="DZ" value="213">Algeria (+213)</option>
                                             <option data-countryCode="AD" value="376">Andorra (+376)</option>
