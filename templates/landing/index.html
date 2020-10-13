@@ -40,7 +40,7 @@
     <section class="container mt-4" >
         <div class="row">
             <div class="col-md-6 order-2 order-md-1">
-                <img src="{% static 'images/collage.png' %}" class="img-thumbnail border-0 p-0 m-0"  style="width: 100%; height: 100%;">
+                <img src="{% static 'images/collage.png' %}"  class=" border-0 p-0 m-0" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
             <div class="col-md-6 my-auto order-1 order-md-2 text-center text-md-right py-4">
                 <h1>CMS ONLINE ACADEMY</h1>
@@ -51,7 +51,8 @@
 					<span class="sub">Get productive.</span>
 				</span>
                 <br>
-                <button type="button" class="btn text-light custom-btn my-3"><a href="{% url 'book-trial' %}" class="text-white">Book a free trial</a>
+                <button type="button" class="btn text-light custom-btn mt-2">
+                	<a href="{% url 'book-trial' %}" class="text-white">Book a free trial</a>
                 </button>
             </div>
         </div>

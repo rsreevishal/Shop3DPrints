@@ -1,13 +1,8 @@
 <!-- NAVBAR -->
 <nav class="navbar sticky-top navbar-expand-lg navbar-dark navbar-custom py-2 justify-content-between">
-<!--     <i class="fas fa-search d-sm-none"></i> -->
     <a class="navbar-brand" href="{% url 'index' %}">
         CMS Online Academy
     </a>
-    <form class="form-inline d-none d-sm-inline d-lg-none">
-        <input class="form-control search-bar" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn" type="submit"><i class="fas fa-search"></i></button>
-    </form>
 
     <span class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
           aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,9 +37,7 @@
             <li class="nav-item"><a class="nav-link text-light" href="{% url 'teach-with-us' %}">Teach with us</a></li>
         </ul>
     </div>
-    <form class="form-inline d-none d-lg-inline ">
-        <input class="form-control search-bar" type="search" placeholder="Search course" aria-label="Search">
-    </form>
+    
 
     <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent" style="font-size: 15px;">
         <ul class="nav navbar-nav">
