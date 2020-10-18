@@ -18,6 +18,7 @@ urlpatterns = [
     path('student/schedule', standard_view('student/schedule.html'), name='student-schedule'),
     path('api/login', login, name='login'),
     path('api/register', register, name='register'),
+    path('activate/<uidb64>/<token>', activate, name='activate'),
     path('api/logout', logout, name='logout'),
     # Template: path('template_name', standard_view('template_name.html'), name='template_name')
 ]
