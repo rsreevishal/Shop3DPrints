@@ -3,6 +3,7 @@
 *.env
 __pycache__/
 db.sqlite3
+academy_backend/bin
 
 # Distribution / packaging
 .Python
