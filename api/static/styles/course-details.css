@@ -323,7 +323,7 @@ font-family: 'Raleway', sans-serif;
   float: left;
 }
 .time-line-box .topic-overview span {
-  padding-top: 8px;
+  padding: 8px;
 }
 .time-line-box .topic-overview span:before {
   content: '';
