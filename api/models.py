@@ -85,6 +85,7 @@ class Course(models.Model):
     category = models.ForeignKey(Subcategory, on_delete=models.CASCADE)
     grade = models.CharField(max_length=1, choices=Grade.choices)
     level = models.PositiveSmallIntegerField()
+    price_usd = models.PositiveSmallIntegerField(help_text='Price in dollars')
     description = models.TextField()
     highlights = models.TextField(help_text='Put each item on its own line')
     prerequisites = models.TextField(help_text='Put each item on its own line')
@@ -171,3 +172,13 @@ class ExamGrade(models.Model):
 
     def __str__(self):
         return f'{self.student.name} for {self.exam.name}'
+
+
+class Purchase(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    batch = models.CharField(max_length=16)
+    date = models.DateTimeField()
+    timing = models.CharField(max_length=3)
+    stripe_id = models.CharField(max_length=128)
+    confirmed = models.BooleanField(default=False)

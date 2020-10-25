@@ -1,13 +1,17 @@
 import json
+import stripe
+
 from django.contrib.auth import login as django_login, logout as django_logout, authenticate
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 
 from django.conf import settings
-from api.forms import RegistrationForm
-from api.models import AcademyUser, Category, Course, Enrollment, Student, Subcategory
+from api.models import AcademyUser, Category, Course, Enrollment, Purchase
+from academy_backend import settings
+from api.forms import RegistrationForm, PurchaseForm
 
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
@@ -66,6 +70,7 @@ def course_details(request, course_id):
 
     return standard_view('landing/course-details.html', {
         'course': course,
+        'stripe_pk': settings.STRIPE_PUBLISHABLE_KEY,
     })(request)
 
 
@@ -108,6 +113,7 @@ def student_profile(request):
 
 def login(request):
     user: User = authenticate(username=request.POST['email'], password=request.POST['password'])
+
     if user and user.is_authenticated and user.is_active:
         django_login(request, user)
         return HttpResponseRedirect(reverse('student'))
@@ -120,6 +126,7 @@ def register(request):
     form = RegistrationForm(request.POST)
     print(form.errors)
     student = form.save(commit=False)
+
     user = User.objects.create_user(username=request.POST['email'], password=request.POST['password'])
     user.is_active = False
     student.django_user = user
@@ -180,3 +187,71 @@ def email_query(request):
     to_email = [settings.ORG_EMAIL]
     send_mail(mail_subject, message, email_from, to_email)
     return HttpResponseRedirect(reverse('index'))
+
+
+def checkout(request):
+    form = PurchaseForm(request.POST)
+    purchase = form.save(commit=False)
+
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[
+                {
+                    'price_data': {
+                        'currency': 'usd',
+                        'unit_amount': purchase.course.price_usd * 100,
+                        'product_data': {
+                            'name': purchase.course.name,
+                        },
+                    },
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            success_url=settings.STRIPE_DOMAIN + reverse('index'),  # TODO: Success
+            cancel_url=settings.STRIPE_DOMAIN + reverse('index'),
+            api_key=settings.STRIPE_API_KEY
+        )
+    except Exception as e:
+        raise e
+        return HttpResponse(str(e), status=403)
+
+    purchase.stripe_id = checkout_session.stripe_id
+    purchase.student = AcademyUser.get_for(request.user)
+
+    purchase.save()
+    form.save_m2m()
+
+    return HttpResponse(json.dumps({'id': checkout_session.id}))
+
+
+@csrf_exempt
+def checkout_webhook(request):
+    payload = request.body
+    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+    event = None
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, settings.STRIPE_ENDPOINT_SECRET
+        )
+    except ValueError as e:
+        # Invalid payload
+        return HttpResponse(status=400)
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        return HttpResponse(status=400)
+
+    # Handle the checkout.session.completed event
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+
+        purchase = Purchase.objects.get(stripe_id=session.id)
+        purchase.confirmed = True
+        purchase.save()
+
+        print(session)
+
+    # Passed signature verification
+    return HttpResponse(status=200)
