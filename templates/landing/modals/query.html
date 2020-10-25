@@ -20,10 +20,10 @@
                     <div class="card-body ">
                         <div class="close d-none d-sm-inline" data-dismiss="modal" aria-label="Close">&times;</div>
                         <br>
-                        <form class="mt-0 pt-0 pt-sm-5">
-                            <input type="text" id="pname" class="form-control form-control-sm form-row"
+                        <form class="mt-0 pt-0 pt-sm-5" action="{% url 'query' %}" method="post">
+                            <input type="text" id="pname" name="name" class="form-control form-control-sm form-row"
                                    placeholder="John Doe" required>
-                            <input type="email" class="form-row form-control form-control-sm form-row" id="email"
+                            <input type="email" class="form-row form-control form-control-sm form-row" id="email" name="email"
                                    placeholder="example@email.com" required>
                             <textarea class="form-control form-control-sm form-row" id="query" name="query" rows="5"
                                       cols="33" aria-label="query textarea" placeholder="Enter your query"></textarea>
@@ -31,6 +31,7 @@
                             <div class="text-center">
                                 <button type="submit" class="form-btn custom-btn">Send</button>
                             </div>
+                            {% csrf_token %}
                         </form>
                     </div>
                 </div>

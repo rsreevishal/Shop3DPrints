@@ -20,5 +20,6 @@ urlpatterns = [
     path('api/register', register, name='register'),
     path('activate/<uidb64>/<token>', activate, name='activate'),
     path('api/logout', logout, name='logout'),
+    path('api/query', email_query, name='query'),
     # Template: path('template_name', standard_view('template_name.html'), name='template_name')
 ]

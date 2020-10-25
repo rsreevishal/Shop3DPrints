@@ -15,6 +15,8 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from .tokens import account_activation_token
 from django.core.mail import send_mail
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 
 def redirect_view(path_name):
@@ -158,4 +160,23 @@ def activate(request, uidb64, token):
 
 def logout(request):
     django_logout(request)
+    return HttpResponseRedirect(reverse('index'))
+
+
+def email_query(request):
+    email, name, query = request.POST['email'], request.POST['name'], request.POST['query']
+    try:
+        validate_email(email)
+    except ValidationError:
+        return HttpResponseRedirect(reverse('index'))
+
+    message = render_to_string('query_email.html', {
+        'name': name,
+        'email': email,
+        'message': query,
+    })
+    mail_subject = 'Query from ' + name
+    email_from = settings.EMAIL_HOST_USER
+    to_email = [settings.ORG_EMAIL]
+    send_mail(mail_subject, message, email_from, to_email)
     return HttpResponseRedirect(reverse('index'))
