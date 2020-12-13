@@ -24,7 +24,7 @@
                         <div class="close-btn close d-none d-lg-inline" data-dismiss="modal" aria-label="Close">
                             &times;
                         </div>
-                        <form class="px-5 pt-lg-4" action="{% url 'login' %}" method="post">
+                        <form class="px-5 pt-lg-4" action="{% url 'login' %}" method="post" id="login-form">
                             <input type="email" class="form-row form-control form-control-sm" id="email" name="email"
                                    placeholder="example@email.com" required>
                             <input type="Password" id="Password" class="form-row form-control form-control-sm"
@@ -47,3 +47,30 @@
         </div>
     </div>
 </div>
+
+<!-- AJAX register POST call-->
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function(){
+        $("#login-form").submit(function(e) {
+            console.log("Called this function");
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            $.ajax({
+               type: "POST",
+               url: url,
+               data: form.serialize(),
+               success: function(data)
+               {
+                   if(data.type == "ERROR") {
+                    alert(data.message);
+                   }
+                   if(data.type == "SUCCESS") {
+                    window.location.replace("{% url 'student' %}"); // if user authenticated redirect to student view
+                   }
+               }
+            });
+        });
+    });
+</script>

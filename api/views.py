@@ -3,7 +3,7 @@ import stripe
 
 from django.contrib.auth import login as django_login, logout as django_logout, authenticate
 from django.contrib.auth.models import User
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template import loader
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
@@ -116,37 +116,54 @@ def login(request):
 
     if user and user.is_authenticated and user.is_active:
         django_login(request, user)
-        return HttpResponseRedirect(reverse('student'))
-
+        return JsonResponse({'type': 'SUCCESS', 'message': 'Successfully logged in.'})
     else:
-        return HttpResponse(json.dumps({'success': False}))
+        return JsonResponse({'type': 'ERROR', 'message': 'Incorrect username or password.'})
 
 
 def register(request):
-    form = RegistrationForm(request.POST)
-    print(form.errors)
-    student = form.save(commit=False)
-
-    user = User.objects.create_user(username=request.POST['email'], password=request.POST['password'])
-    user.is_active = False
-    student.django_user = user
-    user.save()
-    student.save()
-    form.save_m2m()
-
-    current_site = get_current_site(request)
-    mail_subject = 'Activate your CMS Online Academy account.'
-    token = account_activation_token.make_token(user)
-    message = render_to_string('acc_active_email.html', {
-        'user': student.student_first_name + ' ' + student.student_last_name,       # Add full name property in students model
-        'domain': current_site.domain,
-        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-        'token': token,
-    })
-    email_from = settings.EMAIL_HOST_USER
-    to_email = [request.POST['email']]
-    send_mail(mail_subject, message, email_from, to_email)
-    return HttpResponse('Please confirm your email address to complete the registration')
+    try:
+        form = RegistrationForm(request.POST)
+        student = form.save(commit=False)
+        user = User.objects.create_user(username=request.POST['email'], password=request.POST['password'])
+        user.is_active = False
+        student.django_user = user
+        user.save()
+        student.save()
+        form.save_m2m()
+    except:
+        response = {
+            "type": "ERROR",
+            "message": "Couldn't able to create a account. Make sure the email is not registered already."
+        }
+        return JsonResponse(response)
+    try:
+        current_site = get_current_site(request)
+        print(f"Current site: {current_site}")
+        mail_subject = 'Activate your CMS Online Academy account.'
+        token = account_activation_token.make_token(user)
+        print(f"Token: {token}")
+        message = render_to_string('acc_active_email.html', {
+            'user': student.student_first_name + ' ' + student.student_last_name,       # Add full name property in students model
+            'domain': current_site.domain,
+            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+            'token': token,
+        })
+        print(f"Message: {message}")
+        email_from = settings.EMAIL_HOST_USER
+        to_email = [request.POST['email']]
+        send_mail(mail_subject, message, email_from, to_email)
+    except:
+        response = {
+            "type": "ERROR",
+            "message": "Couldn't able to send account confirmation mail"
+        }
+        return JsonResponse(response)
+    response = {
+        "type": "ERROR",
+        "message": "Please confirm your email address to complete the registration"
+    }
+    return JsonResponse(response)
 
 
 def activate(request, uidb64, token):

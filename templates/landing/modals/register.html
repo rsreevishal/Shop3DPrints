@@ -26,7 +26,7 @@
                         <div class="close-btn close d-none d-lg-inline" data-dismiss="modal" aria-label="Close">
                             &times;
                         </div>
-                        <form class="pt-lg-4" action="{% url 'register' %}" method="post">
+                        <form class="pt-lg-4" action="{% url 'register' %}" method="post" id="register-form">
                             <div class="form-row">
                                 <div class="col-6">
                                     <label for="pfname">Parent's First Name</label>
@@ -361,17 +361,45 @@
     </div>
 </div>
 <script>
-    var password = document.getElementById("password1")
-  , confirm_password = document.getElementById("confirm_password1");
+    var password = document.getElementById("password1") , confirm_password = document.getElementById("confirm_password1");
 
-function validatePassword(){
-  if(password.value != confirm_password.value) {
-    confirm_password.setCustomValidity("Passwords Don't Match");
-  } else {
-    confirm_password.setCustomValidity('');
-  }
-}
+    function validatePassword(){
+      if(password.value != confirm_password.value) {
+        confirm_password.setCustomValidity("Passwords Don't Match");
+      } else {
+        confirm_password.setCustomValidity('');
+      }
+    }
 
-password.onchange = validatePassword;
-confirm_password.onkeyup = validatePassword;
+    password.onchange = validatePassword;
+    confirm_password.onkeyup = validatePassword;
+</script>
+
+<!-- AJAX register POST call-->
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function(){
+        $("#register-form").submit(function(e) {
+            console.log("Called this function");
+            e.preventDefault();
+
+            var form = $(this);
+            var url = form.attr('action');
+
+            $.ajax({
+                   type: "POST",
+                   url: url,
+                   data: form.serialize(),
+                   success: function(data)
+                   {
+                       if(data.type == "ERROR") {
+                        alert(data.message);
+                       }
+                       if(data.type == "SUCCESS") {
+                        alert(data.message);
+                       }
+                   }
+            });
+        });
+    });
 </script>
