@@ -1,5 +1,4 @@
-from django.urls import path
-
+from django.urls import path, include
 from api.views import *
 
 urlpatterns = [
@@ -24,5 +23,6 @@ urlpatterns = [
     path('api/checkout', checkout, name='checkout'),
     path('api/checkout-webhook', checkout_webhook, name='checkout-webhook'),
     path('api/query', email_query, name='query'),
+    path('api/password_reset/', include('django_rest_passwordreset.urls'), name='password_reset'),
     # Template: path('template_name', standard_view('template_name.html'), name='template_name')
 ]

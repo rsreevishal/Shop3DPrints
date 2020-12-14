@@ -21,6 +21,9 @@ from .tokens import account_activation_token
 from django.core.mail import send_mail
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.core.mail import EmailMultiAlternatives
+from django.dispatch import receiver
+from django_rest_passwordreset.signals import reset_password_token_created, pre_password_reset, post_password_reset
 
 
 def redirect_view(path_name):
@@ -113,7 +116,7 @@ def student_profile(request):
 
 def login(request):
     user: User = authenticate(username=request.POST['email'], password=request.POST['password'])
-
+    print(f"On login checking password: {request.POST['password']}")
     if user and user.is_authenticated and user.is_active:
         django_login(request, user)
         return JsonResponse({'type': 'SUCCESS', 'message': 'Successfully logged in.'})
@@ -125,7 +128,8 @@ def register(request):
     try:
         form = RegistrationForm(request.POST)
         student = form.save(commit=False)
-        user = User.objects.create_user(username=request.POST['email'], password=request.POST['password'])
+        user = User.objects.create_user(username=request.POST['email'], email=request.POST['email'],
+                                        password=request.POST['password'])
         user.is_active = False
         student.django_user = user
         user.save()
@@ -144,7 +148,8 @@ def register(request):
         token = account_activation_token.make_token(user)
         print(f"Token: {token}")
         message = render_to_string('acc_active_email.html', {
-            'user': student.student_first_name + ' ' + student.student_last_name,       # Add full name property in students model
+            'user': student.student_first_name + ' ' + student.student_last_name,
+            # Add full name property in students model
             'domain': current_site.domain,
             'uid': urlsafe_base64_encode(force_bytes(user.pk)),
             'token': token,
@@ -177,6 +182,8 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
         django_login(request, user)
+        print(f"User active status: {user.is_active}")
+        print(f"User has usable password: {user.has_usable_password()}")
         return HttpResponseRedirect(reverse('student'))
     else:
         return HttpResponse('Activation link is invalid!')
@@ -272,3 +279,55 @@ def checkout_webhook(request):
 
     # Passed signature verification
     return HttpResponse(status=200)
+
+
+@receiver(reset_password_token_created)
+def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
+    """
+    Handles password reset tokens
+    When a token is created, an e-mail needs to be sent to the user
+    :param sender: View Class that sent the signal
+    :param instance: View Instance that sent the signal
+    :param reset_password_token: Token Model Object
+    :param args:
+    :param kwargs:
+    :return:
+    """
+    # send an e-mail to the user
+    context = {
+        'current_user': reset_password_token.user,
+        'username': reset_password_token.user.username,
+        'email': reset_password_token.user.email,
+        # 'reset_password_url': "{}?token={}".format(
+        #     instance.request.build_absolute_uri(reverse('password_reset:reset-password-confirm')),
+        #     reset_password_token.key)
+        'reset_password_url': reset_password_token.key
+    }
+
+    # render email text
+    email_html_message = render_to_string('password_reset/user_reset_password.html', context)
+    email_plaintext_message = render_to_string('password_reset/user_reset_password.txt', context)
+
+    msg = EmailMultiAlternatives(
+        # title:
+        "Password Reset for {title}".format(title=settings.PROJECT_TITLE),
+        # message:
+        email_plaintext_message,
+        # from:
+        settings.EMAIL_HOST_USER,
+        # to:
+        [reset_password_token.user.email]
+    )
+    msg.attach_alternative(email_html_message, "text/html")
+    msg.send()
+
+
+@receiver(pre_password_reset)
+def before_password_reset(sender, user, *args, **kwargs):
+    print(f'Check before password reset, user active status: {user.is_active}')
+
+
+@receiver(post_password_reset)
+def after_password_reset(sender, user, *args, **kwargs):
+    print(f'Check after password reset, user active status: {user.is_active}')
+
