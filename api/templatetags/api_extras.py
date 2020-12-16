@@ -33,3 +33,8 @@ def status(assignment: Union[Project, Exam], me: Student):
 
     except ExamGrade.DoesNotExist:
         return 'incomplete'
+
+
+@register.filter
+def index(indexable, i):
+    return indexable[i]

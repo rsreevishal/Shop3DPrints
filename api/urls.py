@@ -9,7 +9,7 @@ urlpatterns = [
     path('course-details/<int:course_id>', course_details, name='course-details'),
     path('teach-with-us', standard_view('landing/teach-with-us.html'), name='teach-with-us'),
     path('book-trial', standard_view('landing/book-trial.html'), name='book-trial'),
-    path('reg-form', standard_view('landing/reg-form.html'), name='reg-form'),
+    path('reg-form', instructor_reg_form, name='reg-form'),
     path('student', redirect_view('student-courses'), name='student'),
     path('student/course/<int:course_id>', student_course, name='student-course'),
     path('student/courses', student_courses, name='student-courses'),
@@ -24,5 +24,6 @@ urlpatterns = [
     path('api/checkout-webhook', checkout_webhook, name='checkout-webhook'),
     path('api/query', email_query, name='query'),
     path('api/password_reset/', include('django_rest_passwordreset.urls'), name='password_reset'),
+    path('api/instructor_register', instructor_register, name="instructor_register")
     # Template: path('template_name', standard_view('template_name.html'), name='template_name')
 ]

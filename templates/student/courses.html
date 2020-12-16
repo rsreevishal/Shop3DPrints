@@ -34,13 +34,15 @@
                                     <li><strong>{{ enrollment.course.category.category }}</strong></li>
                                     <li>Grade: <strong>{{ enrollment.course.get_grade_display }}</strong></li>
                                     <li>Level: <strong>{{ enrollment.course.level }}</strong></li>
-                                </ul>
-                            </div>
-                            <div class="card-footer">
-                                <ul class="list-unstyled text-small mb-0" style="color:#0060CF">
                                     <li>{{ enrollment.get_days_display }}</li>
                                     <li>{{ enrollment.start_time }} - {{ enrollment.end_time }}</li>
                                 </ul>
+                            </div>
+                            <div class="card-footer">
+<!--                                <ul class="list-unstyled text-small mb-0" style="color:#0060CF">-->
+
+<!--                                </ul>-->
+                                <a class="btn btn-primary" role="button" href="{{ enrollment.course.course_link }}">Join class</a>
                             </div>
                         </div>
                     </a>

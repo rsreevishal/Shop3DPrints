@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User, AnonymousUser
-from django.core.validators import validate_comma_separated_integer_list
+from django.core.validators import validate_comma_separated_integer_list, MinValueValidator, MaxValueValidator
 from django.db import models
 
 
@@ -50,11 +50,59 @@ class Student(AcademyUser):
         return f'{self.student_first_name} {self.student_last_name} ({self.django_user.username})'
 
 
+class Speciality(models.Model):
+    speciality_name = models.CharField(max_length=50)
+
+
+class SpecialityLevel(models.Model):
+    level = models.IntegerField()
+    level_name = models.CharField(max_length=25)
+
+
+class DAYS(models.IntegerChoices):
+    SUNDAY = 0
+    MONDAY = 1
+    TUESDAY = 2
+    WEDNESDAY = 3
+    THURSDAY = 4
+    FRIDAY = 5
+    SATURDAY = 6
+
+
+class TimeRange(models.Model):
+    start_hour = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(24)])
+    end_hour = models.PositiveIntegerField(default=24, validators=[MinValueValidator(0), MaxValueValidator(24)])
+    available = models.BooleanField(default=True, null=True, blank=True)
+
+    class Meta:
+        unique_together = ['start_hour', 'end_hour']
+
+
+class AvailableDays(models.Model):
+    day = models.IntegerField(choices=DAYS.choices, unique=True)
+    available = models.BooleanField(default=True, null=True, blank=True)
+
+
 class Instructor(AcademyUser):
     name = models.CharField(max_length=50)
+    education_description = models.CharField(max_length=500, default=None, null=True, blank=True)
+    skill_description = models.CharField(max_length=500, default=None, null=True, blank=True)
+    project_description = models.CharField(max_length=500, default=None, null=True, blank=True)
+    has_laptop = models.BooleanField(default=False, null=True, blank=True)
+    comfortable_teaching = models.BooleanField(default=False, null=True, blank=True)
+    days_available = models.CharField(max_length=13, validators=[validate_comma_separated_integer_list],
+                                      default=None, null=True, blank=True)
+    time_available = models.CharField(max_length=50, validators=[validate_comma_separated_integer_list],
+                                      default=None, null=True, blank=True)
 
     def __str__(self):
         return f'{self.name} ({self.django_user.username})'
+
+
+class InstructorSpeciality(models.Model):
+    instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
+    speciality = models.ForeignKey(Speciality, on_delete=models.CASCADE)
+    speciality_level = models.ForeignKey(SpecialityLevel, on_delete=models.CASCADE)
 
 
 class Category(models.Model):
@@ -91,6 +139,8 @@ class Course(models.Model):
     prerequisites = models.TextField(help_text='Put each item on its own line')
     sessions = models.TextField(help_text='Put each item on its own line')
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
+    thumbnail = models.ImageField(upload_to="thumbnail/", blank=True, default=None, null=True)
+    course_link = models.URLField(help_text="Enter the course link", blank=True, default=None, null=True)
 
     @property
     def highlight_list(self):

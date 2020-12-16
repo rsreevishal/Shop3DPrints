@@ -4,12 +4,14 @@ import stripe
 from django.contrib.auth import login as django_login, logout as django_logout, authenticate
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import render
 from django.template import loader
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
 from django.conf import settings
-from api.models import AcademyUser, Category, Course, Enrollment, Purchase
+from api.models import AcademyUser, Category, Course, Enrollment, Purchase, SpecialityLevel, Speciality, AvailableDays, \
+    TimeRange
 from academy_backend import settings
 from api.forms import RegistrationForm, PurchaseForm
 
@@ -119,9 +121,9 @@ def login(request):
     print(f"On login checking password: {request.POST['password']}")
     if user and user.is_authenticated and user.is_active:
         django_login(request, user)
-        return JsonResponse({'type': 'SUCCESS', 'message': 'Successfully logged in.'})
+        return JsonResponse({'type': 'SUCCESS', 'message': 'Successfully logged in.'}, status=200)
     else:
-        return JsonResponse({'type': 'ERROR', 'message': 'Incorrect username or password.'})
+        return JsonResponse({'type': 'ERROR', 'message': 'Incorrect username or password.'}, status=400)
 
 
 def register(request):
@@ -140,7 +142,7 @@ def register(request):
             "type": "ERROR",
             "message": "Couldn't able to create a account. Make sure the email is not registered already."
         }
-        return JsonResponse(response)
+        return JsonResponse(response, status=400)
     try:
         current_site = get_current_site(request)
         print(f"Current site: {current_site}")
@@ -163,12 +165,30 @@ def register(request):
             "type": "ERROR",
             "message": "Couldn't able to send account confirmation mail"
         }
-        return JsonResponse(response)
+        return JsonResponse(response, status=400)
     response = {
-        "type": "ERROR",
+        "type": "SUCCESS",
         "message": "Please confirm your email address to complete the registration"
     }
-    return JsonResponse(response)
+    return JsonResponse(response, status=200)
+
+
+def instructor_reg_form(request):
+    speciality_level = SpecialityLevel.objects.all()
+    speciality = Speciality.objects.all()
+    available_days = AvailableDays.objects.all().filter(available=True)
+    available_time = TimeRange.objects.all().filter(available=True)
+    return render(request, 'landing/reg-form.html', {
+        "speciality_level": speciality_level,
+        "speciality": speciality,
+        "available_days": available_days,
+        "available_time": available_time
+    })
+
+
+def instructor_register(request):
+    print(request.POST)
+    return HttpResponseRedirect(reverse('index'))
 
 
 def activate(request, uidb64, token):
@@ -209,8 +229,19 @@ def email_query(request):
     mail_subject = 'Query from ' + name
     email_from = settings.EMAIL_HOST_USER
     to_email = [settings.ORG_EMAIL]
-    send_mail(mail_subject, message, email_from, to_email)
-    return HttpResponseRedirect(reverse('index'))
+    try:
+        send_mail(mail_subject, message, email_from, to_email)
+        response = {
+            "type": "SUCCESS",
+            "message": "Your query sent successfully. Please wait for reply."
+        }
+        return JsonResponse(response, status=200)
+    except:
+        response = {
+            "type": "ERROR",
+            "message": "Couldn't send query right now try again later"
+        }
+        return JsonResponse(response, status=400)
 
 
 def checkout(request):
@@ -330,4 +361,3 @@ def before_password_reset(sender, user, *args, **kwargs):
 @receiver(post_password_reset)
 def after_password_reset(sender, user, *args, **kwargs):
     print(f'Check after password reset, user active status: {user.is_active}')
-

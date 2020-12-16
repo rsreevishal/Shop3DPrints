@@ -27,7 +27,11 @@
                         {% for course in subcategory.course_set.all %}
                             <div class="card mx-auto">
                                 <a href="{% url 'course-details' course.id %}">
-                                    <img src="{% static 'images/300.png' %}" class="card-img-top" alt="course-img">
+                                    {% if course.thumbnail %}
+                                        <img src="{{ course.thumbnail.url}}" class="card-img-top" alt="course-img">
+                                    {% else %}
+                                        <img src="{% static 'images/300.png' %}" class="card-img-top" alt="course-img">
+                                    {% endif %}
                                     <div class="card-body">
 {#                                        <div class="ribbon-container">#}
 {#                                            <div class="ribbon">trending</div>#}

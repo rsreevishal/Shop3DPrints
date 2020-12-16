@@ -392,12 +392,12 @@
                    data: form.serialize(),
                    success: function(data)
                    {
-                       if(data.type == "ERROR") {
-                        alert(data.message);
-                       }
                        if(data.type == "SUCCESS") {
                         alert(data.message);
                        }
+                   },
+                   error: function(data) {
+                        alert(data.responseJSON.message);
                    }
             });
         });
