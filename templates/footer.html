@@ -44,3 +44,32 @@
     </div>
 
 </footer>
+<!-- AJAX Query POST call-->
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function(){
+        // Query AJAX request
+        $("#query-form").submit(function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            $.ajax({
+               type: "POST",
+               url: url,
+               data: form.serialize(),
+               success: function(data)
+               {
+                   if(data.type == "SUCCESS") {
+                    alert(data.message);
+                    $("#query-popup").modal('hide');
+                   }
+               },
+               error: function(data) {
+                if(data.type == "ERROR") {
+                    alert(data.responseJSON.message);
+                }
+               }
+            });
+        });
+    });
+</script>

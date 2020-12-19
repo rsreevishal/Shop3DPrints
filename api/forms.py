@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 
-from api.models import Purchase, Student
+from api.models import Purchase, Student, Instructor
 
 
 class RegistrationForm(ModelForm):

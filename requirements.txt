@@ -12,3 +12,10 @@ six==1.15.0
 sqlparse==0.3.1
 stripe==2.55.0
 urllib3==1.25.11
+django-rest-passwordreset
+djangorestframework
+markdown
+django-filter
+pillow==7.2.0
+django-extensions
+pygraphviz

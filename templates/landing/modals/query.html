@@ -20,7 +20,7 @@
                     <div class="card-body ">
                         <div class="close d-none d-sm-inline" data-dismiss="modal" aria-label="Close">&times;</div>
                         <br>
-                        <form class="mt-0 pt-0 pt-sm-5" action="{% url 'query' %}" method="post">
+                        <form class="mt-0 pt-0 pt-sm-5" action="{% url 'query' %}" method="post" id="query-form">
                             <input type="text" id="pname" name="name" class="form-control form-control-sm form-row"
                                    placeholder="John Doe" required>
                             <input type="email" class="form-row form-control form-control-sm form-row" id="email" name="email"

@@ -31,8 +31,13 @@ DEBUG = os.getenv("DEBUG")
 
 ALLOWED_HOSTS = ["qa.cmsitgacademy.com", "cmsitgacademy.com", "167.99.231.208", "142.93.216.129", "127.0.0.1"]
 
+PROJECT_TITLE = "CMS Online Academy"
 # Application definition
-EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+EMAIL_BACKEND = ''
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
@@ -53,6 +58,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api.apps.ApiConfig',
     'six',
+    'django_rest_passwordreset',
+    'rest_framework',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [
@@ -144,6 +152,7 @@ USE_TZ = True
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
+
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'

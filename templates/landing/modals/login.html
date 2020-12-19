@@ -24,13 +24,14 @@
                         <div class="close-btn close d-none d-lg-inline" data-dismiss="modal" aria-label="Close">
                             &times;
                         </div>
-                        <form class="px-5 pt-lg-4" action="{% url 'login' %}" method="post">
+                        <form class="px-5 pt-lg-4" action="{% url 'login' %}" method="post" id="login-form">
                             <input type="email" class="form-row form-control form-control-sm" id="email" name="email"
                                    placeholder="example@email.com" required>
                             <input type="Password" id="Password" class="form-row form-control form-control-sm"
                                    name="password" placeholder="Enter Password" required>
                               <a href="#forgot-popup" data-toggle="modal" data-target="	#forgot-popup" data-dismiss="modal"
                                  class="text-small" style="font-weight: 600">Forgot Password?</a>
+<!--                            <a href="" class="text-small" style="font-weight: 600">Forgot Password?</a>-->
                             {% csrf_token %}
                             <div class="text-center">
                                 <button type="submit" class="form-btn custom-btn">Login</button>
@@ -47,3 +48,159 @@
         </div>
     </div>
 </div>
+
+<!-- Validate token popup -->
+<div class="modal fade" id="validate-reset-popup" data-backdrop="static" tabindex="-1" aria-labelledby="staticBackdropLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md modal-reg">
+
+        <div class="modal-content ">
+
+
+            <div class="py-3 px-5 text-center text-medium">
+                <div class="close" style="float: right;" data-dismiss="modal" aria-label="Close">&times;</div>
+                <br>
+                <br>
+                <h3>Validate reset token</h3>
+                <p>Enter the reset token</p>
+                <p>We have sent you a reset token to change your password. Please check your mail</p>
+
+                <form method="post" class="px-5" id="validate-reset-form">
+                    <input type="test" class="form-row form-control form-control-sm" id="reset-token"
+                           placeholder="5ba13bbcac3c3b8" required name="token">
+                    {% csrf_token %}
+                    <button type="submit" class="form-btn custom-btn">Verify</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Create new password popup -->
+<div class="modal fade" id="new-password-popup" data-backdrop="static" tabindex="-1" aria-labelledby="staticBackdropLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md modal-reg">
+        <div class="modal-content ">
+            <div class="py-3 px-5 text-center text-medium">
+                <div class="close" style="float: right;" data-dismiss="modal" aria-label="Close">&times;</div>
+                <br>
+                <br>
+                <h3>Validate reset token is verified!</h3>
+                <p>You can reset your password now</p>
+                <p>Passwords should be at least 8 characters long and should
+                                        contain at least one number, one uppercase, and one lowercase letter.</p>
+
+                <form method="post" class="px-5" id="new-password-form">
+                    <div class="form-row">
+                            <div class="col-6">
+                              <input type="password" id="reset_password1" name="password" class="form-control form-control-sm" placeholder="Enter Password"
+                              required pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" value >
+                              </div>
+                            <div class="col-6">
+                              <input type="password" id="reset_confirm_password1" class="form-control form-control-sm" placeholder="Confirm Password" required>
+                            </div>
+                    </div>
+                    {% csrf_token %}
+                    <button type="submit" class="form-btn custom-btn">Reset password</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AJAX register POST call-->
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function(){
+        // Login AJAX request
+        $("#login-form").submit(function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            $.ajax({
+               type: "POST",
+               url: url,
+               data: form.serialize(),
+               success: function(data)
+               {
+                   if(data.type == "ERROR") {
+                    alert(data.message);
+                   }
+                   if(data.type == "SUCCESS") {
+                    window.location.replace("{% url 'student' %}"); // if user authenticated redirect to student view
+                   }
+               },
+               error: function(data) {
+                alert(data.responseJSON.message);
+               }
+            });
+        });
+        // Forgot-password reset token AJAX request
+        $("#forgot-password-form").submit(function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = "api/password_reset/reset_password/"
+            $.ajax({
+               type: "POST",
+               url: url,
+               data: form.serialize(),
+               success: function(data)
+               {
+                alert("We have sent to a password reset token for this email. If mail not received, please try again");
+                $("#forgot-popup").modal('hide');
+                $("#validate-reset-popup").modal('show');
+               },
+               error: function(data) {
+                alert("Couldn't send reset token. Please check your email id.");
+               }
+            });
+        });
+        // Validate reset token AJAX request
+        $("#validate-reset-form").submit(function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = "api/password_reset/validate_token/"
+            token = $("#reset-token").val();
+            $.ajax({
+               type: "POST",
+               url: url,
+               data: form.serialize(),
+               success: function(data)
+               {
+                $("#validate-reset-popup").modal('hide');
+                $("#new-password-popup").modal('show');
+               },
+               error: function(data) {
+                alert("Couldn't verify reset token. Please check your token.");
+               }
+            });
+        });
+        // Set new password AJAX request
+        $("#new-password-form").submit(function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = "api/password_reset/confirm/"
+            var data = form.serialize()
+            data = data.concat("&token=", token)
+            isPassValid = $("#reset_password1").val() == $("#reset_confirm_password1").val();
+            if(isPassValid) {
+                $.ajax({
+                   type: "POST",
+                   url: url,
+                   data: data,
+                   success: function(data)
+                   {
+                    $("#new-password-popup").modal('hide');
+                    $("#login-popup").modal('show');
+                    alert("Password changed successfully")
+                   },
+                   error: function(data) {
+                    alert("Couldn't change the password. Please try again.");
+                   }
+                });
+            }
+            else {
+                alert("Please check the passwords are same.");
+            }
+        });
+    });
+</script>

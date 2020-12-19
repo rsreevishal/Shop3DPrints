@@ -6,17 +6,27 @@
     {% block student-head %}
     {% endblock %}
 {% endblock %}
-
 {% block body %}
+    {% url 'student-courses' as courses_url %}
+    {% url 'student-schedule' as schedule_url %}
+    {% url 'student-progress' as progress_url %}
+    {% url 'student-profile' as profile_url %}
     <nav class="side-nav">
-        <div class="nav flex-md-column nav-pills justify-content-around text-medium" role="tablist" aria-orientation="vertical">
-            <a class="nav-link active" href="{% url 'student-courses' %}" role="tab" >Courses</a>
-            <a class="nav-link" href="{% url 'student-schedule' %}" role="tab">Schedule</a>
-            <a class="nav-link" href="{% url 'student-progress' %}" role="tab">Progress</a>
-            <a class="nav-link mb-md-5" href="{% url 'student-profile' %}" role="tab" id="profile-link">Profile</a>
-        </div>
+        <ul class="nav-bar nav flex-md-column nav-pills justify-content-around text-medium " id="nav-tab" role="tablist" aria-orientation="vertical">
+          <li class="nav-item">
+            <a class="nav-link {% if request.path == courses_url %} active {%endif%}" href="{{ courses_url }}" role="tab" id="student-courses">Courses</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.path == schedule_url %} active {%endif%}" href="{{ schedule_url }}" role="tab" id="student-schedule">Schedule</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.path == progress_url %} active {%endif%}" href="{{ progress_url }}" role="tab" id="student-progress">Progress</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-item nav-link mb-md-5 {% if request.path == profile_url %} active {%endif%}"  href="{{ profile_url }}" role="tab" id="profile-link">Profile</a>
+          </li>
+        </ul>
         <div class="tab-content side-nav-content">
-            
                 {% block student-body %} {# lol #}
                 {% endblock %}
         </div>
