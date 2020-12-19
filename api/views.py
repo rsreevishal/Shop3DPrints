@@ -5,13 +5,13 @@ from django.contrib.auth import login as django_login, logout as django_logout, 
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
-from django.template import loader
+from django.template import loader, RequestContext
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
 from django.conf import settings
 from api.models import AcademyUser, Category, Course, Enrollment, Purchase, SpecialityLevel, Speciality, AvailableDays, \
-    TimeRange
+    Instructor, AvailableTimes
 from academy_backend import settings
 from api.forms import RegistrationForm, PurchaseForm
 
@@ -82,7 +82,7 @@ def course_details(request, course_id):
 def student_courses(request):
     me = AcademyUser.get_for(request.user)
     enrollments = Enrollment.objects.filter(student=me)
-
+    print(enrollments)
     return standard_view('student/courses.html', {
         'enrollments': enrollments
     })(request)
@@ -173,11 +173,12 @@ def register(request):
     return JsonResponse(response, status=200)
 
 
+@csrf_exempt
 def instructor_reg_form(request):
     speciality_level = SpecialityLevel.objects.all()
     speciality = Speciality.objects.all()
-    available_days = AvailableDays.objects.all().filter(available=True)
-    available_time = TimeRange.objects.all().filter(available=True)
+    available_days = AvailableDays.objects.all().filter(available=True).order_by('day')
+    available_time = AvailableTimes.objects.all().filter(available=True).order_by('start')
     return render(request, 'landing/reg-form.html', {
         "speciality_level": speciality_level,
         "speciality": speciality,
@@ -186,9 +187,11 @@ def instructor_reg_form(request):
     })
 
 
+@csrf_exempt
 def instructor_register(request):
-    print(request.POST)
-    return HttpResponseRedirect(reverse('index'))
+    data = json.loads(request.body)
+    instructor = Instructor.create(data)
+    return JsonResponse({"message": "received"}, status=200)
 
 
 def activate(request, uidb64, token):

@@ -53,56 +53,100 @@ class Student(AcademyUser):
 class Speciality(models.Model):
     speciality_name = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.speciality_name
+
 
 class SpecialityLevel(models.Model):
     level = models.IntegerField()
     level_name = models.CharField(max_length=25)
 
-
-class DAYS(models.IntegerChoices):
-    SUNDAY = 0
-    MONDAY = 1
-    TUESDAY = 2
-    WEDNESDAY = 3
-    THURSDAY = 4
-    FRIDAY = 5
-    SATURDAY = 6
+    def __str__(self):
+        return self.level_name
 
 
-class TimeRange(models.Model):
-    start_hour = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(24)])
-    end_hour = models.PositiveIntegerField(default=24, validators=[MinValueValidator(0), MaxValueValidator(24)])
-    available = models.BooleanField(default=True, null=True, blank=True)
-
-    class Meta:
-        unique_together = ['start_hour', 'end_hour']
+class Day(models.IntegerChoices):
+    Sunday = 0, 'Sunday'
+    Monday = 1, 'Monday'
+    Tuesday = 2, 'Tuesday'
+    Wednesday = 3, 'Wednesday'
+    Thursday = 4, 'Thursday'
+    Friday = 5, 'Friday'
+    Saturday = 6, 'Saturday'
 
 
 class AvailableDays(models.Model):
-    day = models.IntegerField(choices=DAYS.choices, unique=True)
-    available = models.BooleanField(default=True, null=True, blank=True)
+    day = models.IntegerField(choices=Day.choices, unique=True)
+    available = models.BooleanField()
+
+    def __str__(self):
+        return f"{self.day}-{self.available}"
+
+
+class AvailableTimes(models.Model):
+    start = models.TimeField()
+    end = models.TimeField()
+    available = models.BooleanField()
+
+    class Meta:
+        unique_together = [['start', 'end']]
+
+    def __str__(self):
+        return f"{self.start}-{self.end} = {self.available}"
 
 
 class Instructor(AcademyUser):
     name = models.CharField(max_length=50)
-    education_description = models.CharField(max_length=500, default=None, null=True, blank=True)
-    skill_description = models.CharField(max_length=500, default=None, null=True, blank=True)
-    project_description = models.CharField(max_length=500, default=None, null=True, blank=True)
-    has_laptop = models.BooleanField(default=False, null=True, blank=True)
-    comfortable_teaching = models.BooleanField(default=False, null=True, blank=True)
-    days_available = models.CharField(max_length=13, validators=[validate_comma_separated_integer_list],
-                                      default=None, null=True, blank=True)
-    time_available = models.CharField(max_length=50, validators=[validate_comma_separated_integer_list],
-                                      default=None, null=True, blank=True)
+    education_description = models.CharField(max_length=500)
+    skill_description = models.CharField(max_length=500)
+    project_description = models.CharField(max_length=500)
+    has_laptop = models.BooleanField(default=False)
+    comfortable_teaching = models.BooleanField(default=False)
+    country = models.PositiveSmallIntegerField()
+    phone_number = models.CharField(max_length=50)
+    is_verified = models.BooleanField(default=False)
+
+    @classmethod
+    def create(cls, data):
+        user = User.objects.create_user(username=data['first_name'] + " " + data['last_name'], email=data['email'],
+                                        password=data['password'], first_name=data['first_name'],
+                                        last_name=data['last_name'])
+        user.is_active = False
+        instructor = cls(django_user=user, name=user.username, education_description=data["education_description"],
+                         skill_description=data["skill_description"], project_description=data["project_description"],
+                         has_laptop=data["has_laptop"], comfortable_teaching=data["comfortable_teaching"],
+                         country=data["countryCode"], phone_number=str(data["contact"])
+                         )
+        user.save()
+        instructor.django_user = user
+        instructor.save()
+        # data format: 'speciality': [[1, 2], [2, 2], [3, 2]]
+        for sp in data["speciality"]:
+            sp_pk = sp[0]  # speciality pk
+            spl_pk = sp[1]  # speciality_level pk
+            speciality = Speciality.objects.get(pk=sp_pk)
+            speciality_level = SpecialityLevel.objects.get(pk=spl_pk)
+            instructor_speciality = InstructorSpeciality(instructor=instructor, speciality=speciality,
+                                                         speciality_level=speciality_level)
+            instructor_speciality.save()
+        for ad in data["available_days"]:
+            for at in data["available_times"]:
+                time = AvailableTimes.objects.get(pk=at)
+                instructor_time_slot = InstructorTimeSlot(instructor=instructor, day=ad, start=time.start, end=time.end)
+                instructor_time_slot.save()
+        return instructor
 
     def __str__(self):
-        return f'{self.name} ({self.django_user.username})'
+        return self.name
 
 
 class InstructorSpeciality(models.Model):
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
     speciality = models.ForeignKey(Speciality, on_delete=models.CASCADE)
     speciality_level = models.ForeignKey(SpecialityLevel, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.instructor},{self.speciality_level},{self.speciality} person"
 
 
 class Category(models.Model):
@@ -138,7 +182,6 @@ class Course(models.Model):
     highlights = models.TextField(help_text='Put each item on its own line')
     prerequisites = models.TextField(help_text='Put each item on its own line')
     sessions = models.TextField(help_text='Put each item on its own line')
-    instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
     thumbnail = models.ImageField(upload_to="thumbnail/", blank=True, default=None, null=True)
     course_link = models.URLField(help_text="Enter the course link", blank=True, default=None, null=True)
 
@@ -158,6 +201,34 @@ class Course(models.Model):
         return self.name
 
 
+class CourseTimeSlot(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    day = models.IntegerField(choices=Day.choices)
+    start = models.TimeField()
+    end = models.TimeField()
+
+    def __str__(self):
+        return f"{self.day}, {self.start}, {self.end}"
+
+
+class InstructorTimeSlot(models.Model):
+    instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
+    day = models.IntegerField(choices=Day.choices)
+    start = models.TimeField()
+    end = models.TimeField()
+
+    def __str__(self):
+        return f"{self.day}, {self.start}, {self.end}"
+
+
+class CourseInstructor(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.course.name} - {self.instructor.name}"
+
+
 class Enrollment(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
@@ -172,21 +243,6 @@ class Enrollment(models.Model):
 
     def __str__(self):
         return f'{self.student.name} in {self.course.name}'
-
-
-# class Timeslot(models.Model):
-#     class Day(models.TextChoices):
-#         Sunday = 'S', 'Sunday'
-#         Monday = 'M', 'Monday'
-#         Tuesday = 'T', 'Tuesday'
-#         Wednesday = 'W', 'Wednesday'
-#         Thursday = 'H', 'Thursday'
-#         Friday = 'F', 'Friday'
-#         Saturday = 'A', 'Saturday'
-#
-#     day = models.CharField(max_length=1, choices=Day.choices)
-#     start = models.TimeField()
-#     end = models.TimeField()
 
 
 class Project(models.Model):

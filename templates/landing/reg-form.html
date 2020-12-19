@@ -18,9 +18,6 @@
         }
 
     </style>
-    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
-    <script>
-    </script>
 {% endblock %}
 
 {% block landing-body %}
@@ -278,7 +275,23 @@
                 <input type="tel" id="icn" name="contact" class="form-control form-control-sm" placeholder="9999999999"  pattern="[0-9]{10}" required >
             </div>
         </div>
-
+        <div class="form-row mx-5">
+            <div class="col-6">
+                <label for="password1">Password</label>
+                <input type="password" name="password" id="password1" class="form-control form-control-sm " placeholder="Password" required pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" value>
+            </div>
+            <div class="col-6">
+                <label for="password2">Confirm password</label>
+              	<input type="password" name="password" id="password2" class="form-control form-control-sm" placeholder="Confirm Password" required pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" value>
+                <span id='password_message'></span>
+            </div>
+        </div>
+        <div class="form-row mx-5">
+            <div class="col-8">
+                <p class="text-tiny">Passwords should be at least 8 characters long and should
+                    contain at least one number, one uppercase, and one lowercase letter.</p>
+            </div>
+        </div>
         
         <div class="mx-5 px-2 py-2">
             <label for="q1" class="text-medium">Educational Background</label>
@@ -320,11 +333,11 @@
             <label for="lapyes" class="text-medium">Do you have a laptop with a working camera and microphone?</label>
             <br>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="has_laptop" id="lapyes" value=1 required>
+              <input class="form-check-input" type="radio" name="has_laptop" id="lapyes" value="TRUE" required>
               <label class="form-check-label" for="lapyes">Yes</label>
             </div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="has_laptop" id="lapno" value=0 required>
+              <input class="form-check-input" type="radio" name="has_laptop" id="lapno" value="FALSE" required>
               <label class="form-check-label" for="lapno">No</label>
             </div>
         </div>
@@ -332,11 +345,11 @@
             <label for="comfortable_teaching_yes" class="text-medium">Are you comfortable in teaching kids?</label>
             <br>
              <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="comfortable_teaching" id="comfortable_teaching_yes" value=1>
+              <input class="form-check-input" type="radio" name="comfortable_teaching" id="comfortable_teaching_yes" value="TRUE" required>
               <label class="form-check-label" for="comfortable_teaching_yes">Yes</label>
             </div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="comfortable_teaching" id="comfortable_teaching_no" value=0>
+              <input class="form-check-input" type="radio" name="comfortable_teaching" id="comfortable_teaching_no" value="FALSE" required>
               <label class="form-check-label" for="comfortable_teaching_no">No</label>
             </div>
         </div>
@@ -353,22 +366,94 @@
                 </div>
             </div>
         {% endwith %}
-        {% with time_name="12am 1am 2am 3am 4am 5am 6am 7am 8am 9am 10am 11am 12pm 1pm 2pm 3pm 4pm 5pm 6pm 7pm 8pm 9pm 10pm 11pm" %}
+<!--        {% with time_name="12am 1am 2am 3am 4am 5am 6am 7am 8am 9am 10am 11am 12pm 1pm 2pm 3pm 4pm 5pm 6pm 7pm 8pm 9pm 10pm 11pm" %}-->
             <div class="form-group mx-5 px-2 py-4">
                 <label class="text-medium" for="available_times">Select all timings you want to apply for:</label>
                 <div id="available_times">
                     {% for at in available_time %}
                         <div class="form-check form-check-inline check-spacing">
                             <input class="form-check-input" type="checkbox" name="at" id="at_{{at.pk}}"  value={{at.pk}}>
-                            <label for="at_{{at.pk}}" class="text-medium">{{time_name.split|index:at.start_hour}}-{{time_name.split|index:at.end_hour}}</label>
+                            <label for="at_{{at.pk}}" class="text-medium">{{at.start}}-{{at.end}}</label>
                         </div>
                     {% endfor %}
                 </div>
             </div>
-        {% endwith %}
+<!--        {% endwith %}-->
         <div class="text-center">
             <button type="submit" class="btn btn-outline-light text-large" >Submit</button>
         </div>
     </form>
 </section>
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<script>
+     function fixType(val) {
+        if(/^\d+$/.test(val)) {return parseInt(val);}
+        if(val=="TRUE") {return true;}
+        if(val=="FALSE") {return false;}
+        return val;
+     }
+     $(document).ready(function(){
+        // Password validation
+        $('#password1, #password2').on('keyup', function () {
+          if ($('#password1').val() == $('#password2').val()) {
+            $('#password_message').html('Matching').css('color', 'green');
+          } else
+            $('#password_message').html('Not Matching').css('color', 'red');
+        });
+        // Register AJAX request
+        $("#ins-reg-form").submit(function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            var json = $(form).serializeArray();
+            var final_data = {
+                "speciality": [],
+                "available_days": [],
+                "available_times": []
+            };
+            for(obj of json) {
+                var name = obj["name"];
+                var value = fixType(obj["value"]);
+                if(name.startsWith("sp_")) {
+                    var sp_pk = parseInt(name.replace("sp_", ""));
+                    final_data["speciality"].push([sp_pk, value]);
+                } else if (name.startsWith("ad")) {
+                    final_data["available_days"].push(value);
+                } else if (name.startsWith("at")) {
+                    final_data["available_times"].push(value);
+                }
+                else {
+                    final_data[name] = value;
+                }
+            }
+            if(final_data["speciality"].length == 0) {
+                alert("Choose at least one skill.");
+            }
+            else if(final_data["available_days"].length == 0) {
+                alert("Choose at least one available day.");
+            }
+            else if(final_data["available_times"].length == 0) {
+                alert("Choose at least one available time.");
+            } else if($('#password1').val() != $('#password2').val()) {
+                alert("Please check your password.");
+            }
+            else {
+                $.ajax({
+                   type: "post",
+                   url: url,
+                   data: JSON.stringify(final_data),
+                   dataType: 'json',
+                   contentType: 'application/json; charset=utf-8',
+                   success: function(data)
+                   {
+                        alert(data.message);
+                   },
+                   error: function(data) {
+
+                   }
+                });
+            }
+        });
+     });
+</script>
 {% endblock %}
