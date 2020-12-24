@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG")
 
-ALLOWED_HOSTS = ["qa.cmsitgacademy.com", "cmsitgacademy.com", "167.99.231.208", "142.93.216.129", "127.0.0.1"]
+ALLOWED_HOSTS = ["qa.cmsitgacademy.com", "cmsitgacademy.com", "167.99.231.208", "142.93.216.129", "127.0.0.1", "104.236.38.56"]
 
 PROJECT_TITLE = "CMS Online Academy"
 # Application definition
