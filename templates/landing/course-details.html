@@ -1,5 +1,6 @@
 {% extends 'landing/landing-base.html' %}
 {% load static %}
+{% load api_extras %}
 
 {% block head %}
     <title>CMS Online Academy | Course Details</title>
@@ -113,42 +114,29 @@
                 <div class="form-row">
                     <div class="col-12 col-md-4 mx-auto">
                         <label for="batch">Select Batch</label>
-                        <select id="batch" name="batch" class="form-control form-control-sm" required>
-                            <option value="" selected disabled>Pick Batch</option>
-                            <option value="mwf">Mon-Wed-Fri</option>
-                            <option value="sat-sun">Sat-Sun</option>
+                        <select id="batch" name="batch" class="form-control form-control-sm" required onchange="clearDate(this.value)">
+                            <option value="-1" selected>None</option>
+                            <option value="0,1,2">Mon-Tue-Wed</option>
+                            <option value="3,4">Thur-Fri</option>
+                            <option value="5,6">Sat-Sun</option>
                         </select>
                     </div>
                     <div class="col-12 col-md-4 mx-auto">
                         <div class="mx-auto calendarDate">
-                        <label for="txtdate1">Pick a date within the next 10 days</label>
-                        <br>
-                        <input class="form-control-sm" id="txtdate1" name="date" type="text" placeholder="Select Date" required style="border: 1px solid rgba(0,0,0,0.2); width: 100%;">
+                            <label for="date-picker">Pick a date within the next 10 days</label><br/>
+                            <input class="form-control-sm" id="date-picker" name="date" type="text" placeholder="Select Date" required style="border: 1px solid rgba(0,0,0,0.2); width: 100%;" onchange="selectDay(this.value)">
+                        </div>
                     </div>
-                    </div>
-                    <div class="col-12 col-md-4 mx-auto" onchange="EnableDisableBtop()">
-                        <label for="timing">Select Timings</label>
-                        <select id="timing" name="timing" class="form-control form-control-sm" required>
-                            <option value="" selected disabled>Pick Timings</option>
-                            <option value="eve">4PM-5PM</option>
-                            <option value="nit">7PM-8PM</option>
+                    <div class="col-12 col-md-4 mx-auto">
+                        <label for="available_timing">Select Timings</label>
+                        <select id="available_timing" name="time" class="form-control form-control-sm" required>
+                            <option value="null" id="at_null" selected>None</option>
+                            {% for ts in time_slots%}
+                                <option value='{{ts.start_time}},{{ts.end_time}}' class="at_{{ts.date}}" disabled>{{ts.start_time}}-{{ts.end_time}}</option>
+                            {% endfor %}
                         </select>
                     </div>
 
-                </div>
-                <div id="btop" class="text-center mx-auto mb-3">
-                    <ul class="list-group">
-                        <li class="list-group-item">Session 1: <span class="sub">Sept 20, 2020&nbsp&nbspMonday</span>
-                        </li>
-                        <li class="list-group-item">Session 1: <span class="sub">Sept 20, 2020&nbsp&nbspMonday</span>
-                        </li>
-                        <li class="list-group-item">Session 1: <span class="sub">Sept 20, 2020&nbsp&nbspMonday</span>
-                        </li>
-                        <li class="list-group-item">Session 1: <span class="sub">Sept 20, 2020&nbsp&nbspMonday</span>
-                        </li>
-                        <li class="list-group-item">Session 1: <span class="sub">Sept 20, 2020&nbsp&nbspMonday</span>
-                        </li>
-                    </ul>
                 </div>
                 {% csrf_token %}
                 <input type="hidden" name="course" value="{{ course.id }}">
@@ -201,16 +189,53 @@
     <script type="text/javascript" src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
     <script src="https://js.stripe.com/v3/"></script>
     <script type="text/javascript">
-        $("#txtdate1").datepicker({
-            minDate: 0
+        var availDatesWithDay = {
+            {% for item in time_slots %}
+                "{{item.date}}": "{{item.day}}",
+            {% endfor %}
+        };
+        var availDates = Object.keys(availDatesWithDay);
+        $('#date-picker').datepicker({
+            format: 'mm/dd/yyyy',
+            beforeShowDay: function(date){
+                dmy = date.getMonth()+1 + "_" + date.getDate() + "_" + date.getFullYear();
+                if(availDates.indexOf(dmy) != -1){
+                    return [true];
+                }
+                else{
+                    return [false];
+                }
+            }
         });
+        function clearDate(data) {
+            $("#date-picker").val('');
+            var batch = data.split(",");
+            var tmp = [];
+            for(k in availDatesWithDay) {
+                if(batch.indexOf(availDatesWithDay[k]) != -1) {
+                    tmp.push(k);
+                }
+            }
+            availDates = tmp;
+        }
+        function disableAllTimes() {
+            $("#available_timing").val('');
+            for(d of availDates) {
+                $(`.at_${d}`).prop('disabled', 'disabled');
+            }
+        }
+        function selectDay(data) {
+            disableAllTimes();
+            var tmp = data.replaceAll("/", "_");
+            $(`.at_${tmp}`).prop('disabled', false);
+        }
 
         var stripe = Stripe("{{ stripe_pk }}");
-
         $('#enroll-form').on('submit', function (e) {
             e.preventDefault();
-
-            $.post('{% url 'checkout' %}', $(this).serialize(), function(response) {
+            var data = $(this).serialize();
+            console.log(data);
+            $.post('{% url 'checkout' %}', data, function(response) {
                 const session = JSON.parse(response);
                 stripe.redirectToCheckout({sessionId: session.id});
             });

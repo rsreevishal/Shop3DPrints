@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.validators import validate_comma_separated_integer_list, MinValueValidator, MaxValueValidator
 from django.db import models
+from django.urls import reverse
+from django.contrib.auth.models import Group
 
 
 class Grade(models.TextChoices):
@@ -66,13 +68,13 @@ class SpecialityLevel(models.Model):
 
 
 class Day(models.IntegerChoices):
-    Sunday = 0, 'Sunday'
-    Monday = 1, 'Monday'
-    Tuesday = 2, 'Tuesday'
-    Wednesday = 3, 'Wednesday'
-    Thursday = 4, 'Thursday'
-    Friday = 5, 'Friday'
-    Saturday = 6, 'Saturday'
+    Monday = 0, 'Monday'
+    Tuesday = 1, 'Tuesday'
+    Wednesday = 2, 'Wednesday'
+    Thursday = 3, 'Thursday'
+    Friday = 4, 'Friday'
+    Saturday = 5, 'Saturday',
+    Sunday = 6, 'Sunday'
 
 
 class AvailableDays(models.Model):
@@ -108,16 +110,18 @@ class Instructor(AcademyUser):
 
     @classmethod
     def create(cls, data):
-        user = User.objects.create_user(username=data['first_name'] + " " + data['last_name'], email=data['email'],
+        user = User.objects.create_user(username=data['email'], email=data['email'],
                                         password=data['password'], first_name=data['first_name'],
                                         last_name=data['last_name'])
         user.is_active = False
+        user.save()
         instructor = cls(django_user=user, name=user.username, education_description=data["education_description"],
                          skill_description=data["skill_description"], project_description=data["project_description"],
                          has_laptop=data["has_laptop"], comfortable_teaching=data["comfortable_teaching"],
                          country=data["countryCode"], phone_number=str(data["contact"])
                          )
-        user.save()
+        instructor_group = Group.objects.get(name="Instructor")
+        instructor_group.user_set.add(user)
         instructor.django_user = user
         instructor.save()
         # data format: 'speciality': [[1, 2], [2, 2], [3, 2]]
@@ -184,6 +188,7 @@ class Course(models.Model):
     sessions = models.TextField(help_text='Put each item on its own line')
     thumbnail = models.ImageField(upload_to="thumbnail/", blank=True, default=None, null=True)
     course_link = models.URLField(help_text="Enter the course link", blank=True, default=None, null=True)
+    total_days = models.IntegerField()
 
     @property
     def highlight_list(self):
@@ -208,7 +213,7 @@ class CourseTimeSlot(models.Model):
     end = models.TimeField()
 
     def __str__(self):
-        return f"{self.day}, {self.start}, {self.end}"
+        return f"{self.course.name}: {self.start}-{self.end}"
 
 
 class InstructorTimeSlot(models.Model):
@@ -247,6 +252,7 @@ class Enrollment(models.Model):
 
 class Project(models.Model):
     name = models.CharField(max_length=128)
+    description = models.TextField(max_length=512)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -264,6 +270,7 @@ class ProjectSubmission(models.Model):
 
 class Exam(models.Model):
     name = models.CharField(max_length=128)
+    description = models.TextField(max_length=512)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     total_points = models.PositiveSmallIntegerField()
 
@@ -284,7 +291,56 @@ class Purchase(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     batch = models.CharField(max_length=16)
-    date = models.DateTimeField()
-    timing = models.CharField(max_length=3)
+    course_datetime = models.DateTimeField()
     stripe_id = models.CharField(max_length=128)
     confirmed = models.BooleanField(default=False)
+
+
+class Event(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+
+    @property
+    def get_html_url(self):
+        url = reverse('event_edit', args=(self.id,))
+        return f'<a href="{url}"> {self.title} </a>'
+
+    def __str__(self):
+        return self.title
+
+
+class StudentInstructor(models.Model):
+    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
+    instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.enrollment.student.name}-{self.instructor.name}'
+
+
+class CourseMaterial(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
+    description = models.CharField(max_length=500)
+    material_link = models.URLField()
+    uploader = models.ForeignKey(Instructor, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.course.name}-{self.material_link}'
+
+
+class Attendance(models.IntegerChoices):
+    present = 0, 'PRESENT'
+    absent = 1, 'ABSENT'
+    other = 2, 'OTHER'
+
+
+class StudentAttendance(models.Model):
+    student_instructor = models.ForeignKey(StudentInstructor, on_delete=models.CASCADE)
+    datetime = models.DateTimeField(auto_now=True)
+    status = models.IntegerField(choices=Attendance.choices)
+
+    def __str__(self):
+        return f'{self.student.django_user.name}-{self.datetime}-{self.status}'

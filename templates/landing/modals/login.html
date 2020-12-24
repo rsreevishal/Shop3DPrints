@@ -126,7 +126,8 @@
                     alert(data.message);
                    }
                    if(data.type == "SUCCESS") {
-                    window.location.replace("{% url 'student' %}"); // if user authenticated redirect to student view
+                        if(data.user == 1) window.location.replace("{% url 'student' %}");
+                        if(data.user == 2) window.location.replace("{% url 'instructor' %}");
                    }
                },
                error: function(data) {

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
-{% load static %}
 
+{% load static %}
 {% block head %}
     <link rel="stylesheet" type="text/css" href="{% static 'styles/student.css' %}">
     <style type="text/css">
@@ -26,13 +26,16 @@
 {% endblock %}
 
 {% block body %}
+    {% url 'instructor-classes' instructor_id as classes_url %}
+    {% url 'instructor-class-material' instructor_id as class_material_url %}
+    {% url 'instructor-class-assignment' instructor_id as class_assignment_url %}
+    {% url 'instructor-profile-edit' instructor_id as profile_url %}
     <nav class="side-nav">
         <div class="nav flex-md-column nav-pills justify-content-around text-medium" role="tablist" aria-orientation="vertical">
-            <a class="nav-link active" href="{% url 'instructor-courses' %}" role="tab" >Courses</a>
-            <a class="nav-link" href="{% url 'instructor-demo' %}" role="tab" >Demo classes</a>
-            <a class="nav-link" href="{% url 'instructor-schedule' %}" role="tab">Schedule</a>
-            <a class="nav-link" href="{% url 'instructor-progress' %}" role="tab">Progress</a>
-            <a class="nav-link mb-md-5" href="{% url 'instructor-profile' %}" role="tab">Profile</a>
+            <a class="nav-link {% if request.path == classes_url %} active {%endif%}" href="{{ classes_url }}" role="tab" >Classes</a>
+            <a class="nav-link {% if request.path == class_material_url %} active {%endif%}" href="{{ class_material_url }}" role="tab" >Materials</a>
+            <a class="nav-link {% if request.path == class_assignment_url %} active {%endif%}" href="{{ class_assignment_url }}" role="tab">Test/Assignment</a>
+            <a class="nav-link mb-md-5 {% if request.path == profile_url %} active {%endif%}" href="{{ profile_url }}" role="tab">Profile</a>
         </div>
         <div class="tab-content side-nav-content">
             

@@ -444,12 +444,13 @@
                    data: JSON.stringify(final_data),
                    dataType: 'json',
                    contentType: 'application/json; charset=utf-8',
+                   csrfmiddlewaretoken: '{{ csrf_token }}',
                    success: function(data)
                    {
                         alert(data.message);
                    },
                    error: function(data) {
-
+                        alert(data.responseJSON.message);
                    }
                 });
             }

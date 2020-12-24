@@ -8,7 +8,7 @@
 {% endblock %}
 {% block body %}
     {% url 'student-courses' as courses_url %}
-    {% url 'student-schedule' as schedule_url %}
+    {% url 'student-schedule' user_id=request.user.id as schedule_url %}
     {% url 'student-progress' as progress_url %}
     {% url 'student-profile' as profile_url %}
     <nav class="side-nav">

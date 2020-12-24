@@ -25,16 +25,22 @@ def status(assignment: Union[Project, Exam], me: Student):
         data = assignment.examgrade_set
 
     try:
-        data.get(student=me)
-        return 'complete'
-
+        sub = data.get(student=me)
+        return ['complete', sub]
     except ProjectSubmission.DoesNotExist:
-        return 'incomplete'
+        return ['incomplete', None]
 
     except ExamGrade.DoesNotExist:
-        return 'incomplete'
+        return ['incomplete', None]
 
 
 @register.filter
 def index(indexable, i):
     return indexable[i]
+
+
+@register.filter(name='has_group')
+def has_group(user, group_name):
+    return user.groups.filter(name=group_name).exists()
+
+

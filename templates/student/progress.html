@@ -33,7 +33,7 @@
                                 <tr>
                                     <td>{{ project.name }} 1</td>
                                     {% status project me as status %}
-                                    <td style="color: {% if status == 'complete' %}green{% else %}red{% endif %};">{{ status | title }}</td>
+                                    <td style="color: {% if status.0 == 'complete' %}green{% else %}red{% endif %};">{{ status.0 | title }}</td>
                                 </tr>
                             {% endfor %}
                         </table>
@@ -47,7 +47,7 @@
                                 <tr>
                                     <td>{{ exam.name }}</td>
                                     {% status exam me as status %}
-                                    <td style="color: {% if status == 'complete' %}green{% else %}red{% endif %};">{{ status | title }}</td>
+                                    <td style="color: {% if status.0 == 'complete' %}green{% else %}red{% endif %};">{{ status.0 | title }}</td>
                                 </tr>
                             {% endfor %}
                         </table>

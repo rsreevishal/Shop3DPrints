@@ -25,23 +25,24 @@
         <div class="tab-pane active" id="nav-current-course" role="tabpanel"
              aria-labelledby="nav-current-course-tab">
             <div class="card-columns mx-auto">
-                {% for enrollment in enrollments %}
-                    <a href="{% url 'student-course' enrollment.course.id %}">
+                {% for cls in classes %}
+                    <a href="{% url 'instructor-class-schedule' cls.instructor.pk cls.enrollment.student.pk %}">
                         <div class="card my-3 mx-auto ">
                             <div class="card-body pb-0">
-                                <h5 class="card-title text-large">{{ enrollment.course.name }}</h5>
+                                <h5 class="card-title text-large">{{ cls.enrollment.student.name }}</h5>
                                 <ul class="list-unstyled text-small">
-                                    <li><strong>{{ enrollment.course.category.category }}</strong></li>
-                                    <li>Grade: <strong>{{ enrollment.course.get_grade_display }}</strong></li>
-                                    <li>Level: <strong>{{ enrollment.course.level }}</strong></li>
+                                    <li><strong>{{ cls.enrollment.course.name }}</strong></li>
+                                    <li><strong>{{ cls.enrollment.course.category.category }}</strong></li>
+                                    <li>Grade: <strong>{{ cls.enrollment.course.get_grade_display }}</strong></li>
+                                    <li>Level: <strong>{{ cls.enrollment.course.level }}</strong></li>
+                                </ul>
+                                <ul class="list-unstyled text-small mb-0" style="color:#0060CF">
+                                    <li>{{ cls.enrollment.get_days_display }}</li>
+                                    <li>{{ cls.enrollment.start_time }} - {{ cls.enrollment.end_time }}</li>
                                 </ul>
                             </div>
                             <div class="card-footer">
-                                <ul class="list-unstyled text-small mb-0" style="color:#0060CF">
-                                    <li>{{ enrollment.get_days_display }}</li>
-                                    <li>{{ enrollment.start_time }} - {{ enrollment.end_time }}</li>
-                                    <li>Sept 13 - Oct 7</li>
-                                </ul>
+                                <a class="btn btn-primary" role="button" href="{{ cls.enrollment.course.course_link }}">Join class</a>
                             </div>
                         </div>
                     </a>

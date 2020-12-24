@@ -1,0 +1,29 @@
+{% extends 'instructor/instructor-base.html' %}
+{% load static %}
+
+{% block instructor-head %}
+    <title>CMS Online Academy | Schedule</title>
+{% endblock %}
+
+{% block instructor-body %}
+    <div class="container-fluid">
+        <div class="card-columns mx-auto">
+            {% for row in material %}
+                <a href="{{ row.material_link }}">
+                    <div class="card my-3 mx-auto ">
+                        <div class="card-body pb-0">
+                            <h5 class="card-title text-large">{{ row.course.name }}</h5>
+                            <ul class="list-unstyled text-small">
+                                <li><strong>{{ row.name }}</strong></li>
+                                <li><p>{{ row.description }}</p></li>
+                            </ul>
+                        </div>
+                        <div class="card-footer">
+                            <a class="btn btn-primary" role="button" href="{{ row.material_link }}">Open</a>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
