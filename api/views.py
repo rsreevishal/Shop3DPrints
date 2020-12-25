@@ -297,33 +297,58 @@ def checkout(request):
             end_time=datetime.strptime(end_time, '%I:%M %p').time(),
         )
         enrollment.save()
-        try:
-            checkout_session = stripe.checkout.Session.create(
-                payment_method_types=['card'],
-                line_items=[
-                    {
-                        'price_data': {
-                            'currency': 'usd',
-                            'unit_amount': purchase.course.total_price_usd * 100,
-                            'product_data': {
-                                'name': purchase.course.name,
+        week_count = 0
+        day_count = 0
+        while day_count != enrollment.course.total_days:
+            for d in enrollment.days.split(','):
+                day = int(d)
+                next_day = get_next_weekday(day) + timedelta(days=week_count*7)
+                event = Event(
+                    user=enrollment.student.django_user,
+                    title=f"{enrollment.course.name}: {enrollment.start_time} - {enrollment.end_time}",
+                    description=f"{enrollment.course.name}: {enrollment.start_time} - {enrollment.end_time}",
+                    start_time=datetime.combine(next_day, enrollment.start_time),
+                    end_time=datetime.combine(next_day, enrollment.end_time),
+                    enrollment=enrollment,
+                    payment_method=form.cleaned_data["payment_method"],
+                    total_amount=enrollment.course.per_class_price_usd,
+                    amount_paid=0
+                )
+                event.save()
+                day_count += 1
+                if day_count == enrollment.course.total_days:
+                    break
+            week_count += 1
+        if form.cleaned_data["payment_method"] == 0:
+            try:
+                checkout_session = stripe.checkout.Session.create(
+                    payment_method_types=['card'],
+                    line_items=[
+                        {
+                            'price_data': {
+                                'currency': 'usd',
+                                'unit_amount': purchase.course.total_price_usd * 100,
+                                'product_data': {
+                                    'name': purchase.course.name,
+                                },
                             },
+                            'quantity': 1,
                         },
-                        'quantity': 1,
-                    },
-                ],
-                mode='payment',
-                success_url=settings.STRIPE_DOMAIN + reverse('index'),  # TODO: Success
-                cancel_url=settings.STRIPE_DOMAIN + reverse('index'),
-                api_key=settings.STRIPE_API_KEY
-            )
-        except Exception as e:
-            raise e
-            return HttpResponse(str(e), status=403)
+                    ],
+                    mode='payment',
+                    success_url=settings.STRIPE_DOMAIN + reverse('index'),  # TODO: Success
+                    cancel_url=settings.STRIPE_DOMAIN + reverse('index'),
+                    api_key=settings.STRIPE_API_KEY
+                )
+            except Exception as e:
+                raise e
+                return HttpResponse(str(e), status=403)
 
-        purchase.stripe_id = checkout_session.stripe_id
-        purchase.save()
-        return HttpResponse(json.dumps({'id': checkout_session.id}))
+            purchase.stripe_id = checkout_session.stripe_id
+            purchase.save()
+            return HttpResponse(json.dumps({'id': checkout_session.id}))
+        else:
+            return JsonResponse({"type": "SUCCESS", "message": "Successfully enrolled"}, status=200)
     else:
         return HttpResponse("Not valid data", status=403)
 

@@ -136,7 +136,13 @@
                             {% endfor %}
                         </select>
                     </div>
-
+                    <div class="col-12 col-md-4 mx-auto">
+                        <label for="payment_method">Mode of payment</label>
+                        <select id="payment_method" name="payment_method" class="form-control form-control-sm" required>
+                            <option value=0>Full payment</option>
+                            <option value=1>Monthly payment</option>
+                        </select>
+                    </div>
                 </div>
                 {% csrf_token %}
                 <input type="hidden" name="course" value="{{ course.id }}">

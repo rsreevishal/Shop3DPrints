@@ -14,6 +14,7 @@ class PurchaseForm(Form):
     batch = CharField()
     date = CharField()
     time = CharField()
+    payment_method = IntegerField()
 
 
 class EventForm(ModelForm):
