@@ -304,7 +304,7 @@ def checkout(request):
                     {
                         'price_data': {
                             'currency': 'usd',
-                            'unit_amount': purchase.course.price_usd * 100,
+                            'unit_amount': purchase.course.total_price_usd * 100,
                             'product_data': {
                                 'name': purchase.course.name,
                             },
