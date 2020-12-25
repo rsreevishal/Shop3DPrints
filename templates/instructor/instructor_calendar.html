@@ -65,6 +65,32 @@ a {
 {% endblock %}
 
 {% block instructor-body %}
+<!--ADD ATTENDANCE POPUP-->
+<div class="modal fade" id="attendance-popup" data-backdrop="static" tabindex="-1" aria-labelledby="staticBackdropLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md modal-reg">
+        <div class="modal-content ">
+            <div class="py-0 px-0 text-center text-medium">
+                <div class="close" style="float: right;" data-dismiss="modal" aria-label="Close">&times;</div>
+            </div>
+            <div class="text-center px-5 py-2">
+                <h3 class="text-center">Mark Attendance</h3>
+                <form action="{% url 'event_edit_status' instructor_id 0 %}" method="post" id="exam-grade-form">
+                    {% csrf_token %}
+                    <table class="form py-3 px-auto">
+                        <select name="status" id="attendance" class="form-control form-control-sm" required>
+                            <option value=0>Present</option>
+                            <option value=1>Absent</option>
+                            <option value=2>Other</option>
+                        </select>
+                    </table>
+                    <br/>
+                    <input type="submit" class="btn btn-info" value="Update"/>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="tab-pane fade show active" role="tabpanel" >
     <div class="clearfix">
         <a class="btn btn-info left" href="{% url 'instructor-class-schedule' instructor_id student_id %}?{{ prev_month }}"> Previous Month </a>
@@ -72,4 +98,12 @@ a {
     </div>
     {{calendar}}
 </div>
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<script>
+    function markAttendance(id) {
+        $("#attendance-popup").modal('show');
+        var url_mask = "{% url 'event_edit_status' instructor_id 12345 %}".replace(/12345/, id);
+        $('#exam-grade-form').attr('action', url_mask)
+    }
+</script>
 {% endblock %}

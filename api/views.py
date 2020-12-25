@@ -15,7 +15,8 @@ from api.models import AcademyUser, Category, Course, Enrollment, Purchase, Spec
     Instructor, AvailableTimes, Event, CourseTimeSlot, StudentInstructor, CourseMaterial, InstructorSpeciality, Student, \
     Project, Exam, ExamGrade
 from academy_backend import settings
-from api.forms import RegistrationForm, PurchaseForm, EventForm, InstructorForm, ProjectForm, ExamForm, ExamGradeForm
+from api.forms import RegistrationForm, PurchaseForm, EventForm, InstructorForm, ProjectForm, ExamForm, ExamGradeForm, \
+    CourseMaterialForm
 
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
@@ -34,6 +35,7 @@ from django.views import generic
 from django.utils.safestring import mark_safe
 from .utils import Calendar
 from django.contrib.auth.models import Group
+from django.db.models import Sum
 
 
 def redirect_view(path_name):
@@ -140,6 +142,14 @@ def student_profile(request):
         form.save()
 
     return standard_view('student/profile.html')(request)
+
+
+def student_payment_details(request):
+    events = Event.objects.filter(user=request.user).order_by('start_time')
+    total_pay_amount = events.filter(amount_paid=0).filter(status=0).aggregate(Sum('total_amount'))
+    if not total_pay_amount["total_amount__sum"]:
+        total_pay_amount["total_amount__sum"] = 0
+    return render(request, 'student/student-payment.html', {"events": events, "total_pay_amount": total_pay_amount})
 
 
 def login(request):
@@ -474,8 +484,19 @@ def update_event(request, event_id=None):
         event = form.save(commit=False)
         event.user = request.user
         event.save()
-        return HttpResponseRedirect(reverse('student-schedule', kwargs={'user_id': request.user.id}))
+        return HttpResponseRedirect(reverse('student-schedule', args=(request.user.id,)))
     return render(request, 'update_event.html', {'form': form})
+
+
+def update_event_status(request, instructor_id, event_id):
+    event = Event.objects.get(pk=event_id)
+    student = Student.objects.get(django_user=event.user)
+    event.status = int(request.POST.get('status', 2))
+    event.updated_by = Instructor.objects.get(pk=instructor_id)
+    event.updated_at = datetime.now()
+    event.save()
+    return HttpResponseRedirect(reverse('instructor-class-schedule',
+                                        kwargs={'instructor_id': instructor_id, 'student_id': student.pk}))
 
 
 # Instructor views #
@@ -555,9 +576,26 @@ def instructor_classes(request, instructor_id):
     return render(request, 'instructor/classes.html', {"classes": classes, "instructor_id": instructor_id})
 
 
-def instructor_material(request, instructor_id):
+def instructor_material(request, instructor_id, course_material_id=None):
+    # Course material form
+    if course_material_id:
+        course_material_instance = get_object_or_404(CourseMaterial, pk=course_material_id)
+    else:
+        course_material_instance = CourseMaterial()
+    student_instructor = StudentInstructor.objects.filter(instructor=instructor_id)
+    course_ids = []
+    for row in student_instructor:
+        course_ids.append(row.enrollment.course.pk)
+    course_material_form = CourseMaterialForm(course_ids, request.POST or None, instance=course_material_instance)
+    if request.POST and course_material_form.is_valid():
+        course_material = course_material_form.save(commit=False)
+        course_material.uploader = Instructor.objects.get(pk=instructor_id)
+        course_material.save()
+        print(course_material)
+        return HttpResponseRedirect('')
     material = CourseMaterial.objects.filter(uploader=instructor_id)
-    return render(request, 'instructor/material.html', {"material": material, "instructor_id": instructor_id})
+    return render(request, 'instructor/material.html', {"material": material, "instructor_id": instructor_id,
+                                                        "course_material_form": course_material_form})
 
 
 def instructor_student_assignment(request, instructor_id):

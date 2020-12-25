@@ -181,7 +181,8 @@ class Course(models.Model):
     category = models.ForeignKey(Subcategory, on_delete=models.CASCADE)
     grade = models.CharField(max_length=1, choices=Grade.choices)
     level = models.PositiveSmallIntegerField()
-    price_usd = models.PositiveSmallIntegerField(help_text='Price in dollars')
+    total_price_usd = models.PositiveSmallIntegerField(help_text='Price in dollars')
+    per_class_price_usd = models.PositiveSmallIntegerField(help_text='Price in dollars')
     description = models.TextField()
     highlights = models.TextField(help_text='Put each item on its own line')
     prerequisites = models.TextField(help_text='Put each item on its own line')
@@ -296,17 +297,36 @@ class Purchase(models.Model):
     confirmed = models.BooleanField(default=False)
 
 
+class Attendance(models.IntegerChoices):
+    present = 0, 'PRESENT'
+    absent = 1, 'ABSENT'
+    other = 2, 'OTHER'
+
+
+class PaymentMethod(models.IntegerChoices):
+    full_payment = 0
+    per_class_payment = 1
+
+
 class Event(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField()
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
+    status = models.IntegerField(choices=Attendance.choices, null=True, default=None, blank=True)
+    updated_by = models.ForeignKey(Instructor, null=True, default=None, blank=True, on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(null=True, default=None, blank=True)
+    enrollment = models.ForeignKey(Enrollment, null=True, default=None, blank=True, on_delete=models.CASCADE)
+    payment_method = models.IntegerField(choices=PaymentMethod.choices, null=True, default=None, blank=True)
+    total_amount = models.PositiveSmallIntegerField(help_text="Price in usd", null=True, default=None, blank=True)
+    amount_paid = models.PositiveSmallIntegerField(help_text="Price in usd", null=True, default=None, blank=True)
+    paid_at = models.DateTimeField(null=True, default=None, blank=True)
 
     @property
     def get_html_url(self):
         url = reverse('event_edit', args=(self.id,))
-        return f'<a href="{url}"> {self.title} </a>'
+        return f'<p> {self.title} </p>'
 
     def __str__(self):
         return self.title
@@ -323,24 +343,9 @@ class StudentInstructor(models.Model):
 class CourseMaterial(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
-    description = models.CharField(max_length=500)
+    description = models.TextField(max_length=500)
     material_link = models.URLField()
     uploader = models.ForeignKey(Instructor, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.course.name}-{self.material_link}'
-
-
-class Attendance(models.IntegerChoices):
-    present = 0, 'PRESENT'
-    absent = 1, 'ABSENT'
-    other = 2, 'OTHER'
-
-
-class StudentAttendance(models.Model):
-    student_instructor = models.ForeignKey(StudentInstructor, on_delete=models.CASCADE)
-    datetime = models.DateTimeField(auto_now=True)
-    status = models.IntegerField(choices=Attendance.choices)
-
-    def __str__(self):
-        return f'{self.student.django_user.name}-{self.datetime}-{self.status}'

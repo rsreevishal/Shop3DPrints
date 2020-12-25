@@ -11,6 +11,7 @@
     {% url 'student-schedule' user_id=request.user.id as schedule_url %}
     {% url 'student-progress' as progress_url %}
     {% url 'student-profile' as profile_url %}
+    {% url 'student-payment' as payment_url%}
     <nav class="side-nav">
         <ul class="nav-bar nav flex-md-column nav-pills justify-content-around text-medium " id="nav-tab" role="tablist" aria-orientation="vertical">
           <li class="nav-item">
@@ -24,6 +25,9 @@
           </li>
           <li class="nav-item">
               <a class="nav-item nav-link mb-md-5 {% if request.path == profile_url %} active {%endif%}"  href="{{ profile_url }}" role="tab" id="profile-link">Profile</a>
+          </li>
+            <li class="nav-item">
+              <a class="nav-item nav-link mb-md-5 {% if request.path == payment_url %} active {%endif%}"  href="{{ payment_url }}" role="tab" id="payment-link">Payment</a>
           </li>
         </ul>
         <div class="tab-content side-nav-content">

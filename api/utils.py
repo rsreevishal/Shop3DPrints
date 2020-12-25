@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from calendar import HTMLCalendar
-from .models import Event
+from .models import Event, AcademyUser, Instructor, Student
 
 
 class Calendar(HTMLCalendar):
@@ -16,10 +16,14 @@ class Calendar(HTMLCalendar):
         events_per_day = events.filter(start_time__day=day)
         d = ''
         for event in events_per_day:
-            d += f'<li> {event.get_html_url} </li>'
-
-        if day != 0:
-            return f"<td><span class='date'>{day}</span><ul> {d} </ul></td>"
+            event_status = ["list-group-item-success", "list-group-item-danger",
+                            "list-group-item-warning", "list-group-item-primary"]
+            status = event_status[event.status] if event.status else event_status[3]
+            d += f'<button type="button list-group-item-action" class="list-group-item {status}" onclick="markAttendance({event.pk})">{event.title}</button>'
+        if day != 0 and len(d) > 0:
+            return f"<td><span class='date'>{day}</span><div class='list-group'> {d}</div></td>"
+        elif day != 0:
+            return f"<td><span class='date'>{day}</span><ul> {d}</ul></td>"
         return '<td></td>'
 
     # formats a week as a tr

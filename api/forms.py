@@ -1,6 +1,6 @@
 from django.forms import ModelForm, DateInput, Form, CharField, IntegerField, Textarea
 
-from api.models import Purchase, Student, Instructor, Event, Project, Exam, ExamGrade
+from api.models import Purchase, Student, Instructor, Event, Project, Exam, ExamGrade, CourseMaterial, Course
 
 
 class RegistrationForm(ModelForm):
@@ -59,3 +59,13 @@ class ExamGradeForm(ModelForm):
     class Meta:
         model = ExamGrade
         exclude = ['student']
+
+
+class CourseMaterialForm(ModelForm):
+    def __init__(self, filter_course_ids, *args, **kwargs):
+        super(CourseMaterialForm, self).__init__(*args, **kwargs)
+        self.fields['course'].queryset = Course.objects.filter(pk__in=filter_course_ids)
+
+    class Meta:
+        model = CourseMaterial
+        exclude = ['uploader']

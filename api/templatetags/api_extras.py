@@ -44,3 +44,10 @@ def has_group(user, group_name):
     return user.groups.filter(name=group_name).exists()
 
 
+@register.filter
+def attendance_status(_id):
+    status_name = ["Present", "Absent", "Other"]
+    if _id is None:
+        return "-"
+    else:
+        return status_name[_id]

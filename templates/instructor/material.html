@@ -11,9 +11,9 @@
             {% for row in material %}
                 <a href="{{ row.material_link }}">
                     <div class="card my-3 mx-auto ">
-                        <div class="card-body pb-0">
+                        <div class="card-body pb-0 h-100">
                             <h5 class="card-title text-large">{{ row.course.name }}</h5>
-                            <ul class="list-unstyled text-small">
+                            <ul class="list-unstyled text-small" style="white-space:nowrap;">
                                 <li><strong>{{ row.name }}</strong></li>
                                 <li><p>{{ row.description }}</p></li>
                             </ul>
@@ -25,5 +25,14 @@
                 </a>
             {% endfor %}
         </div>
+        <hr/>
+        <h3 class="text-center">Add course material</h3>
+        <form action="{% url 'instructor-class-material' instructor_id %}" method="post" id="course_material_form">
+            {% csrf_token %}
+            <table class="form form-table">
+                {{course_material_form.as_table}}
+            </table>
+            <input type="submit" class="btn btn-primary" value="Add"/>
+        </form>
     </div>
 {% endblock %}

@@ -67,9 +67,9 @@ a {
 {% block student-body %}
 <div class="tab-pane fade show active" role="tabpanel" >
     <div class="clearfix">
-        <a class="btn btn-info left" href="{% url 'student-schedule' user_id=request.GET.get('user_id') %}?{{ prev_month }}"> Previous Month </a>
-        <a class="btn btn-info right" href="{% url 'student-schedule' user_id=request.GET.get('user_id') %}?{{ next_month }}"> Next Month </a>
-        <a class="btn btn-info right" href="{% url 'event_new' %}">New event</a>
+        <a class="btn btn-info left" href="{{ request.path }}?{{ prev_month }}"> Previous Month </a>
+        <a class="btn btn-info right" href="{{ request.path }}?{{ next_month }}"> Next Month </a>
+<!--        <a class="btn btn-info right" href="{% url 'event_new' %}">New event</a>-->
     </div>
     {{calendar}}
 </div>

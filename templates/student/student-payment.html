@@ -1,0 +1,45 @@
+{% extends 'student/student-base.html' %}
+{% load static %}
+{% load api_extras %}
+{% block student-head %}
+    <title>CMS Online Academy | Profile</title>
+{% endblock %}
+
+{% block student-body %}
+    <div class="container-fluid text-center">
+        <div class="tab-pane fade show active" role="tabpanel" >
+        <div class="text-center text-large">
+            <p><u>Monthly payment Tracker</u></p>
+        </div>
+        <table class="table table-bordered table-hover assign-table text-normal mx-auto">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Class date</th>
+                    <th>Course</th>
+                    <th>Fee per class</th>
+                    <th>Attendance</th>
+                    <th>Total amount to pay</th>
+                    <th>Amount paid</th>
+
+                </tr>
+            </thead>
+            {% for event in events %}
+                <tr class="{% if event.amount_paid == 0 and event.status == 0 %} table-success {% endif %}">
+                    <td>{{ event.start_time }}</td>
+                    <td>{{ event.enrollment.course.name }}</td>
+                    <td>${{ event.enrollment.course.per_class_price_usd }}</td>
+                    <td>{{ event.status|attendance_status }}</td>
+                    <td>${{ event.total_amount }}</td>
+                    <td>${{ event.amount_paid }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        <p class="text-large"><strong>Total amount: ${{total_pay_amount.total_amount__sum}}</strong></p>
+        {% if total_pay_amount.total_amount__sum > 0 %}
+            <button class="btn btn-primary" >Pay now</button>
+        {% else %}
+            <button class="btn btn-primary" disabled>Pay now</button>
+        {% endif %}
+    </div>
+    </div>
+{% endblock %}
