@@ -93,8 +93,8 @@ a {
 </div>
 <div class="tab-pane fade show active" role="tabpanel" >
     <div class="clearfix">
-        <a class="btn btn-info left" href="{% url 'instructor-class-schedule' instructor_id student_id %}?{{ prev_month }}"> Previous Month </a>
-        <a class="btn btn-info right" href="{% url 'instructor-class-schedule' instructor_id student_id %}?{{ next_month }}"> Next Month </a>
+        <a class="btn btn-info left" href="{% url 'instructor-class-schedule' instructor_id enrollment_id %}?{{ prev_month }}"> Previous Month </a>
+        <a class="btn btn-info right" href="{% url 'instructor-class-schedule' instructor_id enrollment_id %}?{{ next_month }}"> Next Month </a>
     </div>
     {{calendar}}
 </div>

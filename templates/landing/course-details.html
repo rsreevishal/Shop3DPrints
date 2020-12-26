@@ -81,10 +81,10 @@
         <section class="projects py-3">
             <p class="text-large">Projects you will complete</p>
             <div class="card-columns mx-auto">
-                {% for project in course.project_set.all %}
+                {% for project in course.assignment_list %}
                     <div class="card h-100 mx-auto">
                         <div class="card-body">
-                            <h5>{{ project.name }}</h5>
+                            <h5>{{ project }}</h5>
                         </div>
                     </div>
                 {% endfor %}
@@ -93,10 +93,10 @@
         <section class="tests pt -3">
             <p class="text-large">Tests you will take</p>
             <div class="card-columns mx-auto">
-                {% for exam in course.exam_set.all %}
+                {% for exam in course.exams_list %}
                     <div class="card h-100 mx-auto">
                         <div class="card-body">
-                            <h5>{{ exam.name }}</h5>
+                            <h5>{{ exam }}</h5>
                         </div>
                     </div>
                 {% endfor %}
@@ -124,7 +124,7 @@
                     <div class="col-12 col-md-4 mx-auto">
                         <div class="mx-auto calendarDate">
                             <label for="date-picker">Pick a date within the next 10 days</label><br/>
-                            <input class="form-control-sm" id="date-picker" name="date" type="text" placeholder="Select Date" required style="border: 1px solid rgba(0,0,0,0.2); width: 100%;" onchange="selectDay(this.value)">
+                            <input class="form-control-sm" autocomplete="off" id="date-picker" name="date" type="text" placeholder="Select Date" required style="border: 1px solid rgba(0,0,0,0.2); width: 100%;" onchange="selectDay(this.value)">
                         </div>
                     </div>
                     <div class="col-12 col-md-4 mx-auto">

@@ -119,7 +119,7 @@
             {% for category in all_categories %}
                 <a href="{% url 'courses-offered' category.id %}">
                     <li class="list-inline-item text-center"><img
-                            src="{% static category.image %}"><br>{{ category.name }}</li>
+                            src="{{ category.thumbnail.url }}"><br>{{ category.name }}</li>
                 </a>
             {% endfor %}
         </ul>
@@ -194,22 +194,25 @@
             <div class="carousel-inner pt-5 pb-5">
                 <div class="carousel-item active" data-interval="5000">
                     <center>
-                        <div class="d-block w-100">
-                            <div class="img mx-3">
-                                <div class="img__overlay"><p class="p-4 text-small-bold"><br>My son is truly able to get a real classroom experience
-                                    through live classes.<br><em class="text-tiny">-Michael, <br>Father of 3rd grader</em></p></div>
+                        <div class="items">
+                            <div class="card">
+                                <div class="card-body"><p class="p-4 text-small-bold">
+                                    <br>
+                                    "Before taking the class all I knew is variables and Printing statements. After your class I know many things like defining functions and if statements. I really liked your class because many of the projects were really fun and you're very friendly and helpful."
+                                    P.S - looking forward to learn new things.
+                                    Thank you for being my teacher,
+                                    <br><em class="text-tiny">-Suven Ponduri (8 yrs).</em></p>
+                                </div>
 <!--                                 <img src="{% static 'images/test1.jpg' %}"/> -->
                             </div>
-                            <div class="img mx-3 d-none d-md-inline-flex">
-                                <div class="img__overlay"><p class="p-4 text-small-bold"><br>I noticed a tremendous improvement in my daughters
-                                    enthusiasm and outlook towards active learning thanks to your website!<br><em class="text-tiny">-Anu,
-                                        <br>Mother of 5th grader</em></p></div>
+                            <div class="card">
+                                <div class="card-body"><p class="p-4 text-small-bold"><br>My kids who are 15yrs old and 11 yrs old took Python programming classes with Dhivya for 2 months during the 2020 summer season. They enjoyed learning the programming and was able to easily grasp the concepts and the credit goes to Dhivya.
+ Dhivya's  dedication and commitment in her teaching is extraordinary. She  always makes sure the kids understand the concept clearly  by asking questions in the class and giving weekly assignments. I would love to continue with her and recommend her to my friends.<br><em class="text-tiny">-Jayashree Gunaseelan<br>Pennsylvania, USA</em></p></div>
 <!--                                 <img src="{% static 'images/test2.jpg' %}"/> -->
                             </div>
-                            <div class="img  mx-3 d-none d-lg-inline-flex">
-                                <div class="img__overlay"><p class="p-4 text-small-bold"><br><br>Live classes have really helped my kid to stay
-                                    focused and really engage in every session. Kudos to the team :)<br><em class="text-tiny">-Vanya, <br>Mother
-                                        of 1st grader</em></p></div>
+                            <div class="card">
+                                <div class="card-body"><p class="p-4 text-small-bold"><br><br>Iam just a beginner for coding.I had some difficulties in coding and when i found this platform this fulfilled all my doubts.
+And Instructors gives assignment which is very helpfull.I have learned a lot!<br><em class="text-tiny">-Anonymous user</em></p></div>
 <!--                                 <img src="{% static 'images/test3.jpg' %}"/> -->
                             </div>
                         </div>

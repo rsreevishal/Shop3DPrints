@@ -12,10 +12,7 @@
         <div class="courses-tabs nav nav-tabs active" id="nav-tab" role="tablist">
             <a class="nav-item nav-link active ml-5" id="nav-current-course-tab" data-toggle="tab"
                href="#nav-current-course" role="tab" aria-controls="nav-current-course"
-               aria-selected="true">Current</a>
-            <a class="nav-item nav-link" id="nav-history-course-tab" data-toggle="tab"
-               href="#nav-history-course" role="tab" aria-controls="nav-history-course"
-               aria-selected="false">History</a>
+               aria-selected="true">Classes</a>
         </div>
     </nav>
 
@@ -29,7 +26,7 @@
                 <div class="col-sm-12 col-lg-6">
                      <div class="card-columns mx-auto">
                         {% for cls in classes %}
-                            <a href="{% url 'instructor-class-schedule' cls.instructor.pk cls.enrollment.student.pk %}">
+                            <a href="{% url 'instructor-class-schedule' cls.instructor.pk cls.enrollment.pk %}">
                                 <div class="card my-3 mx-auto py-auto px-auto h-100">
                                     <div class="card-body pb-auto mb-auto">
                                         <h5 class="card-title text-large">{{ cls.enrollment.student.name }}</h5>
@@ -53,30 +50,6 @@
                     </div>
                 </div>
             </div>
-            </div>
-        </div>
-
-        <!-- HISTORY COURSE TAB CONTENT -->
-        <div class="tab-pane" id="nav-history-course" role="tabpanel"
-             aria-labelledby="nav-history-course-tab">
-            <div class="card-columns mx-auto">
-                <div class="card my-3 mx-auto ">
-                    <div class="card-body pb-0">
-                        <h5 class="card-title text-large">Python Level 2</h5>
-                        <ul class="list-unstyled text-small">
-                            <li><strong>Programming</strong></li>
-                            <li>Grade: <strong>5-7</strong></li>
-                            <li>Level: <strong>1</strong></li>
-                        </ul>
-                    </div>
-                    <div class="card-footer">
-                        <ul class="list-unstyled text-small mb-0" style="color:#0060CF">
-                            <li>Mon, Wed, Fri</li>
-                            <li>5PM - 6PM</li>
-                            <li>Sept 13 - Oct 7</li>
-                        </ul>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

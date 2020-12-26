@@ -38,6 +38,21 @@ from django.contrib.auth.models import Group
 from django.db.models import Sum
 
 
+def prev_month(d):
+    first = d.replace(day=1)
+    prev_month = first - timedelta(days=1)
+    month = 'month=' + str(prev_month.year) + '-' + str(prev_month.month)
+    return month
+
+
+def next_month(d):
+    days_in_month = calendar.monthrange(d.year, d.month)[1]
+    last = d.replace(day=days_in_month)
+    next_month = last + timedelta(days=1)
+    month = 'month=' + str(next_month.year) + '-' + str(next_month.month)
+    return month
+
+
 def redirect_view(path_name):
     def view(request, **kwargs):
         return HttpResponseRedirect(reverse(path_name))
@@ -145,11 +160,17 @@ def student_profile(request):
 
 
 def student_payment_details(request):
-    events = Event.objects.filter(user=request.user).order_by('start_time')
+    d = get_date(request.GET.get('month', None))
+    prev_month_d = prev_month(d)
+    next_month_d = next_month(d)
+    events = Event.objects.filter(user=request.user).filter(start_time__month=d.month)\
+        .filter(start_time__year=d.year).order_by('start_time')
     total_pay_amount = events.filter(amount_paid=0).filter(status=0).aggregate(Sum('total_amount'))
     if not total_pay_amount["total_amount__sum"]:
         total_pay_amount["total_amount__sum"] = 0
-    return render(request, 'student/student-payment.html', {"events": events, "total_pay_amount": total_pay_amount})
+    return render(request, 'student/student-payment.html', {"events": events, "total_pay_amount": total_pay_amount,
+                                                            "prev_month": prev_month_d, "next_month": next_month_d,
+                                                            "current_month": calendar.month_name[d.month], "current_year": d.year})
 
 
 def login(request):
@@ -500,14 +521,15 @@ class InstructorCalendarView(generic.ListView):
         d = get_date(self.request.GET.get('month', None))
         context['prev_month'] = prev_month(d)
         context['next_month'] = next_month(d)
-        student_id = self.kwargs["student_id"]
-        student = Student.objects.get(pk=student_id)
+        student_instructor = StudentInstructor.objects.get(instructor=self.kwargs["instructor_id"],
+                                                           enrollment=self.kwargs["enrollment_id"])
+        student = Student.objects.get(pk=student_instructor.enrollment.student.pk)
         # Instantiate our calendar class with today's year and date
-        cal = Calendar(d.year, d.month, student.django_user.id)
+        cal = Calendar(d.year, d.month, student.django_user.id, student_instructor.enrollment)
         # Call the formatmonth method, which returns our calendar as a table
         html_cal = cal.formatmonth(withyear=True)
         context['calendar'] = mark_safe(html_cal)
-        context['student_id'] = student_id
+        context['enrollment_id'] = self.kwargs["enrollment_id"]
         context['instructor_id'] = self.kwargs["instructor_id"]
         return context
 
@@ -517,21 +539,6 @@ def get_date(req_day):
         year, month = (int(x) for x in req_day.split('-'))
         return date(year, month, day=1)
     return datetime.today()
-
-
-def prev_month(d):
-    first = d.replace(day=1)
-    prev_month = first - timedelta(days=1)
-    month = 'month=' + str(prev_month.year) + '-' + str(prev_month.month)
-    return month
-
-
-def next_month(d):
-    days_in_month = calendar.monthrange(d.year, d.month)[1]
-    last = d.replace(day=days_in_month)
-    next_month = last + timedelta(days=1)
-    month = 'month=' + str(next_month.year) + '-' + str(next_month.month)
-    return month
 
 
 def update_event(request, event_id=None):
@@ -545,7 +552,7 @@ def update_event(request, event_id=None):
         event = form.save(commit=False)
         event.user = request.user
         event.save()
-        return HttpResponseRedirect(reverse('student-schedule', args=(request.user.id,)))
+        return HttpResponseRedirect(reverse('student-schedule', kwargs={"user_id": request.user.id}))
     return render(request, 'update_event.html', {'form': form})
 
 
@@ -653,7 +660,7 @@ def instructor_material(request, instructor_id, course_material_id=None):
         course_material.uploader = Instructor.objects.get(pk=instructor_id)
         course_material.save()
         print(course_material)
-        return HttpResponseRedirect('')
+        return HttpResponseRedirect(reverse('instructor-class-material', kwargs={"instructor_id": instructor_id}))
     material = CourseMaterial.objects.filter(uploader=instructor_id)
     return render(request, 'instructor/material.html', {"material": material, "instructor_id": instructor_id,
                                                         "course_material_form": course_material_form})
@@ -702,7 +709,8 @@ def instructor_student_works(request, instructor_id, enrollment_id, exam_id=None
         exam = exam_form.save(commit=False)
         exam.course = student_instructor.enrollment.course
         exam.save()
-        return HttpResponseRedirect('')
+        return HttpResponseRedirect(reverse('instructor-student-works', kwargs={"instructor_id": instructor_id,
+                                                                                 "enrollment_id": enrollment_id}))
     # Exam grade form
     if exam_grade_id:
         exam_grade_instance = get_object_or_404(ExamGrade, pk=exam_grade_id)
@@ -719,7 +727,8 @@ def instructor_student_works(request, instructor_id, enrollment_id, exam_id=None
             new_exam_grade.save()
         else:
             exam_grade.save()
-        return HttpResponseRedirect('')
+        return HttpResponseRedirect(reverse('instructor-student-works', kwargs={"instructor_id": instructor_id,
+                                                                                 "enrollment_id": enrollment_id}))
     # Project form
     if project_id:
         project_instance = get_object_or_404(Project, pk=project_id)
@@ -730,7 +739,8 @@ def instructor_student_works(request, instructor_id, enrollment_id, exam_id=None
         project = project_form.save(commit=False)
         project.course = student_instructor.enrollment.course
         project.save()
-        return HttpResponseRedirect('')
+        return HttpResponseRedirect(reverse('instructor-student-works', kwargs={"instructor_id": instructor_id,
+                                                                                 "enrollment_id": enrollment_id}))
     return render(request, 'instructor/student_test_assignment.html',
                   {"student_instructor": student_instructor, "instructor_id": instructor_id,
                    "project_form": project_form, "exam_form": exam_form, "exam_grade_form": exam_grade_form})

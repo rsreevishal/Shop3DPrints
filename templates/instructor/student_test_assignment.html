@@ -53,7 +53,7 @@
                         <th>Exam</th>
                         <th>Total Points</th>
                         <th>Status</th>
-                        <th>Grade</th>
+                        <th>Marks</th>
                     </tr>
                 </thead>
                 {% for exam in student_instructor.enrollment.course.exam_set.all %}
@@ -63,14 +63,14 @@
                         {% status exam student_instructor.enrollment.student as status %}
                         <td style="color: {% if status.0 == 'complete' %}green{% else %}red{% endif %};">{{ status.0 | title }}</td>
                         {% if status.0 == 'complete' %}
-                            <td>{{status.1.grade}}</td>
+                            <td>{{status.1.marks}}</td>
                         {% else %}
                             <td>-</td>
                         {% endif %}
                     </tr>
                 {% endfor %}
             </table>
-            <button class="btn btn-info nav-link text-light text-center" data-toggle="modal" data-target="#exam-grade-popup">Add/Change grade</button>
+            <button class="btn btn-info nav-link text-light text-center" data-toggle="modal" data-target="#exam-grade-popup">Add/Change marks</button>
             <hr/>
             <div class="text-center text-large">
                 <p>Upload new test</p>
@@ -96,7 +96,6 @@
                     <tr>
                         <th>Assignment</th>
                         <th>Status</th>
-                        <th>File</th>
                     </tr>
                 </thead>
                 {% for project in student_instructor.enrollment.course.project_set.all %}
@@ -105,9 +104,6 @@
                     {% status project student_instructor.enrollment.student as status %}
                     <td style="color: {% if status.0 == 'complete' %}green{% else %}red{% endif %};">{{ status.0 | title }}
                     </td>
-                    {% if status.0 == 'complete' %}
-                    <td><a class="btn-link" href="{{status.1.file.url}}">Open file</a></td>
-                    {% endif %}
                 </tr>
                 {% endfor %}
             </table>
