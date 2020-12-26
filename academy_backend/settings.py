@@ -29,15 +29,17 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG")
 
-ALLOWED_HOSTS = ["qa.cmsitgacademy.com", "cmsitgacademy.com", "167.99.231.208", "142.93.216.129", "127.0.0.1"]
+ALLOWED_HOSTS = ["qa.cmsitgacademy.com", "cmsitgacademy.com", "167.99.231.208", "142.93.216.129", "127.0.0.1", "104.236.38.56"]
 
 PROJECT_TITLE = "CMS Online Academy"
 # Application definition
-EMAIL_BACKEND = ''
-if DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-else:
-    EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+# EMAIL_BACKEND = ''
+# if DEBUG:
+#     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# else:
+#     EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
