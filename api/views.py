@@ -327,6 +327,7 @@ def checkout(request):
             enrollment.save()
             return HttpResponse(json.dumps({'id': checkout_session.id, 'payment_method': PaymentMethod.full_payment}))
         elif int(form.cleaned_data["payment_method"]) == PaymentMethod.per_class_payment:
+            purchase.save()
             enrollment = Enrollment(
                 student=purchase.student,
                 course=purchase.course,
