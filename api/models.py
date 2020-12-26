@@ -235,22 +235,6 @@ class CourseInstructor(models.Model):
         return f"{self.course.name} - {self.instructor.name}"
 
 
-class Enrollment(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-
-    days = models.CharField(max_length=13, validators=[validate_comma_separated_integer_list])
-    start_time = models.TimeField()
-    end_time = models.TimeField()
-
-    def get_days_display(self):
-        return ', '.join(
-            map(lambda day: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][int(day)], self.days.split(',')))
-
-    def __str__(self):
-        return f'{self.student.name} in {self.course.name}'
-
-
 class Project(models.Model):
     name = models.CharField(max_length=128)
     description = models.TextField(max_length=512)
@@ -295,6 +279,22 @@ class Purchase(models.Model):
     course_datetime = models.DateTimeField()
     stripe_id = models.CharField(max_length=128)
     confirmed = models.BooleanField(default=False)
+
+
+class Enrollment(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    purchase = models.ForeignKey(Purchase, on_delete=models.CASCADE)
+    days = models.CharField(max_length=13, validators=[validate_comma_separated_integer_list])
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+    def get_days_display(self):
+        return ', '.join(
+            map(lambda day: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][int(day)], self.days.split(',')))
+
+    def __str__(self):
+        return f'{self.student.name} in {self.course.name}'
 
 
 class Attendance(models.IntegerChoices):

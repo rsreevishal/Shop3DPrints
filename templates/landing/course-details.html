@@ -243,7 +243,12 @@
             console.log(data);
             $.post('{% url 'checkout' %}', data, function(response) {
                 const session = JSON.parse(response);
-                stripe.redirectToCheckout({sessionId: session.id});
+                if(session.payment_method == 0) {
+                    stripe.redirectToCheckout({sessionId: session.id});
+                } else if (session.payment_method == 1) {
+                    alert(session.message);
+                    window.location.replace("{% url 'student' %}");
+                }
             });
         });
     </script>
