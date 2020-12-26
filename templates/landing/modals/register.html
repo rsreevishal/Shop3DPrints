@@ -322,7 +322,7 @@
                                 <div class="col-6">
                                     <label for="cn">Contact Number</label>
                                     <input type="tel" id="cn" name="phone_number" class="form-control form-control-sm"
-                                           placeholder="9999999999" pattern="[0-9]{10}" required>
+                                           placeholder="9999999999" pattern="^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$" required>
                                 </div>
                             </div>
 
@@ -394,6 +394,8 @@
                    {
                        if(data.type == "SUCCESS") {
                         alert(data.message);
+                        $("#register-popup").modal('hide');
+                        $("#login-popup").modal('show');
                        }
                    },
                    error: function(data) {

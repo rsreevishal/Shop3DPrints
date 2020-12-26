@@ -8,6 +8,11 @@
 {% block student-body %}
     <div class="container-fluid text-center">
         <div class="tab-pane fade show active" role="tabpanel" >
+        <div class="row">
+            <div class="col col-md-4"><a class="btn btn-primary left" href="{% url 'student-payment' %}?{{ prev_month }}"> Previous Month </a></div>
+            <div class="col col-md-4"><p class="text-large"><strong>{{current_month}}-{{current_year}}</strong></p></div>
+            <div class="col col-md-4"><a class="btn btn-primary right" href="{% url 'student-payment' %}?{{ next_month }}"> Next Month </a></div>
+        </div>
         <div class="text-center text-large">
             <p><u>Monthly payment Tracker</u></p>
         </div>
@@ -30,7 +35,7 @@
                     <td>${{ event.enrollment.course.per_class_price_usd }}</td>
                     <td>{{ event.status|attendance_status }}</td>
                     <td>${{ event.total_amount }}</td>
-                    <td>${{ event.amount_paid }}</td>
+                    <td>{% if event.amount_paid > 0 %} Yes {% else %} No {% endif %}</td>
                 </tr>
             {% endfor %}
         </table>

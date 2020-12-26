@@ -7,6 +7,21 @@
 {% endblock %}
 
 {% block student-body %}
+<!--Test description popup-->
+<div class="modal fade" id="test-description-popup" data-backdrop="static" tabindex="-1" aria-labelledby="staticBackdropLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md modal-reg">
+        <div class="modal-content ">
+            <div class="py-0 px-0 text-center text-medium">
+                <div class="close" style="float: right;" data-dismiss="modal" aria-label="Close">&times;</div>
+            </div>
+            <div class="text-center px-5 py-2">
+                <h3 class="text-center"><u>Description</u></h3>
+            </div>
+            <p class="text-center" id="test-description"></p>
+        </div>
+    </div>
+</div>
     <!-- COURSE TITLE-->
     <div class="px-3">
         <h3 class="text-center">
@@ -35,11 +50,11 @@
         <!-- TEST TAB CONTENTS -->
         <div class="assignments tab-pane active" id="nav-tests" role="tabpanel"
              aria-labelledby="nav-tests-tab">
-
+            <p class="text-info px-2">(Note: click on the cards to see the description)</p>
             <div class="card-columns mx-auto px-3">
 
                 {% for exam in enrollment.course.exam_set.all %}
-                    <div class="card my-3  my-3 mx-auto">
+                    <div class="card my-3  my-3 mx-auto" onclick="showDescription('{{exam.description}}')">
                         <div class="card-body pb-0">
                             <h5 class="card-title text-large">{{ exam.name }}</h5>
                             <ul class="list-unstyled text-small">
@@ -48,6 +63,10 @@
                                         style="color:{% if status.0 == 'complete' %}green{% else %}red{% endif %}">{{ status.0 | title }}</strong>
                                 </li>
                                 <li>Score: <strong>{{ exam | grade:me }}</strong></li>
+                                <br/>
+                                <div class="text-center">
+                                    <a type="button" href={{exam.file_link}} class="form-btn custom-btn">View</a>
+                                </div>
                             </ul>
                         </div>
                     </div>
@@ -59,9 +78,10 @@
 
         <!-- ASSIGNMENTS TAB CONTENTS -->
         <div class="assignments tab-pane" id="nav-projects" role="tabpanel" aria-labelledby="nav-projects-tab">
+            <p class="text-info px-2">(Note: click on the cards to see the description)</p>
             <div class="card-columns mx-auto px-3">
                 {% for project in enrollment.course.project_set.all %}
-                    <div class="card my-3 mx-auto">
+                    <div class="card my-3 mx-auto" onclick="showDescription('{{project.description}}')">
                         <div class="card-body pb-0">
                             <h5 class="card-title text-large">{{ project.name }}</h5>
                             <ul class="list-unstyled text-small">
@@ -69,8 +89,9 @@
                                 <li>Status: <strong
                                         style="color:{% if status.0 == 'complete' %}green{% else %}red{% endif %}">{{ status.0 | title }}</strong>
                                 </li>
+                                <br/>
                                 <div class="text-center">
-                                    <button type="button" class="form-btn custom-btn">View</button>
+                                    <a type="button" href={{project.file_link}} class="form-btn custom-btn">View</a>
                                 </div>
                             </ul>
                         </div>
@@ -140,10 +161,10 @@
             <section class="projects py-3 mx-4">
                 <p class="text-large">Projects you will complete</p>
                 <div class="card-columns mx-auto">
-                    {% for project in enrollment.course.project_set.all %}
+                    {% for project in enrollment.course.assignment_list %}
                         <div class="card h-100 mx-auto">
                             <div class="card-body">
-                                <h5>{{ project.name }}</h5>
+                                <h5>{{ project }}</h5>
                             </div>
                         </div>
                     {% endfor %}
@@ -152,10 +173,10 @@
             <section class="tests pt-3 mx-4">
                 <p class="text-large">Tests you will take</p>
                 <div class="card-columns mx-auto">
-                    {% for exam in enrollment.course.exam_set.all %}
+                    {% for exam in enrollment.course.exams_list %}
                         <div class="card h-100 mx-auto">
                             <div class="card-body">
-                                <h5>{{ exam.name }}</h5>
+                                <h5>{{ exam }}</h5>
                             </div>
                         </div>
                     {% endfor %}
@@ -167,4 +188,12 @@
         <!-- END TEST,ASSIGNMENTS, OVERVIEW TAB CONTENTS -->
     </div>
     <!-- END ASSIGNMENTS HIDDEN TAB CONTENTS -->
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<script>
+    function showDescription(description) {
+    console.log(description);
+        $("#test-description").text(description);
+        $("#test-description-popup").modal('show');
+    }
+</script>
 {% endblock %}

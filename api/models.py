@@ -155,6 +155,7 @@ class InstructorSpeciality(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=64)
+    thumbnail = models.ImageField(upload_to="thumbnail/", blank=True, default=None, null=True)
 
     @property
     def slug(self):
@@ -183,7 +184,9 @@ class Course(models.Model):
     level = models.PositiveSmallIntegerField()
     total_price_usd = models.PositiveSmallIntegerField(help_text='Price in dollars')
     per_class_price_usd = models.PositiveSmallIntegerField(help_text='Price in dollars')
-    description = models.TextField()
+    description = models.TextField(max_length=512)
+    assignments = models.TextField(max_length=512)
+    exams = models.TextField()
     highlights = models.TextField(help_text='Put each item on its own line')
     prerequisites = models.TextField(help_text='Put each item on its own line')
     sessions = models.TextField(help_text='Put each item on its own line')
@@ -202,6 +205,14 @@ class Course(models.Model):
     @property
     def session_list(self):
         return self.sessions.split('\n')
+
+    @property
+    def assignment_list(self):
+        return self.assignments.split('\n')
+
+    @property
+    def exams_list(self):
+        return self.exams.split('\n')
 
     def __str__(self):
         return self.name
@@ -239,6 +250,7 @@ class Project(models.Model):
     name = models.CharField(max_length=128)
     description = models.TextField(max_length=512)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    file_link = models.URLField(null=True, default=None, blank=True)
 
     def __str__(self):
         return self.name
@@ -247,7 +259,6 @@ class Project(models.Model):
 class ProjectSubmission(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    file = models.FileField()
 
     def __str__(self):
         return f'{self.student.name} for {self.project.name}'
@@ -258,6 +269,7 @@ class Exam(models.Model):
     description = models.TextField(max_length=512)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     total_points = models.PositiveSmallIntegerField()
+    file_link = models.URLField(null=True, default=None, blank=True)
 
     def __str__(self):
         return self.name
@@ -266,7 +278,7 @@ class Exam(models.Model):
 class ExamGrade(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
-    grade = models.PositiveSmallIntegerField()
+    marks = models.PositiveSmallIntegerField()
 
     def __str__(self):
         return f'{self.student.name} for {self.exam.name}'

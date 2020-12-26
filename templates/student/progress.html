@@ -28,7 +28,13 @@
                         <div class="text-center text-large">
                             <p>Assignment Tracker</p>
                         </div>
-                        <table class="assign-table text-normal mx-auto">
+                        <table class="assign-table text-normal mx-auto text-center">
+                            <thead>
+                                <tr>
+                                    <th>Assignment</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
                             {% for project in enrollment.course.project_set.all %}
                                 <tr>
                                     <td>{{ project.name }} 1</td>
@@ -42,12 +48,20 @@
                         <div class="text-center text-large">
                             <p>Test Tracker</p>
                         </div>
-                        <table class="assign-table text-normal mx-auto">
+                        <table class="assign-table text-normal mx-auto text-center">
+                            <thead>
+                                <tr>
+                                    <th>Test</th>
+                                    <th>Status</th>
+                                    <th>Marks</th>
+                                </tr>
+                            </thead>
                             {% for exam in enrollment.course.exam_set.all %}
                                 <tr>
                                     <td>{{ exam.name }}</td>
                                     {% status exam me as status %}
                                     <td style="color: {% if status.0 == 'complete' %}green{% else %}red{% endif %};">{{ status.0 | title }}</td>
+                                    <td>{{ status.1.marks }}</td>
                                 </tr>
                             {% endfor %}
                         </table>

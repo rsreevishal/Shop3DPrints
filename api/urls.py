@@ -18,7 +18,7 @@ urlpatterns = [
     path('student/schedule/<int:user_id>', CalendarView.as_view(), name='student-schedule'),
     path('student/payment', student_payment_details, name='student-payment'),
     path('instructor', instructor_base, name='instructor'),
-    path('instructor/<int:instructor_id>/class/schedule/<int:student_id>', InstructorCalendarView.as_view(),
+    path('instructor/<int:instructor_id>/class/schedule/<int:enrollment_id>', InstructorCalendarView.as_view(),
          name='instructor-class-schedule'),
     path('instructor/<int:instructor_id>/classes', instructor_classes, name='instructor-classes'),
     path('instructor/<int:instructor_id>/profile/edit/', update_instructor, name='instructor-profile-edit'),

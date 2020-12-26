@@ -10,7 +10,7 @@ register = template.Library()
 @register.filter()
 def grade(assignment: Exam, me: Student):
     try:
-        return f'{assignment.examgrade_set.get(student=me).grade}/{assignment.total_points}'
+        return f'{assignment.examgrade_set.get(student=me).marks}/{assignment.total_points}'
 
     except ExamGrade.DoesNotExist:
         return f'--/{assignment.total_points}'
