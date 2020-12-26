@@ -4,6 +4,8 @@
 __pycache__/
 db.sqlite3
 academy_backend/bin
+media
+static
 
 # Distribution / packaging
 .Python
