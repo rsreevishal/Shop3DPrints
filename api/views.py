@@ -381,7 +381,7 @@ def checkout(request):
             enrollment.save()
             # creating payment status
             student_payment_detail = StudentPaymentDetails(enrollment=enrollment,
-                                                           total_amount=enrollment.course.per_class_price_usd,
+                                                           total_amount=enrollment.course.total_price_usd,
                                                            amount_paid=0)
             student_payment_detail.save()
             return HttpResponse(json.dumps({'id': checkout_session.id, 'payment_method': PaymentMethod.full_payment}))
@@ -420,7 +420,7 @@ def checkout(request):
                 week_count += 1
             # creating payment status
             student_payment_detail = StudentPaymentDetails(enrollment=enrollment,
-                                                           total_amount=enrollment.course.per_class_price_usd,
+                                                           total_amount=enrollment.course.total_price_usd,
                                                            amount_paid=0)
             student_payment_detail.save()
             return HttpResponse(json.dumps({'payment_method': PaymentMethod.per_class_payment,
@@ -475,15 +475,15 @@ def checkout_webhook(request):
                         amount_paid=enrollment.course.per_class_price_usd
                     )
                     event.save()
+                    # creating payment status
+                    student_payment_detail = StudentPaymentDetails.objects.get(enrollment=event.enrollment)
+                    student_payment_detail.amount_paid = student_payment_detail.amount_paid + enrollment.course.per_class_price_usd
+                    student_payment_detail.save()
                     day_count += 1
                     if day_count == enrollment.course.total_days:
                         break
                 week_count += 1
             print(session)
-            # creating payment status
-            student_payment_detail = StudentPaymentDetails.objects.get(enrollment=enrollment)
-            student_payment_detail.amount_paid = enrollment.course.per_class_price_usd
-            student_payment_detail.save()
         elif payment_method == PaymentMethod.per_class_payment:
             print("----Monthly payment web-hook-----")
             data = event.data.object.metadata
