@@ -438,7 +438,7 @@ def checkout_webhook(request):
         return HttpResponse(status=400)
     # Handle the checkout.session.completed event
     if event['type'] == 'checkout.session.completed':
-        payment_method = event.data.object.metadata.payment_method
+        payment_method = int(event.data.object.metadata["payment_method"])
         print(f"Data: {event.data.object.metadata}")
         if payment_method == PaymentMethod.full_payment:
             session = event['data']['object']
@@ -474,7 +474,7 @@ def checkout_webhook(request):
             print("----Monthly payment web-hook-----")
             data = event.data.object.metadata
             print(f"Data: {data}")
-            events_pk = [int(e) for e in data.events.split(",")]
+            events_pk = [int(e) for e in data["events"].split(",")]
             for pk in events_pk:
                 event = Event.objects.get(pk=pk)
                 event.amount_paid = event.total_amount
