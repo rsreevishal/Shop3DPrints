@@ -175,7 +175,6 @@ def student_payment_details(request):
 
 def login(request):
     user: User = authenticate(username=request.POST['email'], password=request.POST['password'])
-    print(f"On login checking password: {request.POST['password']}, checking email: {request.POST['email']}")
     if user and user.is_authenticated and user.is_active:
         django_login(request, user)
         if user.groups.filter(name="Instructor").exists():
