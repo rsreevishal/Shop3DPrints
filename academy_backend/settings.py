@@ -39,7 +39,7 @@ PROJECT_TITLE = "CMS Online Academy"
 # else:
 #     EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
