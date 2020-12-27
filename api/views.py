@@ -430,17 +430,16 @@ def checkout_webhook(request):
         event = stripe.Webhook.construct_event(
             payload, sig_header, settings.STRIPE_ENDPOINT_SECRET
         )
-        print(event)
     except ValueError as e:
         # Invalid payload
         return HttpResponse(status=400)
     except stripe.error.SignatureVerificationError as e:
         # Invalid signature
         return HttpResponse(status=400)
-    print(f"-----Checkout event: {event} ---------")
     # Handle the checkout.session.completed event
     if event['type'] == 'checkout.session.completed':
         payment_method = event.data.object.metadata.payment_method
+        print(f"Data: {event.data.object.metadata}")
         if payment_method == PaymentMethod.full_payment:
             session = event['data']['object']
 
@@ -450,7 +449,6 @@ def checkout_webhook(request):
             enrollment = Enrollment.objects.get(purchase=purchase)
             week_count = 0
             day_count = 0
-            print("-------Creating events---------")
             while day_count != enrollment.course.total_days:
                 for d in enrollment.days.split(','):
                     day = int(d)
@@ -473,7 +471,9 @@ def checkout_webhook(request):
                 week_count += 1
             print(session)
         elif payment_method == PaymentMethod.per_class_payment:
+            print("----Monthly payment web-hook-----")
             data = event.data.object.metadata
+            print(f"Data: {data}")
             events_pk = [int(e) for e in data.events.split(",")]
             for pk in events_pk:
                 event = Event.objects.get(pk=pk)
