@@ -27,10 +27,10 @@
                      <div class="card-columns mx-auto">
                         {% for cls in classes %}
                             <a href="{% url 'instructor-class-schedule' cls.instructor.pk cls.enrollment.pk %}">
-                                <div class="card my-3 mx-auto py-auto px-auto h-100">
-                                    <div class="card-body pb-auto mb-auto">
-                                        <h5 class="card-title text-large">{{ cls.enrollment.student.name }}</h5>
-                                        <ul class="list-unstyled text-small" style="white-space:nowrap;">
+                                <div class="card my-3 mx-auto py-auto px-auto h-100 w-100">
+                                    <div class="card-body pb-auto mb-auto" style="white-space:nowrap;text-overflow:clip;overflow:hidden;">
+                                        <h5 class="card-title text-large">{{ cls.enrollment.student.student_first_name }} {{ cls.enrollment.student.student_last_name }}</h5>
+                                        <ul class="list-unstyled text-small">
                                             <li><strong>{{ cls.enrollment.course.name }}</strong></li>
                                             <li><strong>{{ cls.enrollment.course.category.category }}</strong></li>
                                             <li>Grade: <strong>{{ cls.enrollment.course.get_grade_display }}</strong></li>

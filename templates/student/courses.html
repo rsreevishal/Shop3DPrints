@@ -28,7 +28,7 @@
                 {% for enrollment in enrollments %}
                     <a href="{% url 'student-course' enrollment.course.id %}">
                         <div class="card my-3 mx-auto ">
-                            <div class="card-body pb-0">
+                            <div class="card-body pb-0" style="white-space:nowrap;text-overflow:clip;overflow:hidden;">
                                 <h5 class="card-title text-large">{{ enrollment.course.name }}</h5>
                                 <ul class="list-unstyled text-small">
                                     <li><strong>{{ enrollment.course.category.category }}</strong></li>
