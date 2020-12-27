@@ -348,7 +348,6 @@ class Event(models.Model):
         end_time = timezone.localtime(self.end_time, timezone.get_current_timezone())
         return f'{self.enrollment.course.name}: {start_time.time().strftime("%I:%M %p")} - {end_time.time().strftime("%I:%M %p")}'
 
-
     def __str__(self):
         return self.title
 
@@ -370,3 +369,9 @@ class CourseMaterial(models.Model):
 
     def __str__(self):
         return f'{self.course.name}-{self.material_link}'
+
+
+class StudentPaymentDetails(models.Model):
+    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
+    total_amount = models.PositiveSmallIntegerField()
+    amount_paid = models.PositiveSmallIntegerField(default=0, null=True, blank=True)

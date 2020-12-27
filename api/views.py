@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from api.models import AcademyUser, Category, Course, Enrollment, Purchase, SpecialityLevel, Speciality, AvailableDays, \
     Instructor, AvailableTimes, Event, CourseTimeSlot, StudentInstructor, CourseMaterial, InstructorSpeciality, Student, \
-    Project, Exam, ExamGrade, PaymentMethod
+    Project, Exam, ExamGrade, PaymentMethod, StudentPaymentDetails
 from academy_backend import settings
 from api.forms import RegistrationForm, PurchaseForm, EventForm, InstructorForm, ProjectForm, ExamForm, ExamGradeForm, \
     CourseMaterialForm
@@ -379,6 +379,11 @@ def checkout(request):
                 purchase=purchase
             )
             enrollment.save()
+            # creating payment status
+            student_payment_detail = StudentPaymentDetails(enrollment=enrollment,
+                                                           total_amount=enrollment.course.per_class_price_usd,
+                                                           amount_paid=0)
+            student_payment_detail.save()
             return HttpResponse(json.dumps({'id': checkout_session.id, 'payment_method': PaymentMethod.full_payment}))
         elif int(form.cleaned_data["payment_method"]) == PaymentMethod.per_class_payment:
             purchase.save()
@@ -413,6 +418,11 @@ def checkout(request):
                     if day_count == enrollment.course.total_days:
                         break
                 week_count += 1
+            # creating payment status
+            student_payment_detail = StudentPaymentDetails(enrollment=enrollment,
+                                                           total_amount=enrollment.course.per_class_price_usd,
+                                                           amount_paid=0)
+            student_payment_detail.save()
             return HttpResponse(json.dumps({'payment_method': PaymentMethod.per_class_payment,
                                             'message': "Successfully enrolled the course"}))
     else:
@@ -470,6 +480,10 @@ def checkout_webhook(request):
                         break
                 week_count += 1
             print(session)
+            # creating payment status
+            student_payment_detail = StudentPaymentDetails.objects.get(enrollment=enrollment)
+            student_payment_detail.amount_paid = enrollment.course.per_class_price_usd
+            student_payment_detail.save()
         elif payment_method == PaymentMethod.per_class_payment:
             print("----Monthly payment web-hook-----")
             data = event.data.object.metadata
@@ -479,6 +493,11 @@ def checkout_webhook(request):
                 event = Event.objects.get(pk=pk)
                 event.amount_paid = event.total_amount
                 event.save()
+                # creating payment status
+                student_payment_detail = StudentPaymentDetails.objects.get(enrollment=event.enrollment)
+                student_payment_detail.amount_paid = student_payment_detail.amount_paid + event.enrollment.course.per_class_price_usd
+                student_payment_detail.save()
+
 
     # Passed signature verification
     return HttpResponse(status=200)
