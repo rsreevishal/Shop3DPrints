@@ -3,7 +3,7 @@ import calendar
 
 import pytz
 import stripe
-
+from django.utils import timezone
 from django.contrib.auth import login as django_login, logout as django_logout, authenticate
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -103,23 +103,31 @@ def get_next_weekday(day):
     return today
 
 
+def get_local_time(dt):
+    at = dt.replace(tzinfo=timezone.utc).astimezone(tz=timezone.get_current_timezone()).time()
+    print(f"AT: {at}")
+    return at
+
+
 def course_details(request, course_id):
     course = Course.objects.get(id=course_id)
     time_slots = CourseTimeSlot.objects.filter(course=course)
     final_result = []
     for ts in time_slots:
+        ndate = get_next_weekday(ts.day)
         final_result.append(
             {
-                "date": get_next_weekday(ts.day).strftime("%m_%d_%Y"),
+                "date": ndate.strftime("%m_%d_%Y"),
                 "day": ts.day,
-                "start_time": ts.start.strftime("%I:%M %p"),
-                "end_time": ts.end.strftime("%I:%M %p")
+                "start_time": get_local_time(datetime.combine(ndate, ts.start)).strftime("%I:%M %p"),
+                "end_time": get_local_time(datetime.combine(ndate, ts.end)).strftime("%I:%M %p")
             }
         )
     return standard_view('landing/course-details.html', {
         'course': course,
         'time_slots': final_result,
         'stripe_pk': settings.STRIPE_PUBLISHABLE_KEY,
+        'timezones': pytz.common_timezones
     })(request)
 
 
@@ -498,7 +506,6 @@ def checkout_webhook(request):
                 student_payment_detail.amount_paid = student_payment_detail.amount_paid + event.enrollment.course.per_class_price_usd
                 student_payment_detail.save()
 
-
     # Passed signature verification
     return HttpResponse(status=200)
 
@@ -811,10 +818,7 @@ def instructor_student_works(request, instructor_id, enrollment_id, exam_id=None
 
 
 def set_timezone(request):
-    me = AcademyUser.get_for(request.user)
     if request.method == 'POST':
         request.session['django_timezone'] = request.POST['timezone']
-        if isinstance(me, Instructor):
-            return HttpResponseRedirect(reverse('instructor'))
-        elif isinstance(me, Student):
-            return HttpResponseRedirect(reverse('student'))
+        return JsonResponse({"message": "Time zone set", "type": "SUCCESS"}, status=200)
+    return JsonResponse({"message": "Can't set timezone", "type": "ERROR"}, status=200)

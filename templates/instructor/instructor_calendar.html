@@ -99,7 +99,7 @@ a {
         </div>
         <div class="col col-md-4">
             {% get_current_timezone as TIME_ZONE %}
-            <form action="{% url 'set_timezone' %}" method="POST">
+            <form action="{% url 'set_timezone' %}" method="POST" id="set-time">
                 {% csrf_token %}
                 <label for="timezone">Time zone:</label>
                 <select name="timezone" id="timezone">
@@ -123,5 +123,23 @@ a {
         var url_mask = "{% url 'event_edit_status' instructor_id 12345 %}".replace(/12345/, id);
         $('#exam-grade-form').attr('action', url_mask)
     }
+    $("#set-time").submit(function(e) {
+        e.preventDefault();
+        var form = $(this);
+        var url = form.attr('action');
+        $.ajax({
+           type: "POST",
+           url: url,
+           data: form.serialize(),
+           success: function(data)
+           {
+               alert(data.message);
+               location.reload();
+           },
+           error: function(data) {
+            alert("Can't set timezone");
+           }
+        });
+  });
 </script>
 {% endblock %}

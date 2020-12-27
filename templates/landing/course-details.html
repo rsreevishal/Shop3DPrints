@@ -1,5 +1,6 @@
 {% extends 'landing/landing-base.html' %}
 {% load static %}
+{% load tz %}
 {% load api_extras %}
 
 {% block head %}
@@ -110,9 +111,20 @@
             <p class="text-medium">Book a class for your kid!</p>
         </div>
         {% if me %}
+            {% get_current_timezone as TIME_ZONE %}
+            <form action="{% url 'set_timezone' %}" method="POST" id="set-time">
+                {% csrf_token %}
+                <label for="timezone">Time zone:</label>
+                <select name="timezone" id="timezone">
+                    {% for tz in timezones %}
+                    <option value="{{ tz }}"{% if tz == TIME_ZONE %} selected{% endif %}>{{ tz }}</option>
+                    {% endfor %}
+                </select>
+                <input type="submit" value="Set" class="btn-small btn-primary">
+            </form>
             <form id="enroll-form" class="centered mx-auto">
                 <div class="form-row">
-                    <div class="col-12 col-md-4 mx-auto">
+                    <div class="col-12 mx-auto">
                         <label for="batch">Select Batch</label>
                         <select id="batch" name="batch" class="form-control form-control-sm" required onchange="clearDate(this.value)">
                             <option value="-1" selected>None</option>
@@ -121,13 +133,13 @@
                             <option value="5,6">Sat-Sun</option>
                         </select>
                     </div>
-                    <div class="col-12 col-md-4 mx-auto">
+                    <div class="col-12 mx-auto">
                         <div class="mx-auto calendarDate">
                             <label for="date-picker">Pick a date within the next 10 days</label><br/>
                             <input class="form-control-sm" autocomplete="off" id="date-picker" name="date" type="text" placeholder="Select Date" required style="border: 1px solid rgba(0,0,0,0.2); width: 100%;" onchange="selectDay(this.value)">
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 mx-auto">
+                    <div class="col-12 mx-auto">
                         <label for="available_timing">Select Timings</label>
                         <select id="available_timing" name="time" class="form-control form-control-sm" required>
                             <option value="null" id="at_null" selected>None</option>
@@ -136,7 +148,7 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="col-12 col-md-4 mx-auto">
+                    <div class="col-12 mx-auto">
                         <label for="payment_method">Mode of payment</label>
                         <select id="payment_method" name="payment_method" class="form-control form-control-sm" required>
                             <option value=0>Full payment</option>
@@ -251,5 +263,23 @@
                 }
             });
         });
+        $("#set-time").submit(function(e) {
+                e.preventDefault();
+                var form = $(this);
+                var url = form.attr('action');
+                $.ajax({
+                   type: "POST",
+                   url: url,
+                   data: form.serialize(),
+                   success: function(data)
+                   {
+                       alert(data.message);
+                       location.reload();
+                   },
+                   error: function(data) {
+                    alert("Can't set timezone");
+                   }
+                });
+          });
     </script>
 {% endblock %}

@@ -73,7 +73,7 @@ a {
         </div>
         <div class="col col-md-4">
             {% get_current_timezone as TIME_ZONE %}
-            <form action="{% url 'set_timezone' %}" method="POST">
+            <form action="{% url 'set_timezone' %}" method="POST" id="set-time">
                 {% csrf_token %}
                 <label for="timezone">Time zone:</label>
                 <select name="timezone" id="timezone">
@@ -91,4 +91,25 @@ a {
     </div>
     {{calendar}}
 </div>
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<script>
+  $("#set-time").submit(function(e) {
+        e.preventDefault();
+        var form = $(this);
+        var url = form.attr('action');
+        $.ajax({
+           type: "POST",
+           url: url,
+           data: form.serialize(),
+           success: function(data)
+           {
+               alert(data.message);
+               location.reload();
+           },
+           error: function(data) {
+            alert("Can't set timezone");
+           }
+        });
+  });
+</script>
 {% endblock %}

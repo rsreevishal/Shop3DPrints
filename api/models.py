@@ -375,3 +375,6 @@ class StudentPaymentDetails(models.Model):
     enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
     total_amount = models.PositiveSmallIntegerField()
     amount_paid = models.PositiveSmallIntegerField(default=0, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.enrollment.student.name},{self.total_amount},{self.amount_paid}"
