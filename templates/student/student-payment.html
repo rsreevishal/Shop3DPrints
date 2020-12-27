@@ -64,7 +64,7 @@
         $.post('{% url 'checkout_monthly_payment' %}', data, function(response) {
             const session = JSON.parse(response);
             if (session.payment_method == 1) {
-                alert(session.message);
+                alert("Payment is processing");
                 stripe.redirectToCheckout({sessionId: session.id});
             }
         });
