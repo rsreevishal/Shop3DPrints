@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.validators import validate_comma_separated_integer_list, MinValueValidator, MaxValueValidator
 from django.db import models
@@ -339,6 +341,13 @@ class Event(models.Model):
     def get_html_url(self):
         url = reverse('event_edit', args=(self.id,))
         return f'<p> {self.title} </p>'
+
+    @property
+    def my_time_zone_title(self):
+        start_time = timezone.localtime(self.start_time, timezone.get_current_timezone())
+        end_time = timezone.localtime(self.end_time, timezone.get_current_timezone())
+        return f'{self.enrollment.course.name}: {start_time.time().strftime("%I:%M %p")} - {end_time.time().strftime("%I:%M %p")}'
+
 
     def __str__(self):
         return self.title

@@ -26,6 +26,7 @@
 {% endblock %}
 
 {% block body %}
+    {% url 'instructor' as base_url %}
     {% url 'instructor-classes' instructor_id as classes_url %}
     {% url 'instructor-class-material' instructor_id as class_material_url %}
     {% url 'instructor-class-assignment' instructor_id as class_assignment_url %}
@@ -42,5 +43,13 @@
                 {% block instructor-body %} {# lol #}
                 {% endblock %}
         </div>
-    </nav> 
+    </nav>
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function(){
+        if("{{request.path}}" == "{{base_url}}") {
+            window.location.replace("{{ classes_url }}");
+        }
+    })
+</script>
 {% endblock %}

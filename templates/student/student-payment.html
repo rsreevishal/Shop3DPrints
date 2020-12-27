@@ -40,11 +40,30 @@
             {% endfor %}
         </table>
         <p class="text-large"><strong>Total amount: ${{total_pay_amount.total_amount__sum}}</strong></p>
-        {% if total_pay_amount.total_amount__sum > 0 %}
-            <button class="btn btn-primary" >Pay now</button>
-        {% else %}
-            <button class="btn btn-primary" disabled>Pay now</button>
-        {% endif %}
+        <button id="pay-now" class="btn btn-primary" {% if total_pay_amount.total_amount__sum == 0 %} disabled {% endif %}>Pay now</button>
+
     </div>
     </div>
+<link href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+     var stripe = Stripe("{{ stripe_pk }}");
+     $('#pay-now').on('click', function (e) {
+        var data = {
+            "total_amount": {{ total_pay_amount.total_amount__sum }},
+            "events": "1,2,3",
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        }; // TODO
+        console.log(data)
+        $.post('{% url 'checkout_monthly_payment' %}', data, function(response) {
+            const session = JSON.parse(response);
+            if (session.payment_method == 1) {
+                alert(session.message);
+                stripe.redirectToCheckout({sessionId: session.id});
+            }
+        });
+    });
+</script>
 {% endblock %}

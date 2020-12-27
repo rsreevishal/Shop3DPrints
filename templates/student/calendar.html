@@ -1,5 +1,6 @@
 {% extends 'student/student-base.html' %}
 {% load static %}
+{% load tz %}
 {% load api_extras %}
 
 {% block student-head %}
@@ -66,9 +67,26 @@ a {
 
 {% block student-body %}
 <div class="tab-pane fade show active" role="tabpanel" >
-    <div class="clearfix">
-        <a class="btn btn-info left" href="{{ request.path }}?{{ prev_month }}"> Previous Month </a>
-        <a class="btn btn-info right" href="{{ request.path }}?{{ next_month }}"> Next Month </a>
+    <div class="row py-3 px-3">
+        <div class="col col-md-4">
+            <a class="btn btn-info left" href="{{ request.path }}?{{ prev_month }}"> Previous Month </a>
+        </div>
+        <div class="col col-md-4">
+            {% get_current_timezone as TIME_ZONE %}
+            <form action="{% url 'set_timezone' %}" method="POST">
+                {% csrf_token %}
+                <label for="timezone">Time zone:</label>
+                <select name="timezone" id="timezone">
+                    {% for tz in timezones %}
+                    <option value="{{ tz }}"{% if tz == TIME_ZONE %} selected{% endif %}>{{ tz }}</option>
+                    {% endfor %}
+                </select>
+                <input type="submit" value="Set" class="btn-small btn-info">
+            </form>
+        </div>
+        <div class="col col-md-4">
+            <a class="btn btn-info right" href="{{ request.path }}?{{ next_month }}"> Next Month </a>
+        </div>
 <!--        <a class="btn btn-info right" href="{% url 'event_new' %}">New event</a>-->
     </div>
     {{calendar}}

@@ -20,7 +20,7 @@ class Calendar(HTMLCalendar):
             event_status = ["list-group-item-success", "list-group-item-danger",
                             "list-group-item-warning", "list-group-item-primary"]
             status = event_status[event.status] if event.status is not None else event_status[3]
-            d += f'<button type="button list-group-item-action" class="list-group-item {status}" onclick="markAttendance({event.pk})">{event.title}</button>'
+            d += f'<button type="button list-group-item-action" class="list-group-item {status}" onclick="markAttendance({event.pk})">{event.my_time_zone_title}</button>'
         if day != 0 and len(d) > 0:
             return f"<td><span class='date'>{day}</span><div class='list-group'> {d}</div></td>"
         elif day != 0:

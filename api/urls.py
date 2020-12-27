@@ -34,6 +34,7 @@ urlpatterns = [
     path('activate/<uidb64>/<token>', activate, name='activate'),
     path('api/logout', logout, name='logout'),
     path('api/checkout', checkout, name='checkout'),
+    path('api/checkout_monthly_payment', checkout_monthly_payment, name="checkout_monthly_payment"),
     path('api/checkout-webhook', checkout_webhook, name='checkout-webhook'),
     path('api/query', email_query, name='query'),
     path('api/password_reset/', include('django_rest_passwordreset.urls'), name='password_reset'),
@@ -41,4 +42,5 @@ urlpatterns = [
     path('api/instructor/<int:instructor_id>/update/skills/', instructor_skill_update, name='instructor_skill_update'),
     path('event/new', update_event, name='event_new'),
     path('event/edit/<int:event_id>', update_event, name='event_edit'),
+    path('set_timezone/', set_timezone, name='set_timezone')
 ]

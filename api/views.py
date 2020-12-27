@@ -1,6 +1,7 @@
 import json
 import calendar
 
+import pytz
 import stripe
 
 from django.contrib.auth import login as django_login, logout as django_logout, authenticate
@@ -30,7 +31,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.dispatch import receiver
 from django_rest_passwordreset.signals import reset_password_token_created, pre_password_reset, post_password_reset
 from datetime import datetime, date, timedelta
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from django.utils.safestring import mark_safe
 from .utils import Calendar
@@ -163,14 +164,16 @@ def student_payment_details(request):
     d = get_date(request.GET.get('month', None))
     prev_month_d = prev_month(d)
     next_month_d = next_month(d)
-    events = Event.objects.filter(user=request.user).filter(start_time__month=d.month)\
+    events = Event.objects.filter(user=request.user).filter(start_time__month=d.month) \
         .filter(start_time__year=d.year).order_by('start_time')
     total_pay_amount = events.filter(amount_paid=0).filter(status=0).aggregate(Sum('total_amount'))
     if not total_pay_amount["total_amount__sum"]:
         total_pay_amount["total_amount__sum"] = 0
     return render(request, 'student/student-payment.html', {"events": events, "total_pay_amount": total_pay_amount,
                                                             "prev_month": prev_month_d, "next_month": next_month_d,
-                                                            "current_month": calendar.month_name[d.month], "current_year": d.year})
+                                                            "current_month": calendar.month_name[d.month],
+                                                            "current_year": d.year,
+                                                            'stripe_pk': settings.STRIPE_PUBLISHABLE_KEY})
 
 
 def login(request):
@@ -299,6 +302,36 @@ def email_query(request):
         return JsonResponse(response, status=400)
 
 
+def checkout_monthly_payment(request):
+    try:
+        total_amount = request.POST["total_amount"]
+        events = request.POST["events"]
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[
+                {
+                    'price_data': {
+                        'currency': 'usd',
+                        'unit_amount': 10 * 100,
+                        'product_data': {
+                            'name': "Monthly payment",
+                        },
+                    },
+                    'quantity': 1,
+                }
+            ],
+            mode='payment',
+            success_url=settings.STRIPE_DOMAIN + reverse('index'),  # TODO: Success
+            cancel_url=settings.STRIPE_DOMAIN + reverse('index'),
+            api_key=settings.STRIPE_API_KEY,
+            metadata={"payment_method": PaymentMethod.per_class_payment}
+        )
+        return HttpResponse(json.dumps({'id': checkout_session.id, 'payment_method': PaymentMethod.per_class_payment}))
+    except Exception as e:
+        raise e
+        return HttpResponse(str(e), status=403)
+
+
 def checkout(request):
     form = PurchaseForm(request.POST)
     if form.is_valid():
@@ -324,12 +357,13 @@ def checkout(request):
                                 },
                             },
                             'quantity': 1,
-                        },
+                        }
                     ],
                     mode='payment',
                     success_url=settings.STRIPE_DOMAIN + reverse('index'),  # TODO: Success
                     cancel_url=settings.STRIPE_DOMAIN + reverse('index'),
-                    api_key=settings.STRIPE_API_KEY
+                    api_key=settings.STRIPE_API_KEY,
+                    metadata={"payment_method": PaymentMethod.full_payment}
                 )
             except Exception as e:
                 raise e
@@ -397,6 +431,7 @@ def checkout_webhook(request):
         event = stripe.Webhook.construct_event(
             payload, sig_header, settings.STRIPE_ENDPOINT_SECRET
         )
+        print(event.metadata)
     except ValueError as e:
         # Invalid payload
         return HttpResponse(status=400)
@@ -508,6 +543,7 @@ class CalendarView(generic.ListView):
         # Call the formatmonth method, which returns our calendar as a table
         html_cal = cal.formatmonth(withyear=True)
         context['calendar'] = mark_safe(html_cal)
+        context['timezones'] = pytz.common_timezones
         return context
 
 
@@ -531,6 +567,7 @@ class InstructorCalendarView(generic.ListView):
         context['calendar'] = mark_safe(html_cal)
         context['enrollment_id'] = self.kwargs["enrollment_id"]
         context['instructor_id'] = self.kwargs["instructor_id"]
+        context['timezones'] = pytz.common_timezones
         return context
 
 
@@ -564,7 +601,7 @@ def update_event_status(request, instructor_id, event_id):
     event.updated_at = datetime.now()
     event.save()
     return HttpResponseRedirect(reverse('instructor-class-schedule',
-                                        kwargs={'instructor_id': instructor_id, 'student_id': student.pk}))
+                                        kwargs={'instructor_id': instructor_id, 'enrollment_id': event.enrollment.pk}))
 
 
 # Instructor views #
@@ -710,7 +747,7 @@ def instructor_student_works(request, instructor_id, enrollment_id, exam_id=None
         exam.course = student_instructor.enrollment.course
         exam.save()
         return HttpResponseRedirect(reverse('instructor-student-works', kwargs={"instructor_id": instructor_id,
-                                                                                 "enrollment_id": enrollment_id}))
+                                                                                "enrollment_id": enrollment_id}))
     # Exam grade form
     if exam_grade_id:
         exam_grade_instance = get_object_or_404(ExamGrade, pk=exam_grade_id)
@@ -728,7 +765,7 @@ def instructor_student_works(request, instructor_id, enrollment_id, exam_id=None
         else:
             exam_grade.save()
         return HttpResponseRedirect(reverse('instructor-student-works', kwargs={"instructor_id": instructor_id,
-                                                                                 "enrollment_id": enrollment_id}))
+                                                                                "enrollment_id": enrollment_id}))
     # Project form
     if project_id:
         project_instance = get_object_or_404(Project, pk=project_id)
@@ -740,7 +777,17 @@ def instructor_student_works(request, instructor_id, enrollment_id, exam_id=None
         project.course = student_instructor.enrollment.course
         project.save()
         return HttpResponseRedirect(reverse('instructor-student-works', kwargs={"instructor_id": instructor_id,
-                                                                                 "enrollment_id": enrollment_id}))
+                                                                                "enrollment_id": enrollment_id}))
     return render(request, 'instructor/student_test_assignment.html',
                   {"student_instructor": student_instructor, "instructor_id": instructor_id,
                    "project_form": project_form, "exam_form": exam_form, "exam_grade_form": exam_grade_form})
+
+
+def set_timezone(request):
+    me = AcademyUser.get_for(request.user)
+    if request.method == 'POST':
+        request.session['django_timezone'] = request.POST['timezone']
+        if isinstance(me, Instructor):
+            return HttpResponseRedirect(reverse('instructor'))
+        elif isinstance(me, Student):
+            return HttpResponseRedirect(reverse('student'))
