@@ -303,7 +303,7 @@ def email_query(request):
 
 def checkout_monthly_payment(request):
     try:
-        total_amount = request.POST["total_amount"]
+        total_amount = int(request.POST["total_amount"])
         events = request.POST["events"]
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=['card'],
@@ -311,7 +311,7 @@ def checkout_monthly_payment(request):
                 {
                     'price_data': {
                         'currency': 'usd',
-                        'unit_amount': 10 * 100,
+                        'unit_amount': total_amount * 100,
                         'product_data': {
                             'name': "Monthly payment",
                         },
