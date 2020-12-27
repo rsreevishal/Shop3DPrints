@@ -55,7 +55,7 @@
         for(row of $(".table-success")) {
             events.push($(row).data('value'));
         }
-        /*var data = {
+        var data = {
             "total_amount": {{ total_pay_amount.total_amount__sum }},
             "events": events.join(),
             csrfmiddlewaretoken: '{{ csrf_token }}'
@@ -67,7 +67,7 @@
                 alert(session.message);
                 stripe.redirectToCheckout({sessionId: session.id});
             }
-        });*/
+        });
     });
 </script>
 {% endblock %}
