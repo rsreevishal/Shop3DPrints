@@ -29,7 +29,7 @@
                 </tr>
             </thead>
             {% for event in events %}
-                <tr class="{% if event.amount_paid == 0 and event.status == 0 %} table-success {% endif %}">
+                <tr class="{% if event.amount_paid == 0 and event.status == 0 %} table-success {% endif %}" data-value={{event.pk}}>
                     <td>{{ event.start_time }}</td>
                     <td>{{ event.enrollment.course.name }}</td>
                     <td>${{ event.enrollment.course.per_class_price_usd }}</td>
@@ -50,10 +50,14 @@
 <script src="https://js.stripe.com/v3/"></script>
 <script>
      var stripe = Stripe("{{ stripe_pk }}");
+     var events = []
      $('#pay-now').on('click', function (e) {
-        var data = {
+        for(row of $(".table-success")) {
+            events.push($(row).data('value'));
+        }
+        /*var data = {
             "total_amount": {{ total_pay_amount.total_amount__sum }},
-            "events": "1,2,3",
+            "events": events.join(),
             csrfmiddlewaretoken: '{{ csrf_token }}'
         }; // TODO
         console.log(data)
@@ -63,7 +67,7 @@
                 alert(session.message);
                 stripe.redirectToCheckout({sessionId: session.id});
             }
-        });
+        });*/
     });
 </script>
 {% endblock %}

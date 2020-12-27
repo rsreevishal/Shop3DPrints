@@ -323,7 +323,7 @@ def checkout_monthly_payment(request):
             success_url=settings.STRIPE_DOMAIN + reverse('index'),  # TODO: Success
             cancel_url=settings.STRIPE_DOMAIN + reverse('index'),
             api_key=settings.STRIPE_API_KEY,
-            metadata={"payment_method": PaymentMethod.per_class_payment}
+            metadata={"payment_method": PaymentMethod.per_class_payment, "events": events, "total_amount": total_amount}
         )
         return HttpResponse(json.dumps({'id': checkout_session.id, 'payment_method': PaymentMethod.per_class_payment}))
     except Exception as e:
@@ -430,7 +430,7 @@ def checkout_webhook(request):
         event = stripe.Webhook.construct_event(
             payload, sig_header, settings.STRIPE_ENDPOINT_SECRET
         )
-        print(event.metadata)
+        print(event)
     except ValueError as e:
         # Invalid payload
         return HttpResponse(status=400)
@@ -440,36 +440,45 @@ def checkout_webhook(request):
     print(f"-----Checkout event: {event} ---------")
     # Handle the checkout.session.completed event
     if event['type'] == 'checkout.session.completed':
-        session = event['data']['object']
+        payment_method = event.data.object.metadata.payment_method
+        if payment_method == PaymentMethod.full_payment:
+            session = event['data']['object']
 
-        purchase = Purchase.objects.get(stripe_id=session.id)
-        purchase.confirmed = True
-        purchase.save()
-        enrollment = Enrollment.objects.get(purchase=purchase)
-        week_count = 0
-        day_count = 0
-        print("-------Creating events---------")
-        while day_count != enrollment.course.total_days:
-            for d in enrollment.days.split(','):
-                day = int(d)
-                next_day = get_next_weekday(day) + timedelta(days=week_count * 7)
-                event = Event(
-                    user=enrollment.student.django_user,
-                    title=f"{enrollment.course.name}: {enrollment.start_time} - {enrollment.end_time}",
-                    description=f"{enrollment.course.name}: {enrollment.start_time} - {enrollment.end_time}",
-                    start_time=datetime.combine(next_day, enrollment.start_time),
-                    end_time=datetime.combine(next_day, enrollment.end_time),
-                    enrollment=enrollment,
-                    payment_method=PaymentMethod.full_payment,
-                    total_amount=enrollment.course.per_class_price_usd,
-                    amount_paid=enrollment.course.per_class_price_usd
-                )
+            purchase = Purchase.objects.get(stripe_id=session.id)
+            purchase.confirmed = True
+            purchase.save()
+            enrollment = Enrollment.objects.get(purchase=purchase)
+            week_count = 0
+            day_count = 0
+            print("-------Creating events---------")
+            while day_count != enrollment.course.total_days:
+                for d in enrollment.days.split(','):
+                    day = int(d)
+                    next_day = get_next_weekday(day) + timedelta(days=week_count * 7)
+                    event = Event(
+                        user=enrollment.student.django_user,
+                        title=f"{enrollment.course.name}: {enrollment.start_time} - {enrollment.end_time}",
+                        description=f"{enrollment.course.name}: {enrollment.start_time} - {enrollment.end_time}",
+                        start_time=datetime.combine(next_day, enrollment.start_time),
+                        end_time=datetime.combine(next_day, enrollment.end_time),
+                        enrollment=enrollment,
+                        payment_method=PaymentMethod.full_payment,
+                        total_amount=enrollment.course.per_class_price_usd,
+                        amount_paid=enrollment.course.per_class_price_usd
+                    )
+                    event.save()
+                    day_count += 1
+                    if day_count == enrollment.course.total_days:
+                        break
+                week_count += 1
+            print(session)
+        elif payment_method == PaymentMethod.per_class_payment:
+            data = event.data.object.metadata
+            events_pk = [int(e) for e in data.events.split(",")]
+            for pk in events_pk:
+                event = Event.objects.get(pk=pk)
+                event.amount_paid = event.total_amount
                 event.save()
-                day_count += 1
-                if day_count == enrollment.course.total_days:
-                    break
-            week_count += 1
-        print(session)
 
     # Passed signature verification
     return HttpResponse(status=200)
