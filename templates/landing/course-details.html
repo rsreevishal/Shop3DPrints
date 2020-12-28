@@ -25,7 +25,7 @@
             </div>
             <p class="text-normal">{{ course.category.category }}</p>
             <p class="text-medium">{{ course.description }}</p>
-            <button type="button" class="btn btn-outline-light text-normal"><a href="#enroll-now">Enroll Now</a>
+            <button type="button" class="btn btn-outline-light text-normal" id="enroll-btn"><a href="#enroll-now">Enroll Now</a>
             </button>
             <button type="button" class="btn btn-warning text-normal" id="free-trial-btn"><a href="#enroll-now">Free Trial</a></button>
 
@@ -151,9 +151,9 @@
                     <div class="col-12 mx-auto">
                         <label for="payment_method">Mode of payment</label>
                         <select id="payment_method" name="payment_method" class="form-control form-control-sm" required>
-                            <option value=0>Full payment</option>
-                            <option value=1>Monthly payment</option>
-                            <option value=2>Free trail</option>
+                            <option value=0 id="pay-option-0">Full payment</option>
+                            <option value=1 id="pay-option-1">Monthly payment</option>
+                            <option value=2 id="pay-option-2">Free trail</option>
                         </select>
                     </div>
                 </div>
@@ -253,8 +253,21 @@
                    }
                 });
           });
+         function disableAllPaymentOption() {
+            $("#pay-option-0").attr("disabled", "disabled");
+            $("#pay-option-1").attr("disabled", "disabled");
+            $("#pay-option-2").attr("disabled", "disabled");
+         }
          $("#free-trial-btn").on('click', function() {
+            disableAllPaymentOption();
+            $("#pay-option-2").attr("disabled", false);
             $("#payment_method").val(2);
+         });
+         $("#enroll-btn").on('click', function() {
+            disableAllPaymentOption();
+            $("#pay-option-0").attr("disabled", false);
+            $("#pay-option-1").attr("disabled", false);
+            $("#payment_method").val(0);
          });
     </script>
 {% endblock %}
