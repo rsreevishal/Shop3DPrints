@@ -181,10 +181,16 @@
             {% endfor %}
         };
         var availDates = Object.keys(availDatesWithDay);
+        function digitFix(digit) {
+            if(digit < 10) {
+                return `0${digit}`;
+            }
+            return `${digit}`;
+        }
         $('#date-picker').datepicker({
             format: 'mm/dd/yyyy',
             beforeShowDay: function(date){
-                dmy = date.getMonth()+1 + "_" + date.getDate() + "_" + date.getFullYear();
+                var dmy = digitFix(date.getMonth()+1) + "_" + digitFix(date.getDate()) + "_" + date.getFullYear();
                 if(availDates.indexOf(dmy) != -1){
                     return [true];
                 }
