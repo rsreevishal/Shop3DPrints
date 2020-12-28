@@ -522,25 +522,26 @@ def checkout_webhook(request):
                 for d in enrollment.days.split(','):
                     day = int(d)
                     next_day = get_next_weekday(day) + timedelta(days=week_count * 7)
-                    event = Event(
-                        user=enrollment.student.django_user,
-                        title=f"{enrollment.course.name}: {enrollment.start_time} - {enrollment.end_time}",
-                        description=f"{enrollment.course.name}: {enrollment.start_time} - {enrollment.end_time}",
-                        start_time=datetime.combine(next_day, enrollment.start_time),
-                        end_time=datetime.combine(next_day, enrollment.end_time),
-                        enrollment=enrollment,
-                        payment_method=PaymentMethod.full_payment,
-                        total_amount=enrollment.course.per_class_price_usd,
-                        amount_paid=enrollment.course.per_class_price_usd
-                    )
-                    event.save()
-                    # creating payment status
-                    student_payment_detail = StudentPaymentDetails.objects.get(enrollment=event.enrollment)
-                    student_payment_detail.amount_paid = student_payment_detail.amount_paid + enrollment.course.per_class_price_usd
-                    student_payment_detail.save()
-                    day_count += 1
-                    if day_count == enrollment.course.total_days:
-                        break
+                    if next_day.date() >= purchase.course_datetime.date():
+                        event = Event(
+                            user=enrollment.student.django_user,
+                            title=f"{enrollment.course.name}: {enrollment.start_time} - {enrollment.end_time}",
+                            description=f"{enrollment.course.name}: {enrollment.start_time} - {enrollment.end_time}",
+                            start_time=datetime.combine(next_day, enrollment.start_time),
+                            end_time=datetime.combine(next_day, enrollment.end_time),
+                            enrollment=enrollment,
+                            payment_method=PaymentMethod.full_payment,
+                            total_amount=enrollment.course.per_class_price_usd,
+                            amount_paid=enrollment.course.per_class_price_usd
+                        )
+                        event.save()
+                        # creating payment status
+                        student_payment_detail = StudentPaymentDetails.objects.get(enrollment=event.enrollment)
+                        student_payment_detail.amount_paid = student_payment_detail.amount_paid + enrollment.course.per_class_price_usd
+                        student_payment_detail.save()
+                        day_count += 1
+                        if day_count == enrollment.course.total_days:
+                            break
                 week_count += 1
             print(session)
         elif payment_method == PaymentMethod.per_class_payment:
