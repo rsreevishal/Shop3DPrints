@@ -27,7 +27,7 @@
             <p class="text-medium">{{ course.description }}</p>
             <button type="button" class="btn btn-outline-light text-normal"><a href="#enroll-now">Enroll Now</a>
             </button>
-<!--            <button type="button" class="btn btn-warning text-normal"><a href="book-trial.html">Free Trial</a></button>-->
+            <button type="button" class="btn btn-warning text-normal" id="free-trial-btn"><a href="#enroll-now">Free Trial</a></button>
 
         </div>
     </section>
@@ -144,7 +144,7 @@
                         <select id="available_timing" name="time" class="form-control form-control-sm" required>
                             <option value="null" id="at_null" selected>None</option>
                             {% for ts in time_slots%}
-                                <option value='{{ts.start_time}},{{ts.end_time}}' class="at_{{ts.date}}" disabled>{{ts.start_time}}-{{ts.end_time}}</option>
+                                <option value='{{ts.utc_start_time}},{{ts.utc_end_time}}' class="at_{{ts.date}}" disabled>{{ts.start_time}}-{{ts.end_time}}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -153,6 +153,7 @@
                         <select id="payment_method" name="payment_method" class="form-control form-control-sm" required>
                             <option value=0>Full payment</option>
                             <option value=1>Monthly payment</option>
+                            <option value=2>Free trail</option>
                         </select>
                     </div>
                 </div>
@@ -166,40 +167,7 @@
             <p class="text-large text-center">Please login or register to enroll in a course.</p>
         {% endif %}
     </section>
-    <!-- PROMPT MODAL -->
-<!--     <div class="modal fade" id="prompt-popup" data-backdrop="static" tabindex="-1"
-         aria-labelledby="staticBackdropLabel" aria-hidden="true" role="dialog">
-        <div class="modal-dialog modal-dialog-centered modal-sm modal-reg" role="document">
-            <div class="card modal-content ">
-
-                <div class="row no-gutters congrats-con">
-                    <div class="card-body  text-center text-large text-white">
-                        <div class="py-2 px-2">
-                            <i class="fas fa-laugh-beam fa-2x pb-2" style="color: #ffd400"></i>
-                            <h3>Please login or register to enroll</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row no-gutters">
-                    <div class="card-body  text-center text-small">
-                        <p class="text-small text-right">Already have an account?
-                            <button class="form-btn custom-btn" role="button" data-toggle="modal"
-                                    data-target="#login-popup" data-dismiss="modal">Login
-                            </button>
-                        </p>
-                        <p class="text-small text-right">New User?
-                            <button class="form-btn custom-btn" role="button" data-toggle="modal"
-                                    data-target="#register-popup" data-dismiss="modal">Register
-                            </button>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
 {% endblock %}
-
 {% block script %}
     <link href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" rel="stylesheet"
           type="text/css"/>
@@ -257,12 +225,16 @@
                 const session = JSON.parse(response);
                 if(session.payment_method == 0) {
                     stripe.redirectToCheckout({sessionId: session.id});
-                } else if (session.payment_method == 1) {
+                } else if (session.payment_method == 1 || session.payment_method == 2) {
                     alert(session.message);
                     window.location.replace("{% url 'student' %}");
                 }
+            }).fail(function (data) {
+                var res = JSON.parse(data.responseText);
+                alert(res.message);
+                //alert("Sorry can't enroll. Check whether you're enrolled already");
             });
-        });
+        })
         $("#set-time").submit(function(e) {
                 e.preventDefault();
                 var form = $(this);
@@ -281,5 +253,8 @@
                    }
                 });
           });
+         $("#free-trial-btn").on('click', function() {
+            $("#payment_method").val(2);
+         });
     </script>
 {% endblock %}

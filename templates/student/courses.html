@@ -18,7 +18,6 @@
                aria-selected="false">History</a>
         </div>
     </nav>
-
     <!--  CURRENT AND HISTORY COURSE TAB CONTENT-->
     <div class="tab-content ml-sm-4 mx-md-5" id="courses">
         <!-- CURRENT COURSE TAB CONTENT -->
@@ -27,15 +26,20 @@
             <div class="card-columns mx-auto">
                 {% for enrollment in enrollments %}
                     <a href="{% url 'student-course' enrollment.course.id %}">
-                        <div class="card my-3 mx-auto ">
-                            <div class="card-body pb-0 h-100 w-100">
-                                <h5 class="card-title text-large">{{ enrollment.course.name }}</h5>
+                        <div class="card my-2 mx-2">
+                            <div class="card-header" style="height: 80px;">
+                                <h5 class="card-title" style="font-size: 2vh;">{{ enrollment.course.name }}</h5>
+                            </div>
+                            <div class="card-body" style="height: 200px;">
                                 <ul class="list-unstyled text-small">
                                     <li><strong>{{ enrollment.course.category.category }}</strong></li>
                                     <li>Grade: <strong>{{ enrollment.course.get_grade_display }}</strong></li>
                                     <li>Level: <strong>{{ enrollment.course.level }}</strong></li>
                                     <li>{{ enrollment.get_days_display }}</li>
                                     <li>{{ enrollment.start_time }} - {{ enrollment.end_time }}</li>
+                                    {% if enrollment.purchase.payment_method == 2%}
+                                        <li class="text-primary">Trial class</li>
+                                    {% endif %}
                                 </ul>
                             </div>
                             <div class="card-footer">
@@ -47,7 +51,6 @@
                         </div>
                     </a>
                 {% endfor %}
-                
             </div>
         </div>
 

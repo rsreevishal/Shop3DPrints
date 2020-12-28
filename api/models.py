@@ -286,6 +286,12 @@ class ExamGrade(models.Model):
         return f'{self.student.name} for {self.exam.name}'
 
 
+class PaymentMethod(models.IntegerChoices):
+    full_payment = 0
+    per_class_payment = 1
+    free_trail = 2
+
+
 class Purchase(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
@@ -293,6 +299,10 @@ class Purchase(models.Model):
     course_datetime = models.DateTimeField()
     stripe_id = models.CharField(max_length=128)
     confirmed = models.BooleanField(default=False)
+    payment_method = models.IntegerField(choices=PaymentMethod.choices)
+
+    class Meta:
+        unique_together = [['student', 'course', 'payment_method']]
 
 
 class Enrollment(models.Model):
@@ -317,9 +327,9 @@ class Attendance(models.IntegerChoices):
     other = 2, 'OTHER'
 
 
-class PaymentMethod(models.IntegerChoices):
-    full_payment = 0
-    per_class_payment = 1
+def get_local_time(dt):
+    at = dt.replace(tzinfo=timezone.utc).astimezone(tz=timezone.get_current_timezone()).time()
+    return at
 
 
 class Event(models.Model):
@@ -338,15 +348,14 @@ class Event(models.Model):
     paid_at = models.DateTimeField(null=True, default=None, blank=True)
 
     @property
-    def get_html_url(self):
-        url = reverse('event_edit', args=(self.id,))
+    def get_title(self):
         return f'<p> {self.title} </p>'
 
     @property
     def my_time_zone_title(self):
-        start_time = timezone.localtime(self.start_time, timezone.get_current_timezone())
-        end_time = timezone.localtime(self.end_time, timezone.get_current_timezone())
-        return f'{self.enrollment.course.name}: {start_time.time().strftime("%I:%M %p")} - {end_time.time().strftime("%I:%M %p")}'
+        start_time = get_local_time(self.start_time)
+        end_time = get_local_time(self.end_time)
+        return f'{self.enrollment.course.name}: {start_time.strftime("%I:%M %p")} - {end_time.strftime("%I:%M %p")}'
 
     def __str__(self):
         return self.title

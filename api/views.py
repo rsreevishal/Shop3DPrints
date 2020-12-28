@@ -3,6 +3,7 @@ import calendar
 
 import pytz
 import stripe
+from django.db import IntegrityError
 from django.utils import timezone
 from django.contrib.auth import login as django_login, logout as django_logout, authenticate
 from django.contrib.auth.models import User
@@ -88,6 +89,13 @@ def index(request):
     })(request)
 
 
+def course_category(request):
+    categories = Category.objects.all()
+    return standard_view('landing/course-category.html', {
+        'categories': categories,
+    })(request)
+
+
 def courses_offered(request, category_id):
     category = Category.objects.get(id=category_id)
 
@@ -105,7 +113,6 @@ def get_next_weekday(day):
 
 def get_local_time(dt):
     at = dt.replace(tzinfo=timezone.utc).astimezone(tz=timezone.get_current_timezone()).time()
-    print(f"AT: {at}")
     return at
 
 
@@ -120,7 +127,9 @@ def course_details(request, course_id):
                 "date": ndate.strftime("%m_%d_%Y"),
                 "day": ts.day,
                 "start_time": get_local_time(datetime.combine(ndate, ts.start)).strftime("%I:%M %p"),
-                "end_time": get_local_time(datetime.combine(ndate, ts.end)).strftime("%I:%M %p")
+                "end_time": get_local_time(datetime.combine(ndate, ts.end)).strftime("%I:%M %p"),
+                "utc_start_time": ts.start.strftime("%I:%M %p"),
+                "utc_end_time": ts.end.strftime("%I:%M %p"),
             }
         )
     return standard_view('landing/course-details.html', {
@@ -348,9 +357,10 @@ def checkout(request):
             course=Course.objects.get(pk=form.cleaned_data["course"]),
             course_datetime=date_time,
             student=AcademyUser.get_for(request.user),
-            batch=form.cleaned_data["batch"]
+            batch=form.cleaned_data["batch"],
+            payment_method=int(form.cleaned_data["payment_method"])
         )
-        if int(form.cleaned_data["payment_method"]) == PaymentMethod.full_payment:
+        if purchase.payment_method == PaymentMethod.full_payment:
             try:
                 checkout_session = stripe.checkout.Session.create(
                     payment_method_types=['card'],
@@ -377,7 +387,12 @@ def checkout(request):
                 return HttpResponse(str(e), status=403)
 
             purchase.stripe_id = checkout_session.stripe_id
-            purchase.save()
+            try:
+                purchase.save()
+            except IntegrityError:
+                return JsonResponse(
+                    {"type": "ERROR", "message": "Sry can't enroll. Check whether you're enrolled already"},
+                    status=400)
             enrollment = Enrollment(
                 student=purchase.student,
                 course=purchase.course,
@@ -393,8 +408,13 @@ def checkout(request):
                                                            amount_paid=0)
             student_payment_detail.save()
             return HttpResponse(json.dumps({'id': checkout_session.id, 'payment_method': PaymentMethod.full_payment}))
-        elif int(form.cleaned_data["payment_method"]) == PaymentMethod.per_class_payment:
-            purchase.save()
+        elif purchase.payment_method == PaymentMethod.per_class_payment:
+            try:
+                purchase.save()
+            except IntegrityError:
+                return JsonResponse(
+                    {"type": "ERROR", "message": "Sry can't enroll. Check whether you're enrolled already"},
+                    status=400)
             enrollment = Enrollment(
                 student=purchase.student,
                 course=purchase.course,
@@ -410,21 +430,22 @@ def checkout(request):
                 for d in enrollment.days.split(','):
                     day = int(d)
                     next_day = get_next_weekday(day) + timedelta(days=week_count * 7)
-                    event = Event(
-                        user=enrollment.student.django_user,
-                        title=f"{enrollment.course.name}: {enrollment.start_time} - {enrollment.end_time}",
-                        description=f"{enrollment.course.name}: {enrollment.start_time} - {enrollment.end_time}",
-                        start_time=datetime.combine(next_day, enrollment.start_time),
-                        end_time=datetime.combine(next_day, enrollment.end_time),
-                        enrollment=enrollment,
-                        payment_method=PaymentMethod.per_class_payment,
-                        total_amount=enrollment.course.per_class_price_usd,
-                        amount_paid=0
-                    )
-                    event.save()
-                    day_count += 1
-                    if day_count == enrollment.course.total_days:
-                        break
+                    if next_day.date >= purchase.course_datetime.date:
+                        event = Event(
+                            user=enrollment.student.django_user,
+                            title=f"{enrollment.course.name}: {enrollment.start_time} - {enrollment.end_time}",
+                            description=f"{enrollment.course.name}: {enrollment.start_time} - {enrollment.end_time}",
+                            start_time=datetime.combine(next_day, enrollment.start_time),
+                            end_time=datetime.combine(next_day, enrollment.end_time),
+                            enrollment=enrollment,
+                            payment_method=PaymentMethod.per_class_payment,
+                            total_amount=enrollment.course.per_class_price_usd,
+                            amount_paid=0
+                        )
+                        event.save()
+                        day_count += 1
+                        if day_count == enrollment.course.total_days:
+                            break
                 week_count += 1
             # creating payment status
             student_payment_detail = StudentPaymentDetails(enrollment=enrollment,
@@ -433,6 +454,36 @@ def checkout(request):
             student_payment_detail.save()
             return HttpResponse(json.dumps({'payment_method': PaymentMethod.per_class_payment,
                                             'message': "Successfully enrolled the course"}))
+        elif purchase.payment_method == PaymentMethod.free_trail:
+            try:
+                purchase.save()
+            except IntegrityError:
+                return JsonResponse(
+                    {"type": "ERROR", "message": "Sry can't enroll. Check whether you're enrolled already"},
+                    status=400)
+            enrollment = Enrollment(
+                student=purchase.student,
+                course=purchase.course,
+                days=purchase.batch,
+                start_time=datetime.strptime(start_time, '%I:%M %p').time(),
+                end_time=datetime.strptime(end_time, '%I:%M %p').time(),
+                purchase=purchase
+            )
+            enrollment.save()
+            event = Event(
+                user=enrollment.student.django_user,
+                title=f"{enrollment.course.name}: {enrollment.start_time} - {enrollment.end_time}",
+                description=f"{enrollment.course.name}: {enrollment.start_time} - {enrollment.end_time}",
+                start_time=datetime.combine(purchase.course_datetime, enrollment.start_time),
+                end_time=datetime.combine(purchase.course_datetime, enrollment.end_time),
+                enrollment=enrollment,
+                payment_method=PaymentMethod.free_trail,
+                total_amount=0,
+                amount_paid=enrollment.course.per_class_price_usd
+            )
+            event.save()
+            return HttpResponse(json.dumps({'payment_method': PaymentMethod.free_trail,
+                                            'message': "Successfully enrolled free trail of the course"}))
     else:
         return HttpResponse("Not valid data", status=403)
 

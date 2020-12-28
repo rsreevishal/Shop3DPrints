@@ -29,13 +29,18 @@
                         {% for cls in classes %}
                             <a href="{% url 'instructor-class-schedule' cls.instructor.pk cls.enrollment.pk %}">
                                 <div class="card my-3 mx-auto py-auto px-auto h-100 w-100">
-                                    <div class="card-body pb-auto mb-auto">
-                                        <h5 class="card-title text-large">{{ cls.enrollment.student.student_first_name }} {{ cls.enrollment.student.student_last_name }}</h5>
+                                    <div class="card-header" style="height: 80px;">
+                                        <h5 class="card-title" style="font-size: 2vh;">{{ cls.enrollment.student.student_first_name }} {{ cls.enrollment.student.student_last_name }}</h5>
+                                    </div>
+                                    <div class="card-body py-2" style="height: 200px">
                                         <ul class="list-unstyled text-small">
                                             <li><strong>{{ cls.enrollment.course.name }}</strong></li>
                                             <li><strong>{{ cls.enrollment.course.category.category }}</strong></li>
                                             <li>Grade: <strong>{{ cls.enrollment.course.get_grade_display }}</strong></li>
                                             <li>Level: <strong>{{ cls.enrollment.course.level }}</strong></li>
+                                            {% if cls.enrollment.purchase.payment_method == 2%}
+                                                <li class="text-primary">Trial class</li>
+                                            {% endif %}
                                         </ul>
                                         <ul class="list-unstyled text-small mb-0" style="color:#0060CF">
                                             <li>{{ cls.enrollment.get_days_display }}</li>

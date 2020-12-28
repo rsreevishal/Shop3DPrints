@@ -29,6 +29,7 @@
                 </tr>
             </thead>
             {% for event in events %}
+                {% if event.payment_method != 2%}
                 <tr class="{% if event.amount_paid == 0 and event.status == 0 %} table-success {% endif %}" data-value={{event.pk}}>
                     <td>{{ event.start_time }}</td>
                     <td>{{ event.enrollment.course.name }}</td>
@@ -37,6 +38,7 @@
                     <td>${{ event.total_amount }}</td>
                     <td>{% if event.amount_paid > 0 %} Yes {% else %} No {% endif %}</td>
                 </tr>
+                {% endif %}
             {% endfor %}
         </table>
         <p class="text-large"><strong>Total amount: ${{total_pay_amount.total_amount__sum}}</strong></p>

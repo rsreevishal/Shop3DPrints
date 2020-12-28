@@ -118,8 +118,13 @@
         <ul class="icon-text list-unstyled list-inline py-2">
             {% for category in all_categories %}
                 <a href="{% url 'courses-offered' category.id %}">
-                    <li class="list-inline-item text-center"><img
-                            src="{{ category.thumbnail.url }}"><br>{{ category.name }}</li>
+                    <li class="list-inline-item text-center">
+                        {% if category.thumbnail %}
+                            <img src="{{ category.thumbnail.url }}" alt="course-img"><br>{{ category.name }}
+                        {% else %}
+                            <img src="{% static 'images/300.png' %}" alt="course-img">
+                        {% endif %}
+                    </li>
                 </a>
             {% endfor %}
         </ul>
