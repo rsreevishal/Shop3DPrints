@@ -430,7 +430,7 @@ def checkout(request):
                 for d in enrollment.days.split(','):
                     day = int(d)
                     next_day = get_next_weekday(day) + timedelta(days=week_count * 7)
-                    if next_day.date >= purchase.course_datetime.date:
+                    if next_day.date() >= purchase.course_datetime.date():
                         event = Event(
                             user=enrollment.student.django_user,
                             title=f"{enrollment.course.name}: {enrollment.start_time} - {enrollment.end_time}",
