@@ -17,8 +17,7 @@
                 <span class="lead">Become an instructor</span>
             </div>
             <div class="col-10 col-sm-2 col-md-2 my-auto py-3 text-sm-right ml-5 px-0">
-                <button type="button" class="btn btn-outline-light br-3 sub">
-                    <a href="{% url 'reg-form' %}" class="text-white">Get Started</a></button>
+                <a href="{% url 'reg-form' %}" class="btn btn-outline-light br-3 sub">Get Started</a>
             </div>
         </div>
     </section>
@@ -85,20 +84,17 @@
     </section>
 
     <!--  BECOME INS-->
-    <section class="become-ins pt-3 text-center">
+    <section class="become-ins pt-0 text-center">
         <div class="row justify-content-around mx-0">
-            <div class="col-2">
-            </div>
-            <div class="col-8 text-center px-0 py-5">
-                <h1>Become an instructor today</h1>
-                <br>
-                <p class="lead">Let's make learning fruitful</p>
-                <button type="button" class="btn text-light custom-btn"><a href="{% url 'reg-form' %}" class="text-white">Get Started</button>
-            </div>
             <div class="col-2 p-0">
                 <img src="{% static 'images/instructor2.png' %}" class="img_ran d-none d-lg-inline">
             </div>
-
+            <div class="col-10 text-center px-0 py-5">
+                <h1>Become an instructor today</h1>
+                <br/>
+                <p class="lead">Let's make learning fruitful</p>
+                <a href="{% url 'reg-form' %}" class="btn text-light custom-btn text-white">Get Started</a>
+            </div>
         </div>
     </section>
 {% endblock %}

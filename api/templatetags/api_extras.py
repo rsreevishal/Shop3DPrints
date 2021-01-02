@@ -1,8 +1,10 @@
+from datetime import datetime
 from typing import Union
 
 from django import template
+from django.utils import timezone
 
-from api.models import Exam, ExamGrade, Project, ProjectSubmission, Student
+from api.models import Exam, ExamGrade, Project, ProjectSubmission, Student, AcademyUser
 
 register = template.Library()
 
@@ -51,3 +53,9 @@ def attendance_status(_id):
         return "-"
     else:
         return status_name[_id]
+
+
+@register.filter(name='local_time')
+def local_time(t, me):
+    at = datetime.combine(datetime.now(), t).replace(tzinfo=timezone.utc).astimezone(tz=me.timezone).time()
+    return at.strftime("%I:%M %p")

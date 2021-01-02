@@ -1,6 +1,7 @@
 {% extends 'student/student-base.html' %}
 {% load static %}
 {% load api_extras %}
+
 {% block student-head %}
     <title>CMS Online Academy | Profile</title>
 {% endblock %}
@@ -31,7 +32,7 @@
             {% for event in events %}
                 {% if event.payment_method != 2%}
                 <tr class="{% if event.amount_paid == 0 and event.status == 0 %} table-success {% endif %}" data-value={{event.pk}}>
-                    <td>{{ event.start_time }}</td>
+                    <td>{{ event.start_time.date }}-{{event.enrollment.local_start_time}}</td>
                     <td>{{ event.enrollment.course.name }}</td>
                     <td>${{ event.enrollment.course.per_class_price_usd }}</td>
                     <td>{{ event.status|attendance_status }}</td>

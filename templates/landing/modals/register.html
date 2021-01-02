@@ -345,7 +345,7 @@
                             </div>
                           </div>
                             <div class="text-center">
-                                <button type="submit" class="form-btn custom-btn">Register</button>
+                                <button type="submit" id="register-btn" class="form-btn custom-btn">Register</button>
                             </div>
                             {% csrf_token %}
                         </form>
@@ -379,12 +379,10 @@
 <script>
     $(document).ready(function(){
         $("#register-form").submit(function(e) {
-            console.log("Called this function");
             e.preventDefault();
-
             var form = $(this);
             var url = form.attr('action');
-
+            $("#register-btn").prop('disabled', true);
             $.ajax({
                    type: "POST",
                    url: url,
@@ -392,13 +390,14 @@
                    success: function(data)
                    {
                        if(data.type == "SUCCESS") {
-                        alert(data.message);
                         $("#register-popup").modal('hide');
-                        $("#login-popup").modal('show');
+                        showAlert("Registration successful", data.message);
+                        $("#register-btn").prop('disabled', false);
                        }
                    },
                    error: function(data) {
-                        alert(data.responseJSON.message);
+                    showAlert("Registration failed", data.responseJSON.message);
+                    $("#register-btn").prop('disabled', false);
                    }
             });
         });

@@ -1,5 +1,6 @@
 {% extends 'instructor/instructor-base.html' %}
 {% load static %}
+{% load api_extras %}
 
 {% block instructor-head %}
     <title>CMS Online Academy | Courses</title>
@@ -21,6 +22,11 @@
         <!-- CURRENT COURSE TAB CONTENT -->
         <div class="tab-pane active" id="nav-current-course" role="tabpanel"
              aria-labelledby="nav-current-course-tab">
+            {% if me.is_tz_set == False %}
+                <div class="alert alert-danger my-2" role="alert">
+                  Please update your timezone in profile section!
+                </div>
+            {% endif %}
             <p class="text-info text-small">(Note: click on the student card to view schedule)</p>
             <div class="container-fluid content-row">
                 <div class="row">
@@ -44,7 +50,7 @@
                                         </ul>
                                         <ul class="list-unstyled text-small mb-0" style="color:#0060CF">
                                             <li>{{ cls.enrollment.get_days_display }}</li>
-                                            <li>{{ cls.enrollment.start_time }} - {{ cls.enrollment.end_time }}</li>
+                                            <li>{{ cls.enrollment.start_time|local_time:me }} - {{ cls.enrollment.end_time|local_time:me }}</li>
                                         </ul>
                                     </div>
                                     <div class="card-footer">

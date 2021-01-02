@@ -94,23 +94,23 @@ a {
 </div>
 <div class="tab-pane fade show active" role="tabpanel" >
     <div class="row px-3 py-3">
-        <div class="col col-md-4">
+        <div class="col col-md-6">
             <a class="btn btn-info left" href="{% url 'instructor-class-schedule' instructor_id enrollment_id %}?{{ prev_month }}"> Previous Month </a>
         </div>
-        <div class="col col-md-4">
-            {% get_current_timezone as TIME_ZONE %}
-            <form action="{% url 'set_timezone' %}" method="POST" id="set-time">
-                {% csrf_token %}
-                <label for="timezone">Time zone:</label>
-                <select name="timezone" id="timezone">
-                    {% for tz in timezones %}
-                    <option value="{{ tz }}"{% if tz == TIME_ZONE %} selected{% endif %}>{{ tz }}</option>
-                    {% endfor %}
-                </select>
-                <input type="submit" value="Set" class="btn-small btn-info">
-            </form>
-        </div>
-        <div class="col col-md-4">
+<!--        <div class="col col-md-4">-->
+<!--            {% get_current_timezone as TIME_ZONE %}-->
+<!--            <form action="{% url 'set_timezone' %}" method="POST" id="set-time">-->
+<!--                {% csrf_token %}-->
+<!--                <label for="timezone">Time zone:</label>-->
+<!--                <select name="timezone" id="timezone">-->
+<!--                    {% for tz in timezones %}-->
+<!--                    <option value="{{ tz }}"{% if tz == TIME_ZONE %} selected{% endif %}>{{ tz }}</option>-->
+<!--                    {% endfor %}-->
+<!--                </select>-->
+<!--                <input type="submit" value="Set" class="btn-small btn-info">-->
+<!--            </form>-->
+<!--        </div>-->
+        <div class="col col-md-6">
             <a class="btn btn-info right" href="{% url 'instructor-class-schedule' instructor_id enrollment_id %}?{{ next_month }}"> Next Month </a>
         </div>
     </div>
@@ -123,7 +123,7 @@ a {
         var url_mask = "{% url 'event_edit_status' instructor_id 12345 %}".replace(/12345/, id);
         $('#exam-grade-form').attr('action', url_mask)
     }
-    $("#set-time").submit(function(e) {
+    /*$("#set-time").submit(function(e) {
         e.preventDefault();
         var form = $(this);
         var url = form.attr('action');
@@ -133,13 +133,13 @@ a {
            data: form.serialize(),
            success: function(data)
            {
-               alert(data.message);
+               showAlert("Timezone", data.message);
                location.reload();
            },
            error: function(data) {
-            alert("Can't set timezone");
+            showAlert("Timezone", "Can't set timezone");
            }
         });
-  });
+  });*/
 </script>
 {% endblock %}

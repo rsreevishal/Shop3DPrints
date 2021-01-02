@@ -62,7 +62,8 @@ INSTALLED_APPS = [
     'six',
     'django_rest_passwordreset',
     'rest_framework',
-    'django_extensions'
+    'django_extensions',
+    'timezone_field',
 ]
 
 MIDDLEWARE = [

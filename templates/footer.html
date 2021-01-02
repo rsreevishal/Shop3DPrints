@@ -60,7 +60,7 @@
                success: function(data)
                {
                    if(data.type == "SUCCESS") {
-                    alert(data.message);
+                    showAlert("", data.message);
                     $("#query-popup").modal('hide');
                    }
                },

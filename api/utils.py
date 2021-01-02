@@ -4,11 +4,11 @@ from .models import Event, AcademyUser, Instructor, Student
 
 
 class Calendar(HTMLCalendar):
-    def __init__(self, year=None, month=None, user=None, enrollment=None):
+    def __init__(self, year=None, month=None, user=None, student_instructor=None):
         self.year = year
         self.month = month
         self.user = user
-        self.enrollment = enrollment
+        self.student_instructor = student_instructor
         super(Calendar, self).__init__()
 
     # formats a day as a td
@@ -20,7 +20,10 @@ class Calendar(HTMLCalendar):
             event_status = ["list-group-item-success", "list-group-item-danger",
                             "list-group-item-warning", "list-group-item-primary"]
             status = event_status[event.status] if event.status is not None else event_status[3]
-            d += f'<button type="button list-group-item-action" class="list-group-item {status}" onclick="markAttendance({event.pk})">{event.my_time_zone_title}</button>'
+            if self.student_instructor is None:
+                d += f'<button type="button list-group-item-action" class="list-group-item {status}" onclick="markAttendance({event.pk})">{event.my_time_zone_title(self.user)}</button>'
+            else:
+                d += f'<button type="button list-group-item-action" class="list-group-item {status}" onclick="markAttendance({event.pk})">{event.my_time_zone_title(self.student_instructor.instructor.django_user)}</button>'
         if day != 0 and len(d) > 0:
             return f"<td><span class='date'>{day}</span><div class='list-group'> {d}</div></td>"
         elif day != 0:
@@ -37,11 +40,11 @@ class Calendar(HTMLCalendar):
     # formats a month as a table
     # filter events by year and month
     def formatmonth(self, withyear=True):
-        if self.enrollment is None:
+        if self.student_instructor is None:
             events = Event.objects.filter(start_time__year=self.year, start_time__month=self.month, user=self.user)
         else:
             events = Event.objects.filter(start_time__year=self.year, start_time__month=self.month,
-                                          user=self.user, enrollment=self.enrollment)
+                                          user=self.user, enrollment=self.student_instructor.enrollment)
 
         cal = f'<table border="0" cellpadding="0" cellspacing="0" class="calendar">\n'
         cal += f'{self.formatmonthname(self.year, self.month, withyear=withyear)}\n'

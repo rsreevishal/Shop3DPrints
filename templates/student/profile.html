@@ -376,6 +376,16 @@
                             <input type="tel" id="cn" name="phone_number" class="form-control form-control-sm"
                                    placeholder="9999999999" required value="{{ me.phone_number }}">
                         </div>
+                        <div class="col-6 py-3">
+                            <label for="tz">Time Zone:</label>
+                            <select id="tz" name="timezone" class="form-control form-control-sm">
+                                {% for tz in timezones %}
+                                <option value="{{tz}}"
+                                        {% if tz == me.timezone|stringformat:"s" %}selected{% endif %}>
+                                    {{tz}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
                     {% csrf_token %}
                     <div class="text-center">

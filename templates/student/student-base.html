@@ -24,10 +24,10 @@
             <a class="nav-link {% if request.path == progress_url %} active {%endif%}" href="{{ progress_url }}" role="tab" id="student-progress">Progress</a>
           </li>
           <li class="nav-item">
-              <a class="nav-item nav-link mb-md-5 {% if request.path == profile_url %} active {%endif%}"  href="{{ profile_url }}" role="tab" id="profile-link">Profile</a>
+              <a class="nav-item nav-link {% if request.path == profile_url %} active {%endif%}"  href="{{ profile_url }}" role="tab" id="profile-link">Profile</a>
           </li>
             <li class="nav-item">
-              <a class="nav-item nav-link mb-md-5 {% if request.path == payment_url %} active {%endif%}"  href="{{ payment_url }}" role="tab" id="payment-link">Payment</a>
+              <a class="nav-item nav-link {% if request.path == payment_url %} active {%endif%}"  href="{{ payment_url }}" role="tab" id="payment-link">Payment</a>
           </li>
         </ul>
         <div class="tab-content side-nav-content">

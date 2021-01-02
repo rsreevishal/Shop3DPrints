@@ -111,8 +111,10 @@ def get_next_weekday(day):
     return today
 
 
-def get_local_time(dt):
-    at = dt.replace(tzinfo=timezone.utc).astimezone(tz=timezone.get_current_timezone()).time()
+def get_local_time(user, dt):
+    # at = dt.replace(tzinfo=timezone.utc).astimezone(tz=timezone.get_current_timezone()).time()
+    me = AcademyUser.get_for(user)
+    at = dt.replace(tzinfo=timezone.utc).astimezone(tz=me.timezone).time()
     return at
 
 
@@ -126,8 +128,8 @@ def course_details(request, course_id):
             {
                 "date": ndate.strftime("%m_%d_%Y"),
                 "day": ts.day,
-                "start_time": get_local_time(datetime.combine(ndate, ts.start)).strftime("%I:%M %p"),
-                "end_time": get_local_time(datetime.combine(ndate, ts.end)).strftime("%I:%M %p"),
+                "start_time": get_local_time(request.user, datetime.combine(ndate, ts.start)).strftime("%I:%M %p"),
+                "end_time": get_local_time(request.user, datetime.combine(ndate, ts.end)).strftime("%I:%M %p"),
                 "utc_start_time": ts.start.strftime("%I:%M %p"),
                 "utc_end_time": ts.end.strftime("%I:%M %p"),
             }
@@ -143,7 +145,6 @@ def course_details(request, course_id):
 def student_courses(request):
     me = AcademyUser.get_for(request.user)
     enrollments = Enrollment.objects.filter(student=me)
-    print(enrollments)
     return standard_view('student/courses.html', {
         'enrollments': enrollments
     })(request)
@@ -169,12 +170,14 @@ def student_progress(request):
 
 def student_profile(request):
     me = AcademyUser.get_for(request.user)
-
     if request.method == 'POST':
         form = RegistrationForm(request.POST, instance=me)
-        form.save()
+        if form.is_valid():
+            user = form.save()
+            user.is_tz_set = True
+            user.save()
 
-    return standard_view('student/profile.html')(request)
+    return standard_view('student/profile.html', {"timezones": pytz.common_timezones})(request)
 
 
 def student_payment_details(request):
@@ -186,11 +189,11 @@ def student_payment_details(request):
     total_pay_amount = events.filter(amount_paid=0).filter(status=0).aggregate(Sum('total_amount'))
     if not total_pay_amount["total_amount__sum"]:
         total_pay_amount["total_amount__sum"] = 0
-    return render(request, 'student/student-payment.html', {"events": events, "total_pay_amount": total_pay_amount,
+    return standard_view('student/student-payment.html', {"events": events, "total_pay_amount": total_pay_amount,
                                                             "prev_month": prev_month_d, "next_month": next_month_d,
                                                             "current_month": calendar.month_name[d.month],
                                                             "current_year": d.year,
-                                                            'stripe_pk': settings.STRIPE_PUBLISHABLE_KEY})
+                                                            'stripe_pk': settings.STRIPE_PUBLISHABLE_KEY})(request)
 
 
 def login(request):
@@ -226,7 +229,7 @@ def register(request):
     except:
         response = {
             "type": "ERROR",
-            "message": "Couldn't able to create a account. Make sure the email is not registered already."
+            "message": "Unable to create an account. Make sure that your email is not registered with another account."
         }
         return JsonResponse(response, status=400)
     try:
@@ -254,7 +257,7 @@ def register(request):
         return JsonResponse(response, status=400)
     response = {
         "type": "SUCCESS",
-        "message": "Please confirm your email address to complete the registration"
+        "message": "Registered successfully. Click on the activation link sent to your mail to activate your account."
     }
     return JsonResponse(response, status=200)
 
@@ -270,13 +273,13 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
         if user.groups.filter(name="Student").exists():
-            django_login(request, user)
+            # django_login(request, user)
             print(f"User active status: {user.is_active}")
             print(f"User has usable password: {user.has_usable_password()}")
-            return HttpResponseRedirect(reverse('student'))
+            return HttpResponseRedirect(reverse('index'))
         if user.groups.filter(name="Instructor").exists():
             if Instructor.objects.get(django_user=user).is_verified:
-                return HttpResponseRedirect(reverse('instructor'))
+                return HttpResponseRedirect(reverse('index'))
             else:
                 return HttpResponse('Please wait until your account get verified!')
     else:
@@ -307,7 +310,7 @@ def email_query(request):
         send_mail(mail_subject, message, email_from, to_email)
         response = {
             "type": "SUCCESS",
-            "message": "Your query sent successfully. Please wait for reply."
+            "message": "Your query has been sent successfully. Kindly wait for the reply"
         }
         return JsonResponse(response, status=200)
     except:
@@ -391,7 +394,7 @@ def checkout(request):
                 purchase.save()
             except IntegrityError:
                 return JsonResponse(
-                    {"type": "ERROR", "message": "Sry can't enroll. Check whether you're enrolled already"},
+                    {"type": "ERROR", "message": "Sorry! You cannot enrol. Check if you have already booked a class."},
                     status=400)
             enrollment = Enrollment(
                 student=purchase.student,
@@ -413,7 +416,7 @@ def checkout(request):
                 purchase.save()
             except IntegrityError:
                 return JsonResponse(
-                    {"type": "ERROR", "message": "Sry can't enroll. Check whether you're enrolled already"},
+                    {"type": "ERROR", "message": "Sorry! You cannot enrol. Check if you have already booked a class."},
                     status=400)
             enrollment = Enrollment(
                 student=purchase.student,
@@ -459,7 +462,7 @@ def checkout(request):
                 purchase.save()
             except IntegrityError:
                 return JsonResponse(
-                    {"type": "ERROR", "message": "Sry can't enroll. Check whether you're enrolled already"},
+                    {"type": "ERROR", "message": "Sorry! You cannot enrol. Check if you have already booked a class."},
                     status=400)
             enrollment = Enrollment(
                 student=purchase.student,
@@ -483,7 +486,7 @@ def checkout(request):
             )
             event.save()
             return HttpResponse(json.dumps({'payment_method': PaymentMethod.free_trail,
-                                            'message': "Successfully enrolled free trail of the course"}))
+                                            'message': "Successfully registered for the trial class"}))
     else:
         return HttpResponse("Not valid data", status=403)
 
@@ -630,6 +633,7 @@ class CalendarView(generic.ListView):
         html_cal = cal.formatmonth(withyear=True)
         context['calendar'] = mark_safe(html_cal)
         context['timezones'] = pytz.common_timezones
+        context['all_categories'] = Category.objects.all()
         return context
 
 
@@ -647,13 +651,14 @@ class InstructorCalendarView(generic.ListView):
                                                            enrollment=self.kwargs["enrollment_id"])
         student = Student.objects.get(pk=student_instructor.enrollment.student.pk)
         # Instantiate our calendar class with today's year and date
-        cal = Calendar(d.year, d.month, student.django_user.id, student_instructor.enrollment)
+        cal = Calendar(d.year, d.month, student.django_user.id, student_instructor)
         # Call the formatmonth method, which returns our calendar as a table
         html_cal = cal.formatmonth(withyear=True)
         context['calendar'] = mark_safe(html_cal)
         context['enrollment_id'] = self.kwargs["enrollment_id"]
         context['instructor_id'] = self.kwargs["instructor_id"]
         context['timezones'] = pytz.common_timezones
+        context['all_categories'] = Category.objects.all()
         return context
 
 
@@ -708,7 +713,14 @@ def instructor_reg_form(request):
 @csrf_exempt
 def instructor_register(request):
     data = json.loads(request.body)
-    instructor = Instructor.create(data)
+    try:
+        instructor = Instructor.create(data)
+    except:
+        response = {
+            "type": "ERROR",
+            "message": "Unable to create an account. Make sure that your email is not registered with another account."
+        }
+        return JsonResponse(response, status=400)
     try:
         current_site = get_current_site(request)
         print(f"Current site: {current_site}")
@@ -733,7 +745,7 @@ def instructor_register(request):
         return JsonResponse(response, status=400)
     response = {
         "type": "SUCCESS",
-        "message": "Please confirm your email address to complete the registration"
+        "message": "Registered successfully. Click on the activation link sent to your mail to activate your account."
     }
     return JsonResponse(response, status=200)
 
@@ -763,8 +775,10 @@ def instructor_skill_update(request, instructor_id):
 
 
 def instructor_classes(request, instructor_id):
+    me = AcademyUser.get_for(request.user)
     classes = StudentInstructor.objects.filter(instructor=instructor_id)
-    return render(request, 'instructor/classes.html', {"classes": classes, "instructor_id": instructor_id})
+    return standard_view('instructor/classes.html', {"classes": classes,
+                                                     "instructor_id": instructor_id, "me": me})(request)
 
 
 def instructor_material(request, instructor_id, course_material_id=None):
@@ -785,14 +799,14 @@ def instructor_material(request, instructor_id, course_material_id=None):
         print(course_material)
         return HttpResponseRedirect(reverse('instructor-class-material', kwargs={"instructor_id": instructor_id}))
     material = CourseMaterial.objects.filter(uploader=instructor_id)
-    return render(request, 'instructor/material.html', {"material": material, "instructor_id": instructor_id,
-                                                        "course_material_form": course_material_form})
+    return standard_view('instructor/material.html', {"material": material, "instructor_id": instructor_id,
+                                                        "course_material_form": course_material_form})(request)
 
 
 def instructor_student_assignment(request, instructor_id):
     classes = StudentInstructor.objects.filter(instructor=instructor_id)
-    return render(request, 'instructor/test_assignment_dashboard.html',
-                  {"classes": classes, "instructor_id": instructor_id})
+    return standard_view('instructor/test_assignment_dashboard.html',
+                  {"classes": classes, "instructor_id": instructor_id})(request)
 
 
 def update_instructor(request, instructor_id=None):
@@ -804,6 +818,7 @@ def update_instructor(request, instructor_id=None):
     form = InstructorForm(request.POST or None, instance=instance)
     if request.POST and form.is_valid():
         instructor = form.save(commit=False)
+        instructor.is_tz_set = True
         instructor.save()
         return HttpResponseRedirect(reverse('instructor'))
     instructor_specialities = InstructorSpeciality.objects.filter(instructor=instance)
@@ -812,12 +827,12 @@ def update_instructor(request, instructor_id=None):
     result = []
     for in_sp in instructor_specialities:
         result.append([in_sp.speciality.id, in_sp.speciality_level.id])
-    return render(request, 'instructor/profile.html',
+    return standard_view('instructor/profile.html',
                   {'form': form, 'instructor_specialities': result,
                    "speciality_level": speciality_level,
                    "speciality": speciality,
                    "instructor_id": instructor_id
-                   })
+                   })(request)
 
 
 def instructor_student_works(request, instructor_id, enrollment_id, exam_id=None, exam_grade_id=None, project_id=None):
@@ -864,13 +879,16 @@ def instructor_student_works(request, instructor_id, enrollment_id, exam_id=None
         project.save()
         return HttpResponseRedirect(reverse('instructor-student-works', kwargs={"instructor_id": instructor_id,
                                                                                 "enrollment_id": enrollment_id}))
-    return render(request, 'instructor/student_test_assignment.html',
+    return standard_view('instructor/student_test_assignment.html',
                   {"student_instructor": student_instructor, "instructor_id": instructor_id,
-                   "project_form": project_form, "exam_form": exam_form, "exam_grade_form": exam_grade_form})
+                   "project_form": project_form, "exam_form": exam_form, "exam_grade_form": exam_grade_form})(request)
 
 
 def set_timezone(request):
     if request.method == 'POST':
         request.session['django_timezone'] = request.POST['timezone']
+        user = AcademyUser.objects.get(django_user=request.user)
+        user.timezone = request.POST['timezone']
+        user.save()
         return JsonResponse({"message": "Time zone set", "type": "SUCCESS"}, status=200)
     return JsonResponse({"message": "Can't set timezone", "type": "ERROR"}, status=200)

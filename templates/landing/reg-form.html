@@ -384,7 +384,6 @@
         </div>
     </form>
 </section>
-<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 <script>
      function fixType(val) {
         if(/^\d+$/.test(val)) {return parseInt(val);}
@@ -427,15 +426,15 @@
                 }
             }
             if(final_data["speciality"].length == 0) {
-                alert("Choose at least one skill.");
+                showAlert("Registration", "Choose at least one skill.");
             }
             else if(final_data["available_days"].length == 0) {
-                alert("Choose at least one available day.");
+                showAlert("Registration", "Choose at least one available day.");
             }
             else if(final_data["available_times"].length == 0) {
-                alert("Choose at least one available time.");
+                showAlert("Registration", "Choose at least one available time.");
             } else if($('#password1').val() != $('#password2').val()) {
-                alert("Please check your password.");
+                showAlert("Registration", "Please check your password.");
             }
             else {
                 $.ajax({
@@ -447,10 +446,10 @@
                    csrfmiddlewaretoken: '{{ csrf_token }}',
                    success: function(data)
                    {
-                        alert(data.message);
+                        showAlert("Registration successful", data.message);
                    },
                    error: function(data) {
-                        alert(data.responseJSON.message);
+                        showAlert("Registration failed", data.responseJSON.message);
                    }
                 });
             }

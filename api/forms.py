@@ -6,7 +6,7 @@ from api.models import Purchase, Student, Instructor, Event, Project, Exam, Exam
 class RegistrationForm(ModelForm):
     class Meta:
         model = Student
-        exclude = ['django_user']
+        exclude = ['django_user', 'is_tz_set']
 
 
 class PurchaseForm(Form):
@@ -37,7 +37,7 @@ class EventForm(ModelForm):
 class InstructorForm(ModelForm):
     class Meta:
         model = Instructor
-        exclude = ['is_verified', 'django_user']
+        exclude = ['is_verified', 'django_user', 'is_tz_set']
 
 
 class ProjectForm(ModelForm):

@@ -36,7 +36,28 @@
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
         crossorigin="anonymous"></script>
 <script type="text/javascript" src="{% static 'js/index.js' %}"></script>
-
+<!-- Message Modal -->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" id="alert-dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="alert-title"></h5>
+      </div>
+      <div class="modal-body" id="alert-message">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-small" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+   function showAlert(title, body) {
+    $("#alert-title").text(title);
+    $("#alert-message").text(body);
+    $("#alert-dialog").modal('show');
+   }
+</script>
 {% block script %}
 {% endblock %}
 </body>

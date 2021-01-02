@@ -1,5 +1,6 @@
 {% extends 'student/student-base.html' %}
 {% load static %}
+{% load api_extras %}
 
 {% block student-head %}
     <title>CMS Online Academy | Courses</title>
@@ -23,6 +24,12 @@
         <!-- CURRENT COURSE TAB CONTENT -->
         <div class="tab-pane active" id="nav-current-course" role="tabpanel"
              aria-labelledby="nav-current-course-tab">
+            {% if me.is_tz_set == False %}
+                <div class="alert alert-danger my-2" role="alert">
+                  Please update your timezone in profile section!
+                </div>
+            {% endif %}
+            <p class="text-info text-small px-2">(Note: Click on a card to view the assignments and tests)</p>
             <div class="card-columns mx-auto">
                 {% for enrollment in enrollments %}
                     <a href="{% url 'student-course' enrollment.course.id %}">
@@ -36,7 +43,7 @@
                                     <li>Grade: <strong>{{ enrollment.course.get_grade_display }}</strong></li>
                                     <li>Level: <strong>{{ enrollment.course.level }}</strong></li>
                                     <li>{{ enrollment.get_days_display }}</li>
-                                    <li>{{ enrollment.start_time }} - {{ enrollment.end_time }}</li>
+                                    <li>{{ enrollment.start_time|local_time:me }} - {{ enrollment.end_time|local_time:me }}</li>
                                     {% if enrollment.purchase.payment_method == 2%}
                                         <li class="text-primary">Trial class</li>
                                     {% endif %}
@@ -58,22 +65,22 @@
         <div class="tab-pane" id="nav-history-course" role="tabpanel"
              aria-labelledby="nav-history-course-tab">
             <div class="card-columns mx-auto">
-                <div class="card my-3 mx-auto ">
-                    <div class="card-body pb-0">
-                        <h5 class="card-title text-large">Python Level 2</h5>
-                        <ul class="list-unstyled text-small">
-                            <li><strong>Programming</strong></li>
-                            <li>Grade: <strong>5-7</strong></li>
-                            <li>Level: <strong>1</strong></li>
-                        </ul>
-                    </div>
-                    <div class="card-footer">
-                        <ul class="list-unstyled text-small mb-0" style="color:#0060CF">
-                            <li>Mon, Wed, Fri</li>
-                            <li>5PM - 6PM</li>
-                        </ul>
-                    </div>
-                </div>
+<!--                <div class="card my-3 mx-auto ">-->
+<!--                    <div class="card-body pb-0">-->
+<!--                        <h5 class="card-title text-large">Python Level 2</h5>-->
+<!--                        <ul class="list-unstyled text-small">-->
+<!--                            <li><strong>Programming</strong></li>-->
+<!--                            <li>Grade: <strong>5-7</strong></li>-->
+<!--                            <li>Level: <strong>1</strong></li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+<!--                    <div class="card-footer">-->
+<!--                        <ul class="list-unstyled text-small mb-0" style="color:#0060CF">-->
+<!--                            <li>Mon, Wed, Fri</li>-->
+<!--                            <li>5PM - 6PM</li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
         </div>
     </div>

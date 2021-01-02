@@ -123,7 +123,7 @@
                success: function(data)
                {
                    if(data.type == "ERROR") {
-                    alert(data.message);
+                    showAlert("Login failed", data.message);
                    }
                    if(data.type == "SUCCESS") {
                         if(data.user == 1) window.location.replace("{% url 'student' %}");
@@ -131,7 +131,7 @@
                    }
                },
                error: function(data) {
-                alert(data.responseJSON.message);
+                showAlert("Login failed", data.responseJSON.message);
                }
             });
         });

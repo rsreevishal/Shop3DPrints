@@ -112,25 +112,25 @@
         </div>
         {% if me %}
             {% get_current_timezone as TIME_ZONE %}
-            <form action="{% url 'set_timezone' %}" method="POST" id="set-time">
-                {% csrf_token %}
-                <label for="timezone">Time zone:</label>
-                <select name="timezone" id="timezone">
-                    {% for tz in timezones %}
-                    <option value="{{ tz }}"{% if tz == TIME_ZONE %} selected{% endif %}>{{ tz }}</option>
-                    {% endfor %}
-                </select>
-                <input type="submit" value="Set" class="btn-small btn-primary">
-            </form>
+<!--            <form action="{% url 'set_timezone' %}" method="POST" id="set-time">-->
+<!--                {% csrf_token %}-->
+<!--                <label for="timezone">Time zone:</label>-->
+<!--                <select name="timezone" id="timezone">-->
+<!--                    {% for tz in timezones %}-->
+<!--                    <option value="{{ tz }}"{% if tz == TIME_ZONE %} selected{% endif %}>{{ tz }}</option>-->
+<!--                    {% endfor %}-->
+<!--                </select>-->
+<!--                <input type="submit" value="Set" class="btn-small btn-primary">-->
+<!--            </form>-->
             <form id="enroll-form" class="centered mx-auto">
                 <div class="form-row">
                     <div class="col-12 mx-auto">
                         <label for="batch">Select Batch</label>
                         <select id="batch" name="batch" class="form-control form-control-sm" required onchange="clearDate(this.value)">
-                            <option value="-1" selected>None</option>
-                            <option value="0,1,2">Mon-Tue-Wed</option>
-                            <option value="3,4">Thur-Fri</option>
-                            <option value="5,6">Sat-Sun</option>
+                            <option id="batch-1" value="-1" selected>None</option>
+                            <option id="batch-2" value="0,1,2">Mon-Tue-Wed</option>
+                            <option id="batch-3" value="3,4">Thur-Fri</option>
+                            <option id="batch-4" value="5,6">Sat-Sun</option>
                         </select>
                     </div>
                     <div class="col-12 mx-auto">
@@ -150,7 +150,7 @@
                     </div>
                     <div class="col-12 mx-auto">
                         <label for="payment_method">Mode of payment</label>
-                        <select id="payment_method" name="payment_method" class="form-control form-control-sm" required>
+                        <select id="payment_method" name="payment_method" class="form-control form-control-sm" onchange="switchScheme(this.value)" required>
                             <option value=0 id="pay-option-0">Full payment</option>
                             <option value=1 id="pay-option-1">Monthly payment</option>
                             <option value=2 id="pay-option-2">Free trail</option>
@@ -171,7 +171,6 @@
 {% block script %}
     <link href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" rel="stylesheet"
           type="text/css"/>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
     <script src="https://js.stripe.com/v3/"></script>
     <script type="text/javascript">
@@ -232,16 +231,16 @@
                 if(session.payment_method == 0) {
                     stripe.redirectToCheckout({sessionId: session.id});
                 } else if (session.payment_method == 1 || session.payment_method == 2) {
-                    alert(session.message);
+                    showAlert("Registration successful", session.message);
                     window.location.replace("{% url 'student' %}");
                 }
             }).fail(function (data) {
                 var res = JSON.parse(data.responseText);
-                alert(res.message);
+                showAlert("Registration failed", res.message);
                 //alert("Sorry can't enroll. Check whether you're enrolled already");
             });
         })
-        $("#set-time").submit(function(e) {
+        /*$("#set-time").submit(function(e) {
                 e.preventDefault();
                 var form = $(this);
                 var url = form.attr('action');
@@ -251,29 +250,64 @@
                    data: form.serialize(),
                    success: function(data)
                    {
-                       alert(data.message);
+                       showAlert("Timezone", data.message);
                        location.reload();
                    },
                    error: function(data) {
-                    alert("Can't set timezone");
+                    showAlert("Timezone", "Can't set timezone");
                    }
                 });
-          });
+          });*/
          function disableAllPaymentOption() {
             $("#pay-option-0").attr("disabled", "disabled");
             $("#pay-option-1").attr("disabled", "disabled");
             $("#pay-option-2").attr("disabled", "disabled");
          }
+         function disableAllBatch() {
+            $("#batch-1").attr("disabled", "disabled");
+            $("#batch-2").attr("disabled", "disabled");
+            $("#batch-3").attr("disabled", "disabled");
+            $("#batch-4").attr("disabled", "disabled");
+         }
          $("#free-trial-btn").on('click', function() {
             disableAllPaymentOption();
+            $("#batch").val("-1");
+            availDates = Object.keys(availDatesWithDay);
+            disableAllBatch();
+            $("#batch-1").attr("disabled", false);
             $("#pay-option-2").attr("disabled", false);
             $("#payment_method").val(2);
          });
          $("#enroll-btn").on('click', function() {
             disableAllPaymentOption();
+            disableAllBatch();
+            $("#batch-2").attr("disabled", false);
+            $("#batch-3").attr("disabled", false);
+            $("#batch-4").attr("disabled", false);
             $("#pay-option-0").attr("disabled", false);
             $("#pay-option-1").attr("disabled", false);
             $("#payment_method").val(0);
          });
+         function switchScheme(scheme) {
+            if(scheme == 0 || scheme == 1) {
+                disableAllPaymentOption();
+                disableAllBatch();
+                $("#batch-2").attr("disabled", false);
+                $("#batch-3").attr("disabled", false);
+                $("#batch-4").attr("disabled", false);
+                $("#pay-option-0").attr("disabled", false);
+                $("#pay-option-1").attr("disabled", false);
+                $("#payment_method").val(0);
+            }
+            if(scheme == 2) {
+                disableAllPaymentOption();
+                $("#batch").val("-1");
+                availDates = Object.keys(availDatesWithDay);
+                disableAllBatch();
+                $("#batch-1").attr("disabled", false);
+                $("#pay-option-2").attr("disabled", false);
+                $("#payment_method").val(2);
+            }
+         }
     </script>
 {% endblock %}

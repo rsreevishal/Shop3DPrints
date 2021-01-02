@@ -1,10 +1,11 @@
 from django.utils import timezone
-
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.validators import validate_comma_separated_integer_list, MinValueValidator, MaxValueValidator
 from django.db import models
-from django.urls import reverse
 from django.contrib.auth.models import Group
+import pytz
+from timezone_field import TimeZoneField
+from pytz_convert import convert_tz_name_to_now_tz_abbrev
 
 
 class Grade(models.TextChoices):
@@ -18,6 +19,11 @@ class AcademyUser(models.Model):
         abstract = True
 
     django_user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    timezone = TimeZoneField(default='UTC', null=True, blank=True,
+                             choices=[
+                                 (tz, tz) for tz in pytz.common_timezones
+                             ])
+    is_tz_set = models.BooleanField(default=False, null=True, blank=True)
 
     @classmethod
     def get_for(cls, user: User):
@@ -315,7 +321,8 @@ class Enrollment(models.Model):
 
     def get_days_display(self):
         return ', '.join(
-            map(lambda day: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][int(day)], self.days.split(',')))
+            map(lambda day: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', "Free trail"][int(day)],
+                self.days.split(',')))
 
     def __str__(self):
         return f'{self.student.name} in {self.course.name}'
@@ -327,8 +334,10 @@ class Attendance(models.IntegerChoices):
     other = 2, 'OTHER'
 
 
-def get_local_time(dt):
-    at = dt.replace(tzinfo=timezone.utc).astimezone(tz=timezone.get_current_timezone()).time()
+def get_local_time(user, dt):
+    # at = dt.replace(tzinfo=timezone.utc).astimezone(tz=timezone.get_current_timezone()).time()
+    me = AcademyUser.get_for(user)
+    at = dt.replace(tzinfo=timezone.utc).astimezone(tz=me.timezone).time()
     return at
 
 
@@ -351,10 +360,9 @@ class Event(models.Model):
     def get_title(self):
         return f'<p> {self.title} </p>'
 
-    @property
-    def my_time_zone_title(self):
-        start_time = get_local_time(self.start_time)
-        end_time = get_local_time(self.end_time)
+    def my_time_zone_title(self, user):
+        start_time = get_local_time(user, self.start_time)
+        end_time = get_local_time(user, self.end_time)
         return f'{self.enrollment.course.name}: {start_time.strftime("%I:%M %p")} - {end_time.strftime("%I:%M %p")}'
 
     def __str__(self):

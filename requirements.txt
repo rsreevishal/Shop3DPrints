@@ -19,3 +19,5 @@ django-filter
 pillow==7.2.0
 django-extensions
 pygraphviz
+django-timezone-field
+pytz-convert
