@@ -1,3 +1,5 @@
+from datetime import time, timedelta, datetime
+
 from django.utils import timezone
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.validators import validate_comma_separated_integer_list, MinValueValidator, MaxValueValidator
@@ -5,7 +7,7 @@ from django.db import models
 from django.contrib.auth.models import Group
 import pytz
 from timezone_field import TimeZoneField
-from pytz_convert import convert_tz_name_to_now_tz_abbrev
+from django.db.models.signals import post_save
 
 
 class Grade(models.TextChoices):
@@ -115,6 +117,7 @@ class Instructor(AcademyUser):
     country = models.PositiveSmallIntegerField()
     phone_number = models.CharField(max_length=50)
     is_verified = models.BooleanField(default=False)
+    class_link = models.URLField(default=None, null=True, blank=True)
 
     @classmethod
     def create(cls, data):
@@ -199,7 +202,6 @@ class Course(models.Model):
     prerequisites = models.TextField(help_text='Put each item on its own line')
     sessions = models.TextField(help_text='Put each item on its own line')
     thumbnail = models.ImageField(upload_to="thumbnail/", blank=True, default=None, null=True)
-    course_link = models.URLField(help_text="Enter the course link", blank=True, default=None, null=True)
     total_days = models.IntegerField()
 
     @property
@@ -222,8 +224,30 @@ class Course(models.Model):
     def exams_list(self):
         return self.exams.split('\n')
 
+    @classmethod
+    def post_create(cls, sender, instance, created, *args, **kwargs):
+        if not created:
+            return
+        else:
+            time_slots = [
+                {"start": time(13, 0, 0), "end": time(15, 0, 0)},
+                {"start": time(0, 0, 0), "end": time(1, 0, 0)}
+            ]
+            for i in range(7):
+                for ts in time_slots:
+                    start = ts["start"]
+                    while start != (datetime.combine(datetime.today(), ts["end"]) + timedelta(hours=1)).time():
+                        next_time = datetime.combine(datetime.today(), start) + timedelta(hours=1)
+                        cts = CourseTimeSlot(course=instance, day=i, start=start, end=next_time.time())
+                        cts.save()
+                        start = next_time.time()
+
     def __str__(self):
         return self.name
+
+
+# signal
+post_save.connect(Course.post_create, sender=Course)
 
 
 class CourseTimeSlot(models.Model):
@@ -233,7 +257,7 @@ class CourseTimeSlot(models.Model):
     end = models.TimeField()
 
     def __str__(self):
-        return f"{self.course.name}: {self.start}-{self.end}"
+        return f"{self.course.name}: {Day.labels[self.day]}-{self.start}-{self.end}"
 
 
 class InstructorTimeSlot(models.Model):
@@ -259,6 +283,7 @@ class Project(models.Model):
     description = models.TextField(max_length=512)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     file_link = models.URLField(null=True, default=None, blank=True)
+    uploader = models.ForeignKey(Instructor, default=None, null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -278,6 +303,7 @@ class Exam(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     total_points = models.PositiveSmallIntegerField()
     file_link = models.URLField(null=True, default=None, blank=True)
+    uploader = models.ForeignKey(Instructor, default=None, null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -324,8 +350,23 @@ class Enrollment(models.Model):
             map(lambda day: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', "Trail class"][int(day)],
                 self.days.split(',')))
 
+    @classmethod
+    def post_create(cls, sender, instance, created, *args, **kwargs):
+        if not created:
+            events = Event.objects.filter(enrollment=instance)
+            for event in events:
+                event.start_time = datetime.combine(event.start_time.date(), instance.start_time)
+                event.end_time = datetime.combine(event.end_time.date(), instance.end_time)
+                event.title = f"{event.enrollment.course.name}: {event.start_time.time()} - {event.end_time.time()}"
+                event.description = event.title
+                event.save()
+
     def __str__(self):
         return f'{self.student.name} in {self.course.name} as {PaymentMethod.labels[self.purchase.payment_method]}'
+
+
+# signal
+post_save.connect(Enrollment.post_create, sender=Enrollment)
 
 
 class Attendance(models.IntegerChoices):
@@ -372,6 +413,9 @@ class Event(models.Model):
 class StudentInstructor(models.Model):
     enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = [['enrollment', 'instructor']]
 
     def __str__(self):
         return f'Student: {self.enrollment.student.name}, Instructor: {self.instructor.name}, Class: {PaymentMethod.labels[self.enrollment.purchase.payment_method]}'

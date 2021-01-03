@@ -43,13 +43,13 @@ class InstructorForm(ModelForm):
 class ProjectForm(ModelForm):
     class Meta:
         model = Project
-        exclude = ['course']
+        exclude = ['course', 'uploader']
 
 
 class ExamForm(ModelForm):
     class Meta:
         model = Exam
-        exclude = ['course']
+        exclude = ['course', 'uploader']
 
 
 class ExamGradeForm(ModelForm):

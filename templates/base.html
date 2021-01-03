@@ -20,13 +20,6 @@
     {% block head %}{% endblock %}
 </head>
 <body>
-{% include 'header.html' %}
-
-{% block body %}
-{% endblock %}
-
-{% include 'landing/modals/query.html' %}
-
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
@@ -36,6 +29,14 @@
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
         crossorigin="anonymous"></script>
 <script type="text/javascript" src="{% static 'js/index.js' %}"></script>
+{% include 'header.html' %}
+
+{% block body %}
+{% endblock %}
+
+{% include 'landing/modals/query.html' %}
+{% block script %}
+{% endblock %}
 <!-- Message Modal -->
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" id="alert-dialog">
   <div class="modal-dialog modal-dialog-centered" role="document">
@@ -53,6 +54,7 @@
 </div>
 <script>
    function showAlert(title, body, callback=null) {
+
     $("#alert-title").text(title);
     $("#alert-message").text(body);
     $("#alert-dialog").modal('show');
@@ -63,7 +65,5 @@
     });
    }
 </script>
-{% block script %}
-{% endblock %}
 </body>
 </html>

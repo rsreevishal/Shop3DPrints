@@ -30,7 +30,7 @@
                 </tr>
             </thead>
             {% for event in events %}
-                {% if event.payment_method != 2%}
+                {% if event.payment_method != 2 and event.status != None%}
                 <tr class="{% if event.amount_paid == 0 and event.status == 0 %} table-success {% endif %}" data-value={{event.pk}}>
                     <td>{{ event.start_time.date }}-{{event.enrollment.local_start_time}}</td>
                     <td>{{ event.enrollment.course.name }}</td>

@@ -25,10 +25,10 @@
                             &times;
                         </div>
                         <form class="px-5 pt-lg-4" action="{% url 'login' %}" method="post" id="login-form">
-                            <input type="email" class="form-row form-control form-control-sm" id="email" name="email"
-                                   placeholder="example@email.com" required>
-                            <input type="Password" id="Password" class="form-row form-control form-control-sm"
-                                   name="password" placeholder="Enter Password" required>
+                            <input type="email" class="form-row form-control form-control-sm" id="login-email" name="email"
+                                   placeholder="example@email.com" required autocomplete="off">
+                            <input type="Password" id="login-Password" class="form-row form-control form-control-sm"
+                                   name="password" placeholder="Enter Password" required autocomplete="off">
                               <a href="#forgot-popup" data-toggle="modal" data-target="	#forgot-popup" data-dismiss="modal"
                                  class="text-small" style="font-weight: 600">Forgot Password?</a>
 <!--                            <a href="" class="text-small" style="font-weight: 600">Forgot Password?</a>-->
@@ -66,7 +66,7 @@
                 <p>We have sent you a reset token to change your password. Please check your mail</p>
 
                 <form method="post" class="px-5" id="validate-reset-form">
-                    <input type="test" class="form-row form-control form-control-sm" id="reset-token"
+                    <input type="text" class="form-row form-control form-control-sm" id="reset-token"
                            placeholder="5ba13bbcac3c3b8" required name="token">
                     {% csrf_token %}
                     <button type="submit" class="form-btn custom-btn">Verify</button>
@@ -108,7 +108,7 @@
 </div>
 
 <!-- AJAX register POST call-->
-<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<!--<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>-->
 <script>
     $(document).ready(function(){
         // Login AJAX request

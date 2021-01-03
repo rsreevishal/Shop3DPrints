@@ -55,8 +55,8 @@
 
                             <div class="form-row">
                                 <div class="col-6">
-                                    <label for="email">Email</label>
-                                    <input type="email" class="form-control form-control-sm" id="email" name="email"
+                                    <label for="reg-email">Email</label>
+                                    <input type="email" class="form-control form-control-sm" id="reg-email" name="email"
                                            placeholder="example@email.com" required>
                                 </div>
                                 <div class="col-6">
@@ -337,11 +337,11 @@
                             </div>
                             <div class="form-row">
                             <div class="col-6">
-                              <input type="password" id="password1" name="password" class="form-control form-control-sm" placeholder="Enter Password"
+                              <input type="password" id="reg-password1" name="password" class="form-control form-control-sm" placeholder="Enter Password"
                               required pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" value >
                               </div>
                             <div class="col-6">
-                              <input type="password" id="confirm_password1" class="form-control form-control-sm" placeholder="Confirm Password" required>
+                              <input type="password" id="reg-confirm_password1" class="form-control form-control-sm" placeholder="Confirm Password" required>
                             </div>
                           </div>
                             <div class="text-center">
@@ -361,7 +361,7 @@
     </div>
 </div>
 <script>
-    var password = document.getElementById("password1") , confirm_password = document.getElementById("confirm_password1");
+    var password = document.getElementById("reg-password1") , confirm_password = document.getElementById("reg-confirm_password1");
 
     function validatePassword(){
       if(password.value != confirm_password.value) {

@@ -54,6 +54,7 @@
             <div class="card-columns mx-auto px-3">
 
                 {% for exam in enrollment.course.exam_set.all %}
+                {% if exam.uploader == student_instructor%}
                     <div class="card my-3  my-3 mx-auto" onclick="showDescription('{{exam.description}}')">
                         <div class="card-body pb-0">
                             <h5 class="card-title text-large">{{ exam.name }}</h5>
@@ -70,6 +71,7 @@
                             </ul>
                         </div>
                     </div>
+                {% endif %}
                 {% endfor %}
 
             </div>
@@ -81,6 +83,7 @@
             <p class="text-info px-2">(Note: click on the cards to see the description)</p>
             <div class="card-columns mx-auto px-3">
                 {% for project in enrollment.course.project_set.all %}
+                {% if project.uploader == student_instructor %}
                     <div class="card my-3 mx-auto" onclick="showDescription('{{project.description}}')">
                         <div class="card-body pb-0">
                             <h5 class="card-title text-large">{{ project.name }}</h5>
@@ -96,6 +99,7 @@
                             </ul>
                         </div>
                     </div>
+                {% endif %}
                 {% endfor %}
             </div>
             <!-- END ASSIGNMENT TAB CONTENTS -->
@@ -188,7 +192,7 @@
         <!-- END TEST,ASSIGNMENTS, OVERVIEW TAB CONTENTS -->
     </div>
     <!-- END ASSIGNMENTS HIDDEN TAB CONTENTS -->
-<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<!--<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>-->
 <script>
     function showDescription(description) {
     console.log(description);

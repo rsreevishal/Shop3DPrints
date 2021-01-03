@@ -4,7 +4,8 @@ from typing import Union
 from django import template
 from django.utils import timezone
 
-from api.models import Exam, ExamGrade, Project, ProjectSubmission, Student, AcademyUser, Event, Attendance
+from api.models import Exam, ExamGrade, Project, ProjectSubmission, Student, AcademyUser, Event, Attendance, \
+    StudentInstructor
 
 register = template.Library()
 
@@ -70,3 +71,12 @@ def course_complete_status(enrollment):
         else:
             return False
     return True
+
+
+@register.filter(name="course_link")
+def course_link(enrollment):
+    if StudentInstructor.objects.filter(enrollment=enrollment).exists():
+        instructor = StudentInstructor.objects.get(enrollment=enrollment).instructor
+        return instructor.class_link if instructor.class_link is not None else ""
+    else:
+        return ""

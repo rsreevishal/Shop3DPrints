@@ -57,6 +57,7 @@
                     </tr>
                 </thead>
                 {% for exam in student_instructor.enrollment.course.exam_set.all %}
+                {% if exam.uploader == student_instructor.instructor %}
                     <tr>
                         <td>{{ exam.name }}</td>
                         <td>{{ exam.total_points }}</td>
@@ -68,6 +69,7 @@
                             <td>-</td>
                         {% endif %}
                     </tr>
+                {% endif %}
                 {% endfor %}
             </table>
             <button class="btn custom-btn nav-link text-light text-center" data-toggle="modal" data-target="#exam-grade-popup">Add/Change marks</button>
@@ -99,12 +101,14 @@
                     </tr>
                 </thead>
                 {% for project in student_instructor.enrollment.course.project_set.all %}
+                {% if project.uploader == student_instructor.instructor %}
                 <tr>
                     <td>{{ project.name }}</td>
                     {% status project student_instructor.enrollment.student as status %}
                     <td style="color: {% if status.0 == 'complete' %}green{% else %}red{% endif %};">{{ status.0 | title }}
                     </td>
                 </tr>
+                {% endif %}
                 {% endfor %}
             </table>
             <hr/>

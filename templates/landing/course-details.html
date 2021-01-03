@@ -126,7 +126,7 @@
                 <div class="form-row">
                     <div class="col-12 mx-auto" id="batch-div">
                         <label for="batch">Select Batch</label>
-                        <select id="batch" name="batch" class="form-control form-control-sm" required onchange="clearDate(this.value)">
+                        <select id="batch" name="batch" class="form-control form-control-sm" required onchange="clearDate(this.value)" autocomplete="off">
                             <option id="batch-1" value="-1" selected>None</option>
                             <option id="batch-2" value="0,1,2">Mon-Tue-Wed</option>
                             <option id="batch-3" value="3,4">Thur-Fri</option>
@@ -135,22 +135,22 @@
                     </div>
                     <div class="col-12 mx-auto">
                         <div class="mx-auto calendarDate">
-                            <label for="date-picker">Pick a date within the next 10 days</label><br/>
-                            <input class="form-control-sm" autocomplete="off" id="date-picker" name="date" type="text" placeholder="Select Date" required style="border: 1px solid rgba(0,0,0,0.2); width: 100%;" onchange="selectDay(this.value)">
+                            <label for="date-picker">Pick a date within the next 14 days&nbsp;(Select batch first)</label><br/>
+                            <input class="form-control-sm" autocomplete="off" id="date-picker" name="date" type="text" placeholder="Select Date" required style="border: 1px solid rgba(0,0,0,0.2); width: 100%;" onchange="selectDay(this.value)" autocomplete="off">
                         </div>
                     </div>
                     <div class="col-12 mx-auto">
-                        <label for="available_timing">Select Timings</label>
-                        <select id="available_timing" name="time" class="form-control form-control-sm" required>
+                        <label for="available_timing">Select Timings&nbsp;(Select date first)</label>
+                        <select id="available_timing" name="time" class="form-control form-control-sm" required autocomplete="off">
                             <option value="null" id="at_null" selected>None</option>
                             {% for ts in time_slots%}
-                                <option value='{{ts.utc_start_time}},{{ts.utc_end_time}}' class="at_{{ts.date}}" disabled>{{ts.start_time}}-{{ts.end_time}}</option>
+                                <option value='{{ts.utc_start_time}},{{ts.utc_end_time}}' class="at_{{ts.date}}" disabled hidden>{{ts.start_time}}-{{ts.end_time}}</option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="col-12 mx-auto">
                         <label for="payment_method">Mode of payment</label>
-                        <select id="payment_method" name="payment_method" class="form-control form-control-sm" onchange="switchScheme(this.value)" required>
+                        <select id="payment_method" name="payment_method" class="form-control form-control-sm" onchange="switchScheme(this.value)" required autocomplete="off">
                             <option value=0 id="pay-option-0">Full payment</option>
                             <option value=1 id="pay-option-1">Monthly payment</option>
                             <option value=2 id="pay-option-2">Free trail</option>
@@ -160,7 +160,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="course" value="{{ course.id }}">
                 <div class="text-center">
-                    <button type="submit" class="btn text-white custom-btn">Enroll</button>
+                    <button type="submit" class="btn text-white custom-btn" id="enroll-submit-btn">Enroll</button>
                 </div>
             </form>
         {% else %}
@@ -213,12 +213,14 @@
             $("#available_timing").val('');
             for(d of availDates) {
                 $(`.at_${d}`).prop('disabled', 'disabled');
+                $(`.at_${d}`).attr('hidden', true);
             }
         }
         function selectDay(data) {
             disableAllTimes();
             var tmp = data.replaceAll("/", "_");
             $(`.at_${tmp}`).prop('disabled', false);
+            $(`.at_${tmp}`).attr('hidden', false);
         }
         var stripe = Stripe("{{ stripe_pk }}");
         $('#enroll-form').on('submit', function (e) {
@@ -278,6 +280,7 @@
             $("#payment_method").val(2);
             $("#batch-div").attr("hidden", true);
             $("#form-heading").text("Free trial");
+            $("#enroll-submit-btn").text("Book trial class");
          });
          $("#enroll-btn").on('click', function() {
             disableAllPaymentOption();
@@ -290,6 +293,7 @@
             $("#payment_method").val(0);
             $("#batch-div").attr("hidden", false);
             $("#form-heading").text("Enroll now");
+            $("#enroll-submit-btn").text("Enroll");
          });
          function switchScheme(scheme) {
             if(scheme == 0 || scheme == 1) {
@@ -302,6 +306,7 @@
                 $("#pay-option-1").attr("disabled", false);
                 $("#batch-div").attr("hidden", false);
                 $("#form-heading").text("Enroll now");
+                $("#enroll-submit-btn").text("Enroll");
             }
             if(scheme == 2) {
                 disableAllPaymentOption();
@@ -313,6 +318,7 @@
                 $("#payment_method").val(2);
                 $("#batch-div").attr("hidden", true);
                 $("#form-heading").text("Free trial");
+                $("#enroll-submit-btn").text("Book trial class");
             }
          }
     </script>

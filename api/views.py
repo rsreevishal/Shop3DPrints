@@ -124,18 +124,19 @@ def course_details(request, course_id):
     course = Course.objects.get(id=course_id)
     time_slots = CourseTimeSlot.objects.filter(course=course)
     final_result = []
-    for ts in time_slots:
-        ndate = get_next_weekday(ts.day)
-        final_result.append(
-            {
-                "date": ndate.strftime("%m_%d_%Y"),
-                "day": ts.day,
-                "start_time": get_local_time(request.user, datetime.combine(ndate, ts.start)).strftime("%I:%M %p"),
-                "end_time": get_local_time(request.user, datetime.combine(ndate, ts.end)).strftime("%I:%M %p"),
-                "utc_start_time": ts.start.strftime("%I:%M %p"),
-                "utc_end_time": ts.end.strftime("%I:%M %p"),
-            }
-        )
+    for i in range(2):  # 14 days
+        for ts in time_slots:
+            ndate = get_next_weekday(ts.day) + timedelta(days=i*7)
+            final_result.append(
+                {
+                    "date": ndate.strftime("%m_%d_%Y"),
+                    "day": ts.day,
+                    "start_time": get_local_time(request.user, datetime.combine(ndate, ts.start)).strftime("%I:%M %p"),
+                    "end_time": get_local_time(request.user, datetime.combine(ndate, ts.end)).strftime("%I:%M %p"),
+                    "utc_start_time": ts.start.strftime("%I:%M %p"),
+                    "utc_end_time": ts.end.strftime("%I:%M %p"),
+                }
+            )
     return standard_view('landing/course-details.html', {
         'course': course,
         'time_slots': final_result,
@@ -161,10 +162,13 @@ def student_course(request, enrollment_id):
     me = AcademyUser.get_for(request.user)
     try:
         enrollment = Enrollment.objects.get(pk=enrollment_id)
-
+        student_instructor = None
+        if StudentInstructor.objects.filter(enrollment=enrollment).exists():
+            student_instructor = StudentInstructor.objects.get(enrollment=enrollment).instructor
         return standard_view('student/course.html', {
             'enrollment': enrollment,
-            "me": me
+            "me": me,
+            "student_instructor": student_instructor
         })(request)
     except:
         return standard_view('student/courses.html', {
@@ -862,6 +866,7 @@ def instructor_student_works(request, instructor_id, enrollment_id, exam_id=None
     if request.POST and exam_form.is_valid():
         exam = exam_form.save(commit=False)
         exam.course = student_instructor.enrollment.course
+        exam.uploader = student_instructor.instructor
         exam.save()
         return HttpResponseRedirect(reverse('instructor-student-works', kwargs={"instructor_id": instructor_id,
                                                                                 "enrollment_id": enrollment_id}))
@@ -877,7 +882,7 @@ def instructor_student_works(request, instructor_id, enrollment_id, exam_id=None
         exam_grade.student = student_instructor.enrollment.student
         if ExamGrade.objects.filter(exam=exam_grade.exam).exists():
             new_exam_grade = ExamGrade.objects.get(exam=exam_grade.exam)
-            new_exam_grade.grade = exam_grade.grade
+            new_exam_grade.marks = exam_grade.marks
             new_exam_grade.save()
         else:
             exam_grade.save()
@@ -892,6 +897,7 @@ def instructor_student_works(request, instructor_id, enrollment_id, exam_id=None
     if request.POST and project_form.is_valid():
         project = project_form.save(commit=False)
         project.course = student_instructor.enrollment.course
+        project.uploader = student_instructor.instructor
         project.save()
         return HttpResponseRedirect(reverse('instructor-student-works', kwargs={"instructor_id": instructor_id,
                                                                                 "enrollment_id": enrollment_id}))
