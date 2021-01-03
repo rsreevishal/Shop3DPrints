@@ -152,12 +152,13 @@ def student_courses(request):
     })(request)
 
 
-def student_course(request, course_id):
+def student_course(request, enrollment_id):
     me = AcademyUser.get_for(request.user)
-    enrollment = Enrollment.objects.get(student=me, course_id=course_id)
+    enrollment = Enrollment.objects.get(pk=enrollment_id)
 
     return standard_view('student/course.html', {
-        'enrollment': enrollment
+        'enrollment': enrollment,
+        "me": me
     })(request)
 
 
