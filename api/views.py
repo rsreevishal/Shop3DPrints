@@ -159,12 +159,17 @@ def student_courses(request):
 
 def student_course(request, enrollment_id):
     me = AcademyUser.get_for(request.user)
-    enrollment = Enrollment.objects.get(pk=enrollment_id)
+    try:
+        enrollment = Enrollment.objects.get(pk=enrollment_id)
 
-    return standard_view('student/course.html', {
-        'enrollment': enrollment,
-        "me": me
-    })(request)
+        return standard_view('student/course.html', {
+            'enrollment': enrollment,
+            "me": me
+        })(request)
+    except:
+        return standard_view('student/courses.html', {
+            'enrollments': Enrollment.objects.filter(student=me)
+        })(request)
 
 
 def student_progress(request):
