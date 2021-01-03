@@ -20,7 +20,8 @@ class Calendar(HTMLCalendar):
             event_status = ["list-group-item-success", "list-group-item-danger", "list-group-item-warning"]
             status = event_status[event.status] if event.status is not None else "list-group-item-primary"
             if event.payment_method == 2:
-                status = "list-group-item-secondary"
+                status = event_status[event.status] if event.status is not None else "list-group-item-secondary"
+
             if self.student_instructor is None:
                 d += f'<button type="button list-group-item-action" class="list-group-item {status}" onclick="markAttendance({event.pk})">{"Trial class&nbsp;-&nbsp;" if event.payment_method == 2 else ""}{event.my_time_zone_title(self.user)}</button>'
             else:
