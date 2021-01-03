@@ -147,6 +147,11 @@ def course_details(request, course_id):
 def student_courses(request):
     me = AcademyUser.get_for(request.user)
     enrollments = Enrollment.objects.filter(student=me)
+    # deleting unconfirmed purchases
+    for en in enrollments:
+        if not en.purchase.confirmed:
+            purchase = Purchase.objects.get(pk=en.purchase.pk)
+            purchase.delete()
     return standard_view('student/courses.html', {
         'enrollments': enrollments
     })(request)
@@ -416,6 +421,7 @@ def checkout(request):
             return HttpResponse(json.dumps({'id': checkout_session.id, 'payment_method': PaymentMethod.full_payment}))
         elif purchase.payment_method == PaymentMethod.per_class_payment:
             try:
+                purchase.confirmed = True
                 purchase.save()
             except IntegrityError:
                 return JsonResponse(
@@ -462,6 +468,7 @@ def checkout(request):
                                             'message': "Successfully enrolled the course"}))
         elif purchase.payment_method == PaymentMethod.free_trail:
             try:
+                purchase.confirmed = True
                 purchase.save()
             except IntegrityError:
                 return JsonResponse(
