@@ -325,7 +325,7 @@ class Enrollment(models.Model):
                 self.days.split(',')))
 
     def __str__(self):
-        return f'{self.student.name} in {self.course.name}'
+        return f'{self.student.name} in {self.course.name} as {PaymentMethod.labels[self.purchase.payment_method]}'
 
 
 class Attendance(models.IntegerChoices):
