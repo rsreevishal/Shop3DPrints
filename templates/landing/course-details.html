@@ -107,7 +107,7 @@
     <section class="enroll-form container pb-5 px-5 my-4" id="enroll-now">
         <br><br>
         <div class="text-center centered">
-            <h1 class="head">Enroll Now</h1>
+            <h1 class="head" id="form-heading">Enroll Now</h1>
             <p class="text-medium">Book a class for your kid!</p>
         </div>
         {% if me %}
@@ -124,7 +124,7 @@
 <!--            </form>-->
             <form id="enroll-form" class="centered mx-auto">
                 <div class="form-row">
-                    <div class="col-12 mx-auto">
+                    <div class="col-12 mx-auto" id="batch-div">
                         <label for="batch">Select Batch</label>
                         <select id="batch" name="batch" class="form-control form-control-sm" required onchange="clearDate(this.value)">
                             <option id="batch-1" value="-1" selected>None</option>
@@ -276,6 +276,8 @@
             $("#batch-1").attr("disabled", false);
             $("#pay-option-2").attr("disabled", false);
             $("#payment_method").val(2);
+            $("#batch-div").attr("hidden", true);
+            $("#form-heading").text("Free trial");
          });
          $("#enroll-btn").on('click', function() {
             disableAllPaymentOption();
@@ -286,6 +288,8 @@
             $("#pay-option-0").attr("disabled", false);
             $("#pay-option-1").attr("disabled", false);
             $("#payment_method").val(0);
+            $("#batch-div").attr("hidden", false);
+            $("#form-heading").text("Enroll now");
          });
          function switchScheme(scheme) {
             if(scheme == 0 || scheme == 1) {
@@ -296,6 +300,8 @@
                 $("#batch-4").attr("disabled", false);
                 $("#pay-option-0").attr("disabled", false);
                 $("#pay-option-1").attr("disabled", false);
+                $("#batch-div").attr("hidden", false);
+                $("#form-heading").text("Enroll now");
             }
             if(scheme == 2) {
                 disableAllPaymentOption();
@@ -305,6 +311,8 @@
                 $("#batch-1").attr("disabled", false);
                 $("#pay-option-2").attr("disabled", false);
                 $("#payment_method").val(2);
+                $("#batch-div").attr("hidden", true);
+                $("#form-heading").text("Free trial");
             }
          }
     </script>
