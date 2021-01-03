@@ -69,7 +69,7 @@ a {
 <div class="tab-pane fade show active" role="tabpanel" >
     <div class="row py-3 px-3">
         <div class="col col-md-6">
-            <a class="btn btn-info left" href="{{ request.path }}?{{ prev_month }}"> Previous Month </a>
+            <a class="btn custom-btn text-light left" href="{{ request.path }}?{{ prev_month }}"> Previous Month </a>
         </div>
 <!--        <div class="col col-md-4">-->
 <!--            {% get_current_timezone as TIME_ZONE %}-->
@@ -85,7 +85,7 @@ a {
 <!--            </form>-->
 <!--        </div>-->
         <div class="col col-md-6">
-            <a class="btn btn-info right" href="{{ request.path }}?{{ next_month }}"> Next Month </a>
+            <a class="btn custom-btn text-light right" href="{{ request.path }}?{{ next_month }}"> Next Month </a>
         </div>
 <!--        <a class="btn btn-info right" href="{% url 'event_new' %}">New event</a>-->
     </div>
