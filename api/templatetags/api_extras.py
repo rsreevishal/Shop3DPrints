@@ -4,7 +4,7 @@ from typing import Union
 from django import template
 from django.utils import timezone
 
-from api.models import Exam, ExamGrade, Project, ProjectSubmission, Student, AcademyUser
+from api.models import Exam, ExamGrade, Project, ProjectSubmission, Student, AcademyUser, Event, Attendance
 
 register = template.Library()
 
@@ -59,3 +59,14 @@ def attendance_status(_id):
 def local_time(t, me):
     at = datetime.combine(datetime.now(), t).replace(tzinfo=timezone.utc).astimezone(tz=me.timezone).time()
     return at.strftime("%I:%M %p")
+
+
+@register.filter(name="course_complete_status")
+def course_complete_status(enrollment):
+    events = Event.objects.filter(enrollment=enrollment)
+    for e in events:
+        if e.status == Attendance.present:
+            continue
+        else:
+            return False
+    return True

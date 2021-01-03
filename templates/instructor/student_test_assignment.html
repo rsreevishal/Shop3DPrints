@@ -75,13 +75,13 @@
             <div class="text-center text-large">
                 <p>Upload new test</p>
             </div>
-            <div class="text-center">
+            <div class="container-fluid">
                 <form action="{% url 'instructor-student-works' instructor_id student_instructor.enrollment.pk %}" method="post" id="update_exam">
                     {% csrf_token %}
                     <table class="form form-table">
                         {{exam_form.as_table}}
                     </table>
-                    <input class="btn btn-info" type="submit" value="Upload"/>
+                    <input class="btn btn-info my-2" type="submit" value="Upload"/>
                 </form>
             </div>
         </div>
@@ -111,13 +111,13 @@
             <div class="text-center text-large">
                 <p>Upload new assignment</p>
             </div>
-            <div class="text-center">
+            <div class="container-fluid">
                 <form action="{% url 'instructor-student-works' instructor_id student_instructor.enrollment.pk %}" method="post" id="update_project">
                     {% csrf_token %}
                     <table class="form form-table">
                         {{project_form.as_table}}
                     </table>
-                    <input class="btn btn-info" type="submit" value="Upload"/>
+                    <input class="btn btn-info my-2" type="submit" value="Upload"/>
                 </form>
             </div>
         </div>

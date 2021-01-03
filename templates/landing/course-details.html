@@ -220,7 +220,6 @@
             var tmp = data.replaceAll("/", "_");
             $(`.at_${tmp}`).prop('disabled', false);
         }
-
         var stripe = Stripe("{{ stripe_pk }}");
         $('#enroll-form').on('submit', function (e) {
             e.preventDefault();
@@ -231,13 +230,13 @@
                 if(session.payment_method == 0) {
                     stripe.redirectToCheckout({sessionId: session.id});
                 } else if (session.payment_method == 1 || session.payment_method == 2) {
-                    showAlert("Registration successful", session.message);
-                    window.location.replace("{% url 'student' %}");
+                    showAlert("Registration successful", session.message, () => {
+                        window.location.replace("{% url 'student' %}");
+                    });
                 }
             }).fail(function (data) {
                 var res = JSON.parse(data.responseText);
                 showAlert("Registration failed", res.message);
-                //alert("Sorry can't enroll. Check whether you're enrolled already");
             });
         })
         /*$("#set-time").submit(function(e) {

@@ -119,7 +119,11 @@ font-family: 'Raleway', sans-serif;
   padding-left:20px; padding-right: 20px; 
   margin: 10px;
 }
-
+.modal-header .custom-alert-header{
+  color: white !important;
+  background-color: #0059BF !important;
+  background-image: linear-gradient(to right, #033E8C , #0059BF) !important;
+}
 .custom-btn{
   color: white;
   background-color: #0059BF;

@@ -321,7 +321,7 @@ class Enrollment(models.Model):
 
     def get_days_display(self):
         return ', '.join(
-            map(lambda day: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', "Free trail"][int(day)],
+            map(lambda day: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', "Trail class"][int(day)],
                 self.days.split(',')))
 
     def __str__(self):
@@ -374,7 +374,7 @@ class StudentInstructor(models.Model):
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.enrollment.student.name}-{self.instructor.name}'
+        return f'Student: {self.enrollment.student.name}, Instructor: {self.instructor.name}, Class: {PaymentMethod.labels[self.enrollment.purchase.payment_method]}'
 
 
 class CourseMaterial(models.Model):

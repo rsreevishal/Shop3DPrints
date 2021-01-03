@@ -30,23 +30,20 @@
                 </div>
             {% endif %}
             <p class="text-info text-small px-2">(Note: Click on a card to view the assignments and tests)</p>
-            <div class="card-columns mx-auto">
+            <div class="container-fluid">
+                <div class="card-columns mx-auto">
                 {% for enrollment in enrollments %}
+                    {% if enrollment|course_complete_status == False%}
                     <a href="{% url 'student-course' enrollment.course.id %}">
-                        <div class="card my-2 mx-2">
-                            <div class="card-header" style="height: 80px;">
-                                <h5 class="card-title" style="font-size: 2vh;">{{ enrollment.course.name }}</h5>
-                            </div>
-                            <div class="card-body" style="height: 200px;">
+                        <div class="card my-3 mx-2">
+                            <div class="card-body pb-0 ">
+                                <h5 class="card-title text-large">{{ enrollment.course.name }}</h5>
                                 <ul class="list-unstyled text-small">
                                     <li><strong>{{ enrollment.course.category.category }}</strong></li>
                                     <li>Grade: <strong>{{ enrollment.course.get_grade_display }}</strong></li>
                                     <li>Level: <strong>{{ enrollment.course.level }}</strong></li>
                                     <li>{{ enrollment.get_days_display }}</li>
                                     <li>{{ enrollment.start_time|local_time:me }} - {{ enrollment.end_time|local_time:me }}</li>
-                                    {% if enrollment.purchase.payment_method == 2%}
-                                        <li class="text-primary">Trial class</li>
-                                    {% endif %}
                                 </ul>
                             </div>
                             <div class="card-footer">
@@ -57,30 +54,40 @@
                             </div>
                         </div>
                     </a>
+                    {% endif %}
                 {% endfor %}
+            </div>
             </div>
         </div>
 
         <!-- HISTORY COURSE TAB CONTENT -->
         <div class="tab-pane" id="nav-history-course" role="tabpanel"
              aria-labelledby="nav-history-course-tab">
-            <div class="card-columns mx-auto">
-<!--                <div class="card my-3 mx-auto ">-->
-<!--                    <div class="card-body pb-0">-->
-<!--                        <h5 class="card-title text-large">Python Level 2</h5>-->
-<!--                        <ul class="list-unstyled text-small">-->
-<!--                            <li><strong>Programming</strong></li>-->
-<!--                            <li>Grade: <strong>5-7</strong></li>-->
-<!--                            <li>Level: <strong>1</strong></li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-<!--                    <div class="card-footer">-->
-<!--                        <ul class="list-unstyled text-small mb-0" style="color:#0060CF">-->
-<!--                            <li>Mon, Wed, Fri</li>-->
-<!--                            <li>5PM - 6PM</li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-<!--                </div>-->
+            <p class="text-info text-small px-2">(Note: Click on a card to view the assignments and tests)</p>
+            <div class="container-fluid">
+                <div class="card-columns mx-auto">
+                {% for enrollment in enrollments %}
+                    {% if enrollment|course_complete_status == True%}
+                    <a href="{% url 'student-course' enrollment.course.id %}">
+                        <div class="card my-3 mx-2">
+                            <div class="card-body pb-0 ">
+                                <h5 class="card-title text-large">{{ enrollment.course.name }}</h5>
+                                <ul class="list-unstyled text-small">
+                                    <li><strong>{{ enrollment.course.category.category }}</strong></li>
+                                    <li>Grade: <strong>{{ enrollment.course.get_grade_display }}</strong></li>
+                                    <li>Level: <strong>{{ enrollment.course.level }}</strong></li>
+                                    <li>{{ enrollment.get_days_display }}</li>
+                                    <li>{{ enrollment.start_time|local_time:me }} - {{ enrollment.end_time|local_time:me }}</li>
+                                </ul>
+                            </div>
+                            <div class="card-footer">
+                                <a class="btn btn-primary" role="button" href="{{ enrollment.course.course_link }}">Join class</a>
+                            </div>
+                        </div>
+                    </a>
+                    {% endif %}
+                {% endfor %}
+            </div>
             </div>
         </div>
     </div>

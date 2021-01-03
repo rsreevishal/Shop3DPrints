@@ -13,7 +13,7 @@
                     <a href="{% url 'instructor-student-works' instructor_id cls.enrollment.pk %}">
                         <div class="card my-3 mx-auto ">
                             <div class="card-body pb-0">
-                                <h5 class="card-title text-large">{{ cls.enrollment.student.name }}</h5>
+                                <h5 class="card-title text-large">{{ cls.enrollment.student.student_first_name }}&nbsp;{{ cls.enrollment.student.student_last_name }}</h5>
                                 <ul class="list-unstyled text-small">
                                     <li><strong>{{ cls.enrollment.course.name }}</strong></li>
                                     <li><strong>{{ cls.enrollment.course.category.category }}</strong></li>
@@ -24,7 +24,7 @@
                             <div class="card-footer">
                                 <ul class="list-unstyled text-small mb-0" style="color:#0060CF">
                                     <li>{{ cls.enrollment.get_days_display }}</li>
-                                    <li>{{ cls.enrollment.start_time }} - {{ cls.enrollment.end_time }}</li>
+                                    <li>{{ cls.enrollment.start_time|local_time:me }} - {{ cls.enrollment.end_time|local_time:me }}</li>
                                 </ul>
                             </div>
                         </div>

@@ -9,17 +9,20 @@
 {% block student-body %}
     <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
         {% for enrollment in enrollments %}
-            <li class="nav-item">
-                <a class="nav-link{% if forloop.first %} active{% endif %}" id="pills-{{ enrollment.course.id }}-tab"
-                   data-toggle="pill" href="#pills-{{ enrollment.course.id }}"
-                   role="tab" aria-controls="pills-{{ enrollment.course.id }}"{% if forloop.first %}
-                   aria-selected="true"{% endif %}>{{ enrollment.course.name }}</a>
-            </li>
+            {% if enrollment.purchase.payment_method != 2 %}
+                <li class="nav-item">
+                    <a class="nav-link{% if forloop.first %} active{% endif %}" id="pills-{{ enrollment.course.id }}-tab"
+                       data-toggle="pill" href="#pills-{{ enrollment.course.id }}"
+                       role="tab" aria-controls="pills-{{ enrollment.course.id }}"{% if forloop.first %}
+                       aria-selected="true"{% endif %}>{{ enrollment.course.name }}</a>
+                </li>
+            {% endif %}
         {% endfor %}
     </ul>
     <div class="tab-content" id="pills-tabContent">
         {% for enrollment in enrollments %}
-            <div class="tab-pane fade show{% if forloop.first %} active{% endif %}"
+            {% if enrollment.purchase.payment_method != 2 %}
+                <div class="tab-pane fade show{% if forloop.first %} active{% endif %}"
                  id="pills-{{ enrollment.course.id }}"
                  role="tabpanel"
                  aria-labelledby="pills-{{ enrollment.course.id }}-tab">
@@ -68,6 +71,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
         {% endfor %}
     </div>
 {% endblock %}

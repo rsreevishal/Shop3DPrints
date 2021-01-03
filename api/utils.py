@@ -17,13 +17,15 @@ class Calendar(HTMLCalendar):
         events_per_day = events.filter(start_time__day=day)
         d = ''
         for event in events_per_day:
-            event_status = ["list-group-item-success", "list-group-item-danger",
-                            "list-group-item-warning", "list-group-item-primary"]
-            status = event_status[event.status] if event.status is not None else event_status[3]
+            event_status = ["list-group-item-success", "list-group-item-danger", "list-group-item-warning"]
+            status = event_status[event.status] if event.status is not None else "list-group-item-primary"
+            if event.payment_method == 2:
+                status = "list-group-item-secondary"
             if self.student_instructor is None:
-                d += f'<button type="button list-group-item-action" class="list-group-item {status}" onclick="markAttendance({event.pk})">{event.my_time_zone_title(self.user)}</button>'
+                d += f'<button type="button list-group-item-action" class="list-group-item {status}" onclick="markAttendance({event.pk})">{"Trial class&nbsp;-&nbsp;" if event.payment_method == 2 else ""}{event.my_time_zone_title(self.user)}</button>'
             else:
-                d += f'<button type="button list-group-item-action" class="list-group-item {status}" onclick="markAttendance({event.pk})">{event.my_time_zone_title(self.student_instructor.instructor.django_user)}</button>'
+                d += f'<button type="button list-group-item-action" class="list-group-item {status}" onclick="markAttendance({event.pk})">{"Trial class&nbsp;-&nbsp;" if event.payment_method == 2 else ""}{event.my_time_zone_title(self.student_instructor.instructor.django_user)}</button>'
+
         if day != 0 and len(d) > 0:
             return f"<td><span class='date'>{day}</span><div class='list-group'> {d}</div></td>"
         elif day != 0:

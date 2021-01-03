@@ -7,63 +7,60 @@
 {% endblock %}
 
 {% block instructor-body %}
-<div class="tab-pane fade show active" role="tabpanel">
-    <!-- CURRENT AND HISTORY COURSE TABS -->
-    <nav>
-        <div class="courses-tabs nav nav-tabs active" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link active ml-5" id="nav-current-course-tab" data-toggle="tab"
-               href="#nav-current-course" role="tab" aria-controls="nav-current-course"
-               aria-selected="true">Classes</a>
-        </div>
-    </nav>
+<!--<div class="tab-pane fade show active" role="tabpanel">-->
+<!--    &lt;!&ndash; CURRENT AND HISTORY COURSE TABS &ndash;&gt;-->
+<!--    <nav>-->
+<!--        <div class="courses-tabs nav nav-tabs active" id="nav-tab" role="tablist">-->
+<!--            <a class="nav-item nav-link active ml-5" id="nav-current-course-tab" data-toggle="tab"-->
+<!--               href="#nav-current-course" role="tab" aria-controls="nav-current-course"-->
+<!--               aria-selected="true">Classes</a>-->
+<!--        </div>-->
+<!--    </nav>-->
 
-    <!--  CURRENT AND HISTORY COURSE TAB CONTENT-->
-    <div class="tab-content ml-sm-4 mx-md-5" id="courses">
-        <!-- CURRENT COURSE TAB CONTENT -->
-        <div class="tab-pane active" id="nav-current-course" role="tabpanel"
-             aria-labelledby="nav-current-course-tab">
-            {% if me.is_tz_set == False %}
-                <div class="alert alert-danger my-2" role="alert">
-                  Please update your timezone in profile section!
-                </div>
-            {% endif %}
-            <p class="text-info text-small">(Note: click on the student card to view schedule)</p>
-            <div class="container-fluid content-row">
-                <div class="row">
-                <div class="col-sm-12 col-lg-6">
-                     <div class="card-columns mx-auto">
-                        {% for cls in classes %}
-                            <a href="{% url 'instructor-class-schedule' cls.instructor.pk cls.enrollment.pk %}">
-                                <div class="card my-3 mx-auto py-auto px-auto h-100 w-100">
-                                    <div class="card-header" style="height: 80px;">
-                                        <h5 class="card-title" style="font-size: 2vh;">{{ cls.enrollment.student.student_first_name }} {{ cls.enrollment.student.student_last_name }}</h5>
-                                    </div>
-                                    <div class="card-body py-2" style="height: 200px">
-                                        <ul class="list-unstyled text-small">
-                                            <li><strong>{{ cls.enrollment.course.name }}</strong></li>
-                                            <li><strong>{{ cls.enrollment.course.category.category }}</strong></li>
-                                            <li>Grade: <strong>{{ cls.enrollment.course.get_grade_display }}</strong></li>
-                                            <li>Level: <strong>{{ cls.enrollment.course.level }}</strong></li>
-                                            {% if cls.enrollment.purchase.payment_method == 2%}
-                                                <li class="text-primary">Trial class</li>
-                                            {% endif %}
-                                        </ul>
-                                        <ul class="list-unstyled text-small mb-0" style="color:#0060CF">
-                                            <li>{{ cls.enrollment.get_days_display }}</li>
-                                            <li>{{ cls.enrollment.start_time|local_time:me }} - {{ cls.enrollment.end_time|local_time:me }}</li>
-                                        </ul>
-                                    </div>
-                                    <div class="card-footer">
-                                        <a class="btn btn-primary" role="button" href="{{ cls.enrollment.course.course_link }}">Join class</a>
-                                    </div>
-                                </div>
-                            </a>
-                        {% endfor %}
+<!--    &lt;!&ndash;  CURRENT AND HISTORY COURSE TAB CONTENT&ndash;&gt;-->
+<!--    <div class="tab-content ml-sm-4 mx-md-5" id="courses">-->
+<!--        &lt;!&ndash; CURRENT COURSE TAB CONTENT &ndash;&gt;-->
+<!--        <div class="tab-pane active" id="nav-current-course" role="tabpanel"-->
+<!--             aria-labelledby="nav-current-course-tab">-->
+<!--            {% if me.is_tz_set == False %}-->
+<!--                <div class="alert alert-danger my-2" role="alert">-->
+<!--                  Please update your timezone in profile section!-->
+<!--                </div>-->
+<!--            {% endif %}-->
+<!--            <p class="text-info text-small">(Note: click on the student card to view schedule)</p>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<div class="container-fluid">
+    {% if me.is_tz_set == False %}
+        <div class="alert alert-danger my-2" role="alert">
+          Please update your timezone in profile section!
+        </div>
+    {% endif %}
+    <p class="text-info text-small">(Note: click on the student card to view schedule)</p>
+    <div class="card-columns mx-auto">
+        {% for cls in classes %}
+            <a href="{% url 'instructor-class-schedule' instructor_id cls.enrollment.pk %}">
+                <div class="card my-3 mx-auto ">
+                    <div class="card-body pb-0">
+                        <h5 class="card-title text-large">{{ cls.enrollment.student.student_first_name }}&nbsp;{{ cls.enrollment.student.student_last_name }}</h5>
+                        <ul class="list-unstyled text-small">
+                            <li><strong>{{ cls.enrollment.course.name }}</strong></li>
+                            <li><strong>{{ cls.enrollment.course.category.category }}</strong></li>
+                            <li>Grade: <strong>{{ cls.enrollment.course.get_grade_display }}</strong></li>
+                            <li>Level: <strong>{{ cls.enrollment.course.level }}</strong></li>
+                            <li>{{ cls.enrollment.get_days_display }}</li>
+                            <li>{{ cls.enrollment.start_time|local_time:me }} - {{ cls.enrollment.end_time|local_time:me }}</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <ul class="list-unstyled text-small mb-0" style="color:#0060CF">
+                            <li><a class="btn btn-link custom-btn text-light" href="{{cls.enrollment.course.course_link}}">Join now</a></li>
+                        </ul>
                     </div>
                 </div>
-            </div>
-            </div>
-        </div>
+            </a>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

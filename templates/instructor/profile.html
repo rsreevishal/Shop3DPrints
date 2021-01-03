@@ -120,10 +120,10 @@
                contentType: 'application/json; charset=utf-8',
                success: function(data)
                {
-                    alert(data.message);
+                    showAlert("Update successful", data.message);
                },
                error: function(data) {
-                    alert(data.responseJSON.message);
+                    showAlert("Update successful", data.responseJSON.message);
                }
             });
         }

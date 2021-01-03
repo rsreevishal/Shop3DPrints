@@ -112,9 +112,11 @@ def get_next_weekday(day):
 
 
 def get_local_time(user, dt):
-    # at = dt.replace(tzinfo=timezone.utc).astimezone(tz=timezone.get_current_timezone()).time()
     me = AcademyUser.get_for(user)
-    at = dt.replace(tzinfo=timezone.utc).astimezone(tz=me.timezone).time()
+    if me is not None:
+        at = dt.replace(tzinfo=timezone.utc).astimezone(tz=me.timezone).time()
+    else:
+        at = dt.replace(tzinfo=timezone.utc).astimezone(tz=timezone.get_current_timezone()).time()
     return at
 
 
@@ -804,9 +806,10 @@ def instructor_material(request, instructor_id, course_material_id=None):
 
 
 def instructor_student_assignment(request, instructor_id):
+    me = AcademyUser.get_for(request.user)
     classes = StudentInstructor.objects.filter(instructor=instructor_id)
     return standard_view('instructor/test_assignment_dashboard.html',
-                  {"classes": classes, "instructor_id": instructor_id})(request)
+                  {"classes": classes, "instructor_id": instructor_id, "me": me})(request)
 
 
 def update_instructor(request, instructor_id=None):
