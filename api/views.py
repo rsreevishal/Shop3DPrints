@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template import loader
 from django.urls import reverse
+from django.utils.datastructures import MultiValueDictKeyError
 from django.views.decorators.csrf import csrf_exempt
 
 from django.conf import settings
@@ -124,6 +125,10 @@ def course_details(request, course_id):
     course = Course.objects.get(id=course_id)
     time_slots = CourseTimeSlot.objects.filter(course=course)
     final_result = []
+    try:
+        mode = request.GET["mode"]
+    except MultiValueDictKeyError:
+        mode = 1
     for i in range(2):  # 14 days
         for ts in time_slots:
             ndate = get_next_weekday(ts.day) + timedelta(days=i*7)
@@ -141,7 +146,8 @@ def course_details(request, course_id):
         'course': course,
         'time_slots': final_result,
         'stripe_pk': settings.STRIPE_PUBLISHABLE_KEY,
-        'timezones': pytz.common_timezones
+        'timezones': pytz.common_timezones,
+        'mode': mode
     })(request)
 
 
@@ -293,10 +299,10 @@ def activate(request, uidb64, token):
             # django_login(request, user)
             print(f"User active status: {user.is_active}")
             print(f"User has usable password: {user.has_usable_password()}")
-            return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect(reverse('index') + "?mode=2")
         if user.groups.filter(name="Instructor").exists():
             if Instructor.objects.get(django_user=user).is_verified:
-                return HttpResponseRedirect(reverse('index'))
+                return HttpResponseRedirect(reverse('index') + "?mode=2")
             else:
                 return HttpResponse('Please wait until your account get verified!')
     else:

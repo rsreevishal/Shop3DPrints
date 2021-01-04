@@ -27,7 +27,7 @@
                         <div class="card-deck sub-cat-cards justify-content-center py-2">
                             {% for course in subcategory.course_set.all %}
                                 <div class="card mx-auto">
-                                    <a href="{% url 'course-details' course.id %}">
+                                    <a href="{% url 'course-details' course.id %}?mode=2">
                                         {% if course.thumbnail %}
                                             <img src="{{ course.thumbnail.url}}" class="card-img-top" alt="course-img">
                                         {% else %}

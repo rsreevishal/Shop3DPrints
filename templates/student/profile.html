@@ -21,12 +21,12 @@
                             <label for="pfname">Parent's First Name</label>
                             <input type="text" id="pfname" name="parent_first_name"
                                    class="form-control form-control-sm " placeholder="ex) John"
-                                   required value="{{ me.parent_first_name }}">
+                                   required value="{{ me.parent_first_name }}" readonly>
                         </div>
                         <div class="col-6">
                             <label for="plname">Parent's Last Name</label>
                             <input type="text" id="plname" name="parent_last_name" class="form-control form-control-sm"
-                                   placeholder="ex) Doe" required value="{{ me.parent_last_name }}">
+                                   placeholder="ex) Doe" required value="{{ me.parent_last_name }}" readonly>
                         </div>
                     </div>
                     <div class="form-row">
@@ -34,12 +34,20 @@
                             <label for="sfname">Student's First Name</label>
                             <input type="text" id="sfname" name="student_first_name"
                                    class="form-control form-control-sm" placeholder="ex John" required
-                                   value="{{ me.student_first_name }}">
+                                   value="{{ me.student_first_name }}" readonly>
                         </div>
                         <div class="col-6">
                             <label for="slname">Student's Last Name</label>
                             <input type="text" id="slname" name="student_last_name" class="form-control form-control-sm"
-                                   placeholder="ex Doe" required value="{{ me.student_last_name }}">
+                                   placeholder="ex Doe" required value="{{ me.student_last_name }}" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-6">
+                            <label for="student-email">Email</label>
+                            <input id="student-email", type="email" name="email" class="form-control form-control-sm"
+                                   required value="{{me.django_user.email}}" readonly
+                            >
                         </div>
                     </div>
                     <div class="form-row">

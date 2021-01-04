@@ -310,4 +310,13 @@ and my Instructor gave assignments which were very helpful.I have learned a lot!
             </div>
         </div>
     </section>
+<script>
+    $(document).ready(function() {
+        if("{{request.GET.mode}}") {
+            showAlert("Activation successful", "Your account has been activated successfully.", () => {
+                $("#login-popup").modal("show");
+            });
+        }
+    });
+</script>
 {% endblock %}

@@ -46,9 +46,11 @@
             {% if request.user|has_group:"Student" %}
                 <li class="nav-item"><a class="nav-link text-light" href="{% url 'student' %}" role="tab">Dashboard</a></li>
                 <li class="nav-item"><a class="nav-link text-light" href="{% url 'logout' %}">Logout</a></li>
+                <li class="nav-item"><a class="nav-link text-light" href="{% url 'student-profile' %}">{{request.user|user_name|capfirst}}</a></li>
             {% elif request.user|has_group:"Instructor"%}
                 <li class="nav-item"><a class="nav-link text-light" href="{% url 'instructor' %}" role="tab">Dashboard</a></li>
                 <li class="nav-item"><a class="nav-link text-light" href="{% url 'logout' %}">Logout</a></li>
+            <li class="nav-item"><a class="nav-link text-light" href="{% url 'instructor-profile-edit' request.user|my_pk %}">{{request.user|user_name|capfirst}}</a></li>
             {% else %}
                 <li class="nav-item"><a class="nav-link text-light " data-toggle="modal" data-target="#login-popup">Login</a>
                 </li>

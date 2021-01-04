@@ -5,7 +5,7 @@ from django import template
 from django.utils import timezone
 
 from api.models import Exam, ExamGrade, Project, ProjectSubmission, Student, AcademyUser, Event, Attendance, \
-    StudentInstructor
+    StudentInstructor, Instructor
 
 register = template.Library()
 
@@ -80,3 +80,18 @@ def course_link(enrollment):
         return instructor.class_link if instructor.class_link is not None else ""
     else:
         return ""
+
+
+@register.filter(name="user_name")
+def user_name(user):
+    me = AcademyUser.get_for(user)
+    if isinstance(me, Student):
+        return f"{me.student_first_name} {me.student_last_name}"
+    elif isinstance(me, Instructor):
+        return f"{me.django_user.first_name} {me.django_user.last_name}"
+
+
+@register.filter(name="my_pk")
+def my_pk(user):
+    me = AcademyUser.get_for(user)
+    return me.pk
