@@ -199,6 +199,9 @@ def student_profile(request):
             user = form.save()
             user.is_tz_set = True
             user.save()
+            return JsonResponse({'type': 'SUCCESS', 'message': 'Successfully updated.'}, status=200)
+        else:
+            return JsonResponse({'type': 'ERROR', 'message': 'Update failed!, No valid data.'}, status=400)
 
     return standard_view('student/profile.html', {"timezones": pytz.common_timezones})(request)
 
@@ -842,11 +845,14 @@ def update_instructor(request, instructor_id=None):
     else:
         instance = Instructor()
     form = InstructorForm(request.POST or None, instance=instance)
-    if request.POST and form.is_valid():
-        instructor = form.save(commit=False)
-        instructor.is_tz_set = True
-        instructor.save()
-        return HttpResponseRedirect(reverse('instructor'))
+    if request.POST:
+        if form.is_valid():
+            instructor = form.save(commit=False)
+            instructor.is_tz_set = True
+            instructor.save()
+            return JsonResponse({'type': 'SUCCESS', 'message': 'Successfully updated.'}, status=200)
+        else:
+            return JsonResponse({'type': 'ERROR', 'message': 'Update failed!, No valid data.'}, status=400)
     instructor_specialities = InstructorSpeciality.objects.filter(instructor=instance)
     speciality_level = SpecialityLevel.objects.all()
     speciality = Speciality.objects.all()

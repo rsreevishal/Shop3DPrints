@@ -24,7 +24,7 @@
 
 {% block instructor-body %}
 <div class="container-fluid">
-    <form method="post">
+    <form method="post" id="instructor-profile-form">
         {% csrf_token %}
         <label for="instructor-form"><h3>Update profile</h3></label>
         <table class="form form-table" id="instructor-form">
@@ -128,7 +128,30 @@
             });
         }
     });
-
-
+    $(document).ready(function(){
+        // Update AJAX request
+        $("#instructor-profile-form").submit(function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            $.ajax({
+               type: "POST",
+               url: url,
+               data: form.serialize(),
+               success: function(data)
+               {
+                   if(data.type == "ERROR") {
+                    showAlert("Instructor profile", data.message);
+                   }
+                   if(data.type == "SUCCESS") {
+                       showAlert("Instructor profile", data.message);
+                   }
+               },
+               error: function(data) {
+                showAlert("Instructor profile", data.responseJSON.message);
+               }
+            });
+        });
+    });
 </script>
 {% endblock %}

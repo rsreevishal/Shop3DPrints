@@ -15,7 +15,7 @@
                 </div>
             </div> -->
             <div class="col-md-8 mx-md-3 my-2">
-                <form class="pt-lg-4" action="{% url 'student-profile' %}" method="post">
+                <form class="pt-lg-4" action="{% url 'student-profile' %}" method="post" id="student-profile-form">
                     <div class="form-row">
                         <div class="col-6">
                             <label for="pfname">Parent's First Name</label>
@@ -403,4 +403,31 @@
             </div>
         </div>
     </div>
+<script>
+    $(document).ready(function(){
+        // Update AJAX request
+        $("#student-profile-form").submit(function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            $.ajax({
+               type: "POST",
+               url: url,
+               data: form.serialize(),
+               success: function(data)
+               {
+                   if(data.type == "ERROR") {
+                    showAlert("Student profile", data.message);
+                   }
+                   if(data.type == "SUCCESS") {
+                       showAlert("Student profile", data.message);
+                   }
+               },
+               error: function(data) {
+                showAlert("Student profile", data.responseJSON.message);
+               }
+            });
+        });
+    });
+</script>
 {% endblock %}
