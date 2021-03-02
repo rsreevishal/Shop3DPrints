@@ -16,8 +16,7 @@ django-rest-passwordreset
 djangorestframework
 markdown
 django-filter
-pillow==7.2.0
+pillow==8.1.1
 django-extensions
-pygraphviz
 django-timezone-field
 pytz-convert
