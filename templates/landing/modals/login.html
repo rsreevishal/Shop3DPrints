@@ -126,8 +126,8 @@
                     showAlert("Login failed", data.message);
                    }
                    if(data.type == "SUCCESS") {
-                        if(data.user == 1) window.location.replace("{% url 'student' %}");
-                        if(data.user == 2) window.location.replace("{% url 'instructor' %}");
+                        if(data.user == 1) window.location.replace("{% url 'customer' %}");
+                        if(data.user == 2) window.location.replace("{% url 'service_provider' %}");
                    }
                },
                error: function(data) {

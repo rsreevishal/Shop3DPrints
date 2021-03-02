@@ -52,7 +52,7 @@
 				</span>
                 <br>
                 <button type="button" class="btn text-light custom-btn mt-2">
-                	<a href="{% url 'course-category' %}" class="text-white">Book a free trial</a>
+                	<a href="{% url 'product-category' %}" class="text-white">Book a free trial</a>
                 </button>
             </div>
         </div>
@@ -117,7 +117,7 @@
         <h1 class="head" style="font-size: 25px;">Find what fascinates you</h1>
         <ul class="icon-text list-unstyled list-inline py-2">
             {% for category in all_categories %}
-                <a href="{% url 'courses-offered' category.id %}">
+                <a href="{% url 'product-offered' category.id %}">
                     <li class="list-inline-item text-center">
                         {% if category.thumbnail %}
                             <img src="{{ category.thumbnail.url }}" alt="course-img"><br>{{ category.name }}
@@ -294,12 +294,6 @@ and my Instructor gave assignments which were very helpful.I have learned a lot!
                 <a class="hvr-grow" data-toggle="modal" data-target="#query-popup">
                     <img src="{% static 'images/8.png' %}">
                     <p>Ask a query</p>
-                </a>
-            </div>
-            <div class="col-sm-6 col-md-3 py-2">
-                <a href="{% url 'teach-with-us' %}" class="hvr-grow">
-                    <img src="{% static 'images/9.png' %}">
-                    <p>Teach with us</p>
                 </a>
             </div>
             <div class="col-sm-6 col-md-3 py-2">

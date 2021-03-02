@@ -25,11 +25,11 @@
                         <h3 class="heading pt-5">{{ subcategory.name }}</h3>
                         <hr>
                         <div class="card-deck sub-cat-cards justify-content-center py-2">
-                            {% for course in subcategory.course_set.all %}
+                            {% for product in subcategory.product_set.all %}
                                 <div class="card mx-auto">
-                                    <a href="{% url 'course-details' course.id %}?mode=2">
+                                    <a href="{% url 'product-details' course.id %}?mode=2">
                                         {% if course.thumbnail %}
-                                            <img src="{{ course.thumbnail.url}}" class="card-img-top" alt="course-img">
+                                            <img src="{{ product.thumbnail.url}}" class="card-img-top" alt="course-img">
                                         {% else %}
                                             <img src="{% static 'images/300.png' %}" class="card-img-top" alt="course-img">
                                         {% endif %}
@@ -37,11 +37,9 @@
     {#                                        <div class="ribbon-container">#}
     {#                                            <div class="ribbon">trending</div>#}
     {#                                        </div>#}
-                                            <h5>{{ course.name.upper }}</h5>
+                                            <h5>{{ product.name.upper }}</h5>
                                             <ul class="list-unstyled text-small">
-                                                <li>Category: <strong>{{ course.category.category }}</strong></li>
-                                                <li>Grade: <strong>{{ course.get_grade_display }}</strong></li>
-                                                <li>Level: <strong>{{ course.level }}</strong></li>
+                                                <li>Category: <strong>{{ product.category.category }}</strong></li>
                                             </ul>
                                         </div>
                                     </a>

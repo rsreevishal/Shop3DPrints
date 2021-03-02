@@ -35,22 +35,21 @@
                     {% endfor %}
                 </div>
             </li>
-            <li class="nav-item"><a class="nav-link text-light" href="{% url 'teach-with-us' %}">Teach with us</a></li>
         </ul>
     </div>
     
 
     <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent2" style="font-size: 15px;">
         <ul class="nav navbar-nav">
-            <li class="nav-item"><a class="nav-link text-light" href="{% url 'course-category' %}">Book a Free Trial</a></li>
+            <li class="nav-item"><a class="nav-link text-light" href="{% url 'product-category' %}">Book a Free Trial</a></li>
             {% if request.user|has_group:"Student" %}
-                <li class="nav-item"><a class="nav-link text-light" href="{% url 'student' %}" role="tab">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link text-light" href="{% url 'customer' %}" role="tab">Dashboard</a></li>
                 <li class="nav-item"><a class="nav-link text-light" href="{% url 'logout' %}">Logout</a></li>
-                <li class="nav-item"><a class="nav-link text-light" href="{% url 'student-profile' %}">{{request.user|user_name|capfirst}}</a></li>
+                <li class="nav-item"><a class="nav-link text-light" href="{% url 'customer-profile' %}">{{request.user|user_name|capfirst}}</a></li>
             {% elif request.user|has_group:"Instructor"%}
-                <li class="nav-item"><a class="nav-link text-light" href="{% url 'instructor' %}" role="tab">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link text-light" href="{% url 'service_provider' %}" role="tab">Dashboard</a></li>
                 <li class="nav-item"><a class="nav-link text-light" href="{% url 'logout' %}">Logout</a></li>
-            <li class="nav-item"><a class="nav-link text-light" href="{% url 'instructor-profile-edit' request.user|my_pk %}">{{request.user|user_name|capfirst}}</a></li>
+            <li class="nav-item"><a class="nav-link text-light" href="{% url 'service_provider-profile-edit' request.user|my_pk %}">{{request.user|user_name|capfirst}}</a></li>
             {% else %}
                 <li class="nav-item"><a class="nav-link text-light " data-toggle="modal" data-target="#login-popup">Login</a>
                 </li>
