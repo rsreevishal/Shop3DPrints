@@ -1,3 +1,5 @@
+#virtualenv
+academyenv
 # Django and Project related
 *.pyc
 *.env

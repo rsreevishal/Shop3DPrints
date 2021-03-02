@@ -1,4 +1,4 @@
-# academy_backend
+# Shop3DPrints
 
 ## Development guide
 
