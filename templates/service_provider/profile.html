@@ -1,9 +1,9 @@
-{% extends 'instructor/instructor-base.html' %}
+{% extends 'service_provider/service_provider-base.html' %}
 {% load static %}
 {% load api_extras %}
 
 {% block instructor-head %}
-<title>CMS Online Academy | Instructor Profile</title>
+<title>Shop 3D Prints | Profile</title>
 <style>
         .form {
   margin: auto;
@@ -24,7 +24,7 @@
 
 {% block instructor-body %}
 <div class="container-fluid">
-    <form method="post" id="instructor-profile-form">
+    <form method="post" action="{% url 'service_provider-profile-edit' %}" id="service_provider-profile-form">
         {% csrf_token %}
         <label for="instructor-form"><h3>Update profile</h3></label>
         <table class="form form-table" id="instructor-form">
@@ -37,100 +37,11 @@
         </table>
     </form>
     <hr/>
-    <form action="{% url 'instructor_skill_update' instructor_id %}" id="instructor-skills-form" method="post">
-        <label for="instructor-skills"><h3>Update skills</h3></label>
-        <p class="text-info">(Note: Double click for uncheck)</p>
-        <table class="form form-table" id="instructor-skills">
-            <div class="row mx-5 text-center">
-                <div class="col-4 d-none d-md-inline"></div>
-                {% for spl in speciality_level %}
-                <div class="col-2 pr-5 d-none d-md-inline">{{ spl.level_name }}</div>
-                {% endfor %}
-            </div>
-
-            <fieldset class="form-group mx-5 text-small">
-                {% for sp in speciality %}
-                <div class="row text-center">
-                    <label class="col-form-label col-4 pt-0 text-left">{{ sp.speciality_name }}</label>
-                    {% for spl in speciality_level %}
-                    <div class="form-check col-2">
-                        <input class="form-check-input radioBtn" name="sp_{{sp.pk}}" type="radio" value="{{spl.pk}}">
-                    </div>
-                    {% endfor %}
-                </div>
-                {% endfor %}
-            </fieldset>
-            <tr>
-                <td colspan="2">
-                    <button class="btn custom-btn" type="submit"> Update</button>
-                </td>
-            </tr>
-        </table>
-        {% csrf_token %}
-    </form>
 </div>
-<!--<script crossorigin="anonymous" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="-->
-<!--        src="https://code.jquery.com/jquery-3.5.1.js"></script>-->
 <script>
-    $(document).ready(function() {
-        var data = {{instructor_specialities}};
-        for(row of data) {
-            $(`input[name="sp_${row[0]}"][value="${row[1]}"]`).attr("checked", "checked");
-        }
-    });
-    $(document).on('dblclick','.radioBtn',function(){
-        if(this.checked){
-            $(this).prop('checked', false);
-        }
-    });
-    function fixType(val) {
-        if(/^\d+$/.test(val)) {return parseInt(val);}
-        if(val=="TRUE") {return true;}
-        if(val=="FALSE") {return false;}
-        return val;
-    }
-    $("#instructor-skills-form").submit(function(e) {
-        e.preventDefault();
-        var form = $(this);
-        var url = form.attr('action');
-        var json = $(form).serializeArray();
-        var final_data = {
-            speciality: [],
-            csrfmiddlewaretoken: '{{ csrf_token }}'
-        };
-        for(obj of json) {
-            var name = obj["name"];
-            var value = fixType(obj["value"]);
-            if(name.startsWith("sp_")) {
-                var sp_pk = parseInt(name.replace("sp_", ""));
-                final_data["speciality"].push([sp_pk, value]);
-            }
-            else {
-                final_data[name] = value;
-            }
-        }
-        if(final_data["speciality"].length == 0) {
-            alert("Choose at least one skill.");
-        } else {
-            $.ajax({
-               type: "post",
-               url: url,
-               data: JSON.stringify(final_data),
-               dataType: 'json',
-               contentType: 'application/json; charset=utf-8',
-               success: function(data)
-               {
-                    showAlert("Update successful", data.message);
-               },
-               error: function(data) {
-                    showAlert("Update successful", data.responseJSON.message);
-               }
-            });
-        }
-    });
-    $(document).ready(function(){
+        $(document).ready(function(){
         // Update AJAX request
-        $("#instructor-profile-form").submit(function(e) {
+        $("#service_provider-profile-form").submit(function(e) {
             e.preventDefault();
             var form = $(this);
             var url = form.attr('action');
@@ -141,10 +52,10 @@
                success: function(data)
                {
                    if(data.type == "ERROR") {
-                    showAlert("Instructor profile", data.message);
+                    showAlert("Profile", data.message);
                    }
                    if(data.type == "SUCCESS") {
-                       showAlert("Instructor profile", data.message);
+                       showAlert("Profile", data.message);
                    }
                },
                error: function(data) {

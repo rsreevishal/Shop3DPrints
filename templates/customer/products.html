@@ -1,90 +1,47 @@
-{% extends 'student/student-base.html' %}
+{% extends 'customer/customer-base.html' %}
 {% load static %}
 {% load api_extras %}
 
 {% block student-head %}
-    <title>CMS Online Academy | Courses</title>
+    <title>Shop 3D Prints | Products</title>
 {% endblock %}
 
 {% block student-body %}
 <div class="tab-pane fade show active" role="tabpanel">
-    <!-- CURRENT AND HISTORY COURSE TABS -->
+    <!-- CURRENT Product TABS -->
     <nav>
         <div class="courses-tabs nav nav-tabs active" id="nav-tab" role="tablist">
             <a class="nav-item nav-link active ml-5" id="nav-current-course-tab" data-toggle="tab"
                href="#nav-current-course" role="tab" aria-controls="nav-current-course"
-               aria-selected="true">Current</a>
-            <a class="nav-item nav-link" id="nav-history-course-tab" data-toggle="tab"
-               href="#nav-history-course" role="tab" aria-controls="nav-history-course"
-               aria-selected="false">History</a>
+               aria-selected="true">Cart</a>
         </div>
     </nav>
-    <!--  CURRENT AND HISTORY COURSE TAB CONTENT-->
     <div class="tab-content ml-sm-4 mx-md-5" id="courses">
-        <!-- CURRENT COURSE TAB CONTENT -->
+        <!-- CURRENT Product TAB CONTENT -->
         <div class="tab-pane active" id="nav-current-course" role="tabpanel"
              aria-labelledby="nav-current-course-tab">
-            {% if me.is_tz_set == False %}
-                <div class="alert alert-danger my-2" role="alert">
-                  Please update your timezone in profile section!
-                </div>
-            {% endif %}
-            <p class="text-info text-small px-2">(Note: Click on a card to view the assignments and tests)</p>
+            <p class="text-info text-small px-2">(Note: Click on a product to view details)</p>
             <div class="container-fluid">
                 <div class="card-columns mx-auto">
-                {% for enrollment in enrollments %}
-                    {% if enrollment|course_complete_status == False%}
-                    <a href="{% url 'customer-course' enrollment.pk %}">
+                    {% for prod in products %}
+                    <a href="{% url 'product-details' prod.pk %}">
                         <div class="card my-3 mx-2">
                             <div class="card-body pb-0 ">
-                                <h5 class="card-title text-large">{{ enrollment.course.name }}</h5>
+                                <h5 class="card-title text-large">{{ prod.name }}</h5>
                                 <ul class="list-unstyled text-small">
-                                    <li><strong>{{ enrollment.course.category.category }}</strong></li>
-                                    <li>Grade: <strong>{{ enrollment.course.get_grade_display }}</strong></li>
-                                    <li>Level: <strong>{{ enrollment.course.level }}</strong></li>
-                                    <li>{{ enrollment.get_days_display }}</li>
-                                    <li>{{ enrollment.start_time|local_time:me }} - {{ enrollment.end_time|local_time:me }}</li>
+                                    <li>Category: <strong>{{ prod.category }}</strong></li>
+                                    <li>Material: <strong>{{ prod.material }}</strong></li>
+                                    <li>Density: <strong>{{ prod.density }}</strong></li>
+                                    <li>Layer height: <strong>{{ prod.layer_height }}</strong></li>
                                 </ul>
                             </div>
                             <div class="card-footer">
-<!--                                <ul class="list-unstyled text-small mb-0" style="color:#0060CF">-->
-
-<!--                                </ul>-->
-                                <a class="btn custom-btn" role="button" href="{{ enrollment|course_link }}">Join class</a>
+                                <a class="btn custom-btn" role="button" href="#">Order product</a>
                             </div>
                         </div>
                     </a>
-                    {% endif %}
                 {% endfor %}
-            </div>
-            </div>
-        </div>
-
-        <!-- HISTORY COURSE TAB CONTENT -->
-        <div class="tab-pane" id="nav-history-course" role="tabpanel"
-             aria-labelledby="nav-history-course-tab">
-            <p class="text-info text-small px-2">(Note: Click on a card to view the assignments and tests)</p>
-            <div class="container-fluid">
-                <div class="card-columns mx-auto">
-                {% for enrollment in enrollments %}
-                    {% if enrollment|course_complete_status == True%}
-                    <a href="{% url 'student-course' enrollment.course.id %}">
-                        <div class="card my-3 mx-2">
-                            <div class="card-body pb-0 ">
-                                <h5 class="card-title text-large">{{ enrollment.course.name }}</h5>
-                                <ul class="list-unstyled text-small">
-                                    <li><strong>{{ enrollment.course.category.category }}</strong></li>
-                                    <li>Grade: <strong>{{ enrollment.course.get_grade_display }}</strong></li>
-                                    <li>Level: <strong>{{ enrollment.course.level }}</strong></li>
-                                    <li>{{ enrollment.get_days_display }}</li>
-                                    <li>{{ enrollment.start_time|local_time:me }} - {{ enrollment.end_time|local_time:me }}</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </a>
-                    {% endif %}
-                {% endfor %}
-            </div>
+                </div>
             </div>
         </div>
     </div>

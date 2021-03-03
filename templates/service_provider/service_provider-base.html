@@ -26,30 +26,17 @@
 {% endblock %}
 
 {% block body %}
-    {% url 'instructor' as base_url %}
-    {% url 'instructor-classes' instructor_id as classes_url %}
-    {% url 'instructor-class-material' instructor_id as class_material_url %}
-    {% url 'instructor-class-assignment' instructor_id as class_assignment_url %}
-    {% url 'instructor-profile-edit' instructor_id as profile_url %}
+    {% url 'service_provider' as base_url %}
+    {% url 'service_provider_orders' as orders_url %}
+    {% url 'service_provider-profile-edit' as profile_url %}
     <nav class="side-nav">
         <div class="nav flex-md-column nav-pills justify-content-around text-medium" role="tablist" aria-orientation="vertical">
-            <a class="nav-link {% if request.path == classes_url %} active {%endif%}" href="{{ classes_url }}" role="tab" >Classes</a>
-            <a class="nav-link {% if request.path == class_material_url %} active {%endif%}" href="{{ class_material_url }}" role="tab" >Materials</a>
-            <a class="nav-link {% if request.path == class_assignment_url %} active {%endif%}" href="{{ class_assignment_url }}" role="tab">Test/Assignment</a>
+            <a class="nav-link {% if request.path == orders_url %} active {%endif%}" href="{{ orders_url }}" role="tab" >Orders</a>
             <a class="nav-link mb-md-5 {% if request.path == profile_url %} active {%endif%}" href="{{ profile_url }}" role="tab">Profile</a>
         </div>
         <div class="tab-content side-nav-content">
-            
                 {% block instructor-body %} {# lol #}
                 {% endblock %}
         </div>
     </nav>
-<!--<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>-->
-<script>
-    $(document).ready(function(){
-        if("{{request.path}}" == "{{base_url}}") {
-            window.location.replace("{{ classes_url }}");
-        }
-    })
-</script>
 {% endblock %}

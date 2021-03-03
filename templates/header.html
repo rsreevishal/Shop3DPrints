@@ -24,10 +24,12 @@
                 </div>
             </li>
             <li class="nav-item dropdown">
+                {% if request.user|has_group:"Customer" %}
                 <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" role="button"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Courses
+                    Print now
                 </a>
+                {% endif %}
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     {% for category in all_categories %}
                         <a class="dropdown-item"
@@ -41,14 +43,14 @@
 
     <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent2" style="font-size: 15px;">
         <ul class="nav navbar-nav">
-            {% if request.user|has_group:"Student" %}
+            {% if request.user|has_group:"Customer" %}
                 <li class="nav-item"><a class="nav-link text-light" href="{% url 'customer' %}" role="tab">Dashboard</a></li>
                 <li class="nav-item"><a class="nav-link text-light" href="{% url 'logout' %}">Logout</a></li>
                 <li class="nav-item"><a class="nav-link text-light" href="{% url 'customer-profile' %}">{{request.user|user_name|capfirst}}</a></li>
-            {% elif request.user|has_group:"Instructor"%}
+            {% elif request.user|has_group:"ServiceProvider"%}
                 <li class="nav-item"><a class="nav-link text-light" href="{% url 'service_provider' %}" role="tab">Dashboard</a></li>
                 <li class="nav-item"><a class="nav-link text-light" href="{% url 'logout' %}">Logout</a></li>
-            <li class="nav-item"><a class="nav-link text-light" href="{% url 'service_provider-profile-edit' request.user|my_pk %}">{{request.user|user_name|capfirst}}</a></li>
+            <li class="nav-item"><a class="nav-link text-light" href="{% url 'service_provider-profile-edit' %}">{{request.user|user_name|capfirst}}</a></li>
             {% else %}
                 <li class="nav-item"><a class="nav-link text-light " data-toggle="modal" data-target="#login-popup">Login</a>
                 </li>

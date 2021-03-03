@@ -46,7 +46,6 @@ def standard_view(template_name, ctx=None):
         template = loader.get_template(template_name)
         context = {
             'me': AcademyUser.get_for(request.user),
-            'all_categories': Category.objects.all(),
             **kwargs,
             **ctx,
         }
@@ -85,29 +84,32 @@ def product_offered(request, category_id):
     })(request)
 
 
-def product_details(request, course_id):
-    product = Product.objects.get(id=course_id)
+def product_details(request, product_id):
+    product = Product.objects.get(pk=product_id)
+    category_material = CategoryMaterial.objects.filter(category=product.category)
+    density_list = Density.objects.all()
+    layer_height_list = LayerHeight.objects.all()
+    orders = Order.objects.filter(product=product)
     try:
         mode = request.GET["mode"]
     except MultiValueDictKeyError:
         mode = 1
-    return standard_view('landing/product-details.html', {
+    return standard_view('customer/product.html', {
         'product': product,
         'stripe_pk': settings.STRIPE_PUBLISHABLE_KEY,
-        'mode': mode
+        'mode': mode,
+        'category_material': category_material,
+        'density_list': density_list,
+        'layer_height_list': layer_height_list,
+        'orders': orders
     })(request)
 
 
-def customer_orders(request):
+def customer_products(request):
     me = AcademyUser.get_for(request.user)
-    orders = Order.objects.filter(student=me)
-    # deleting unconfirmed purchases
-    for ord in orders:
-        if not ord.purchase.confirmed:
-            purchase = Purchase.objects.get(pk=ord.purchase.pk)
-            purchase.delete()
+    products = Product.objects.filter(customer=me)
     return standard_view('customer/products.html', {
-        'orders': orders
+        'products': products
     })(request)
 
 
@@ -343,9 +345,6 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
         'current_user': reset_password_token.user,
         'username': reset_password_token.user.username,
         'email': reset_password_token.user.email,
-        # 'reset_password_url': "{}?token={}".format(
-        #     instance.request.build_absolute_uri(reverse('password_reset:reset-password-confirm')),
-        #     reset_password_token.key)
         'reset_password_url': reset_password_token.key
     }
 
@@ -367,69 +366,13 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
     msg.send()
 
 
-@receiver(pre_password_reset)
-def before_password_reset(sender, user, *args, **kwargs):
-    print(f'Check before password reset, user active status: {user.is_active}')
-
-
-@receiver(post_password_reset)
-def after_password_reset(sender, user, *args, **kwargs):
-    print(f'Check after password reset, user active status: {user.is_active}')
-
-
-# Service provider views #
-@csrf_exempt
-def service_provider_reg_form(request):
-    return render(request, 'landing/reg-form.html', {})
-
-
-@csrf_exempt
-def service_provider_register(request):
-    data = json.loads(request.body)
-    try:
-        service_provider = ServiceProvider.create(data)
-    except:
-        response = {
-            "type": "ERROR",
-            "message": "Unable to create an account. Make sure that your email is not registered with another account."
-        }
-        return JsonResponse(response, status=400)
-    try:
-        current_site = get_current_site(request)
-        print(f"Current site: {current_site}")
-        mail_subject = 'Activate your CMS Online Academy account.'
-        token = account_activation_token.make_token(service_provider.django_user)
-        print(f"Token: {token}")
-        message = render_to_string('acc_active_email.html', {
-            'user': service_provider,
-            'domain': current_site.domain,
-            'uid': urlsafe_base64_encode(force_bytes(service_provider.django_user.pk)),
-            'token': token,
-        })
-        print(f"Message: {message}")
-        email_from = settings.EMAIL_HOST_USER
-        to_email = [request.POST['email']]
-        send_mail(mail_subject, message, email_from, to_email)
-    except:
-        response = {
-            "type": "ERROR",
-            "message": "Couldn't able to send account confirmation mail"
-        }
-        return JsonResponse(response, status=400)
-    response = {
-        "type": "SUCCESS",
-        "message": "Registered successfully. Click on the activation link sent to your mail to activate your account."
-    }
-    return JsonResponse(response, status=200)
-
-
 def service_provider_base(request):
     me = AcademyUser.get_for(request.user)
     return render(request, 'service_provider/service_provider-base.html', {"service_provider_id": me.pk})
 
 
-def update_service_provider(request, service_provider_id=None):
-    service_provider = ServiceProvider()
+def update_service_provider(request):
+    service_provider_id = AcademyUser.get_for(request.user).pk
     if service_provider_id:
         service_provider = get_object_or_404(ServiceProvider, pk=service_provider_id)
     else:
@@ -442,19 +385,46 @@ def update_service_provider(request, service_provider_id=None):
             return JsonResponse({'type': 'SUCCESS', 'message': 'Successfully updated.'}, status=200)
         else:
             return JsonResponse({'type': 'ERROR', 'message': 'Update failed!, No valid data.'}, status=400)
-    return standard_view('service_provider/profile.html',
-                         {'form': form,
-                          "service_provider_id": service_provider_id
-                          })(request)
+    return standard_view('service_provider/profile.html', {'form': form, "service_provider_id": service_provider_id}) \
+        (request)
 
 
 def post_get(request, attr):
     return request.POST.get(attr)
 
 
-def add_to_cart(request, customer_id: int = None):
+def add_to_cart(request):
     if request.POST and request.FILES['stl_file']:
         product = Product.parse_request(request)
-        product.customer = Customer.objects.get(id = customer_id)
+        product.customer = Customer.objects.get(pk=int(request.POST.get('customer_id')))
+        category = Category.objects.get(pk=int(request.POST.get('category')))
+        product.category = category
+        stl_file = request.FILES['stl_file']
+        product.stl_file = stl_file
+        product.total_price = product.get_total_price()
         product.save()
-    return standard_view('customer/cart.html', {})(request)
+    return HttpResponseRedirect(reverse('customer-products'))
+
+
+def update_cart(request, product_id: int):
+    if request.POST:
+        old_product = Product.objects.get(pk=product_id)
+        new_product = Product.parse_request(request)
+        old_product.name = new_product.name
+        old_product.description = new_product.description
+        old_product.material = new_product.material
+        old_product.density = new_product.density
+        old_product.layer_height = new_product.layer_height
+        try:
+            stl_file = request.FILES['stl_file']
+            old_product.stl_file = stl_file
+        except:
+            pass
+        old_product.save()
+    return HttpResponseRedirect(reverse('customer-products'))
+
+
+def service_provider_orders(request):
+    me = AcademyUser.get_for(request.user)
+    orders = Order.objects.filter(service_provider=me)
+    return standard_view('service_provider/orders.html', {"orders": orders})(request)

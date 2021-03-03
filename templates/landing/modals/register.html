@@ -29,26 +29,13 @@
                         <form class="pt-lg-4" action="{% url 'register' %}" method="post" id="register-form">
                             <div class="form-row">
                                 <div class="col-6">
-                                    <label for="pfname">Parent's First Name</label>
-                                    <input type="text" id="pfname" name="parent_first_name"
-                                           class="form-control form-control-sm " placeholder="John" required>
-                                </div>
-                                <div class="col-6">
-                                    <label for="plname">Parent's Last Name</label>
-                                    <input type="text" id="plname" name="parent_last_name"
-                                           class="form-control form-control-sm" placeholder="Doe" required>
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="col-6">
-                                    <label for="sfname">Student's First Name</label>
-                                    <input type="text" id="sfname" name="student_first_name"
+                                    <label for="fname">First Name</label>
+                                    <input type="text" id="fname" name="first_name"
                                            class="form-control form-control-sm" placeholder="John" required>
                                 </div>
                                 <div class="col-6">
-                                    <label for="slname">Student's Last Name</label>
-                                    <input type="text" id="slname" name="student_last_name"
+                                    <label for="lname">Last Name</label>
+                                    <input type="text" id="lname" name="last_name"
                                            class="form-control form-control-sm" placeholder="Doe" required>
                                 </div>
                             </div>
@@ -59,28 +46,7 @@
                                     <input type="email" class="form-control form-control-sm" id="reg-email" name="email"
                                            placeholder="example@email.com" required>
                                 </div>
-                                <div class="col-6">
-                                    <label for="grade">Grade</label>
-                                    <select id="grade" name="grade" class="form-control form-control-sm">
-                                        <option value="" selected disabled>Select Grade</option>
-                                        <option value="1">Grade 1</option>
-                                        <option value="2">Grade 2</option>
-                                        <option value="3">Grade 3</option>
-                                        <option value="4">Grade 4</option>
-                                        <option value="5">Grade 5</option>
-                                        <option value="6">Grade 6</option>
-                                        <option value="7">Grade 7</option>
-                                        <option value="8">Grade 8</option>
-                                        <option value="9">Grade 9</option>
-                                        <option value="10">Grade 10</option>
-                                        <option value="11">Grade 11</option>
-                                        <option value="12">Grade 12</option>
-                                        <option value="13">College Student</option>
-                                    </select>
-                                </div>
                             </div>
-
-
                             <div class="form-row">
                                 <div class="col-4">
                                     <label for="cc">Country Code</label>
@@ -325,7 +291,12 @@
                                            placeholder="9999999999" pattern="^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$" required>
                                 </div>
                             </div>
-
+                            <div class="form-row">
+                                <div class="col-8 form-group">
+                                    <label for="address">Address</label>
+                                    <textarea id="address" name="address" class="form-control form-control-sm" placeholder="Enter Address"></textarea>
+                                </div>
+                            </div>
                             <div class="form-row">
                                 <div class="col-4">
                                     <p class="text-large">Create Password</p>

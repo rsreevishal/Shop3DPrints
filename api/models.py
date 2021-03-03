@@ -2,9 +2,6 @@ from django.contrib.auth.models import User, AnonymousUser
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import Group
-import pytz
-from timezone_field import TimeZoneField
-from datetime import datetime
 from django.utils import timezone
 
 
@@ -13,11 +10,6 @@ class AcademyUser(models.Model):
         abstract = True
 
     django_user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    timezone = TimeZoneField(default='UTC', null=True, blank=True,
-                             choices=[
-                                 (tz, tz) for tz in pytz.common_timezones
-                             ])
-    is_tz_set = models.BooleanField(default=False, null=True, blank=True)
 
     @classmethod
     def get_for(cls, user: User):
@@ -159,8 +151,7 @@ class Product(models.Model):
                        density=Density.objects.get(id=int(request.POST.get('density'))),
                        material=Material.objects.get(id=int(request.POST.get('material'))),
                        layer_height=LayerHeight.objects.get(id=int(request.POST.get('layer_height'))),
-                       category=Category.objects.get(id=int(request.POST.get('category'))),
-                       stl_file=request.FILES['stl_file'], created_on=timezone.now())
+                       created_on=timezone.now())
 
     def get_total_price(self):
         def value(val):  # helper function
@@ -174,13 +165,12 @@ class Product(models.Model):
 
 
 class OrderStatus(models.IntegerChoices):
-    pending = 0
-    accepted = 1
-    rejected = 2
+    completed = 0
+    cancelled = 1
+    quoted = 2
 
 
 class Purchase(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     datetime = models.DateTimeField()
     stripe_id = models.CharField(max_length=128)
@@ -188,7 +178,8 @@ class Purchase(models.Model):
 
 
 class Order(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    purchase = models.ForeignKey(Purchase, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    service_provider = models.ForeignKey(ServiceProvider, on_delete=models.CASCADE)
+    ordered_on = models.DateTimeField(default=timezone.now())
     order_status = models.IntegerField(choices=OrderStatus.choices)

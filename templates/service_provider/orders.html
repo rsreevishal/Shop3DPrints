@@ -1,66 +1,36 @@
-{% extends 'instructor/instructor-base.html' %}
+{% extends 'service_provider/service_provider-base.html' %}
 {% load static %}
 {% load api_extras %}
 
 {% block instructor-head %}
-    <title>CMS Online Academy | Courses</title>
+<title>Shop 3D Prints | Orders</title>
 {% endblock %}
 
 {% block instructor-body %}
-<!--<div class="tab-pane fade show active" role="tabpanel">-->
-<!--    &lt;!&ndash; CURRENT AND HISTORY COURSE TABS &ndash;&gt;-->
-<!--    <nav>-->
-<!--        <div class="courses-tabs nav nav-tabs active" id="nav-tab" role="tablist">-->
-<!--            <a class="nav-item nav-link active ml-5" id="nav-current-course-tab" data-toggle="tab"-->
-<!--               href="#nav-current-course" role="tab" aria-controls="nav-current-course"-->
-<!--               aria-selected="true">Classes</a>-->
-<!--        </div>-->
-<!--    </nav>-->
-
-<!--    &lt;!&ndash;  CURRENT AND HISTORY COURSE TAB CONTENT&ndash;&gt;-->
-<!--    <div class="tab-content ml-sm-4 mx-md-5" id="courses">-->
-<!--        &lt;!&ndash; CURRENT COURSE TAB CONTENT &ndash;&gt;-->
-<!--        <div class="tab-pane active" id="nav-current-course" role="tabpanel"-->
-<!--             aria-labelledby="nav-current-course-tab">-->
-<!--            {% if me.is_tz_set == False %}-->
-<!--                <div class="alert alert-danger my-2" role="alert">-->
-<!--                  Please update your timezone in profile section!-->
-<!--                </div>-->
-<!--            {% endif %}-->
-<!--            <p class="text-info text-small">(Note: click on the customer card to view schedule)</p>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
 <div class="container-fluid">
-    {% if me.is_tz_set == False %}
-        <div class="alert alert-danger my-2" role="alert">
-          Please update your timezone in profile section!
-        </div>
-    {% endif %}
-    <p class="text-info text-small">(Note: click on the student card to view schedule)</p>
-    <div class="card-columns mx-auto">
-        {% for cls in classes %}
-            <a href="{% url 'instructor-class-schedule' instructor_id cls.enrollment.pk %}">
-                <div class="card my-3 mx-auto ">
-                    <div class="card-body pb-0">
-                        <h5 class="card-title text-large">{{ cls.enrollment.student.student_first_name }}&nbsp;{{ cls.enrollment.student.student_last_name }}</h5>
-                        <ul class="list-unstyled text-small">
-                            <li><strong>{{ cls.enrollment.course.name }}</strong></li>
-                            <li><strong>{{ cls.enrollment.course.category.category }}</strong></li>
-                            <li>Grade: <strong>{{ cls.enrollment.course.get_grade_display }}</strong></li>
-                            <li>Level: <strong>{{ cls.enrollment.course.level }}</strong></li>
-                            <li>{{ cls.enrollment.get_days_display }}</li>
-                            <li>{{ cls.enrollment.start_time|local_time:me }} - {{ cls.enrollment.end_time|local_time:me }}</li>
-                        </ul>
-                    </div>
-                    <div class="card-footer">
-                        <ul class="list-unstyled text-small mb-0" style="color:#0060CF">
-                            <li><a class="btn btn-link custom-btn text-light" href="{{me.class_link}}">Join now</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </a>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Product</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Service provider</th>
+            <th scope="col">Ordered on</th>
+            <th scope="col">Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for ord in orders.all %}
+        <tr>
+            <td class="row">{{forloop.counter}}</td>
+            <td>ord.product</td>
+            <td>ord.quantity</td>
+            <td>ord.service_provider</td>
+            <td>ord.ordered_on</td>
+            <td>ord.status</td>
+        </tr>
         {% endfor %}
-    </div>
+        </tbody>
+    </table>
 </div>
 {% endblock %}

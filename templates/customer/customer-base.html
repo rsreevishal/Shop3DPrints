@@ -7,27 +7,15 @@
     {% endblock %}
 {% endblock %}
 {% block body %}
-    {% url 'student-courses' as courses_url %}
-    {% url 'student-schedule' user_id=request.user.id as schedule_url %}
-    {% url 'student-progress' as progress_url %}
-    {% url 'student-profile' as profile_url %}
-    {% url 'student-payment' as payment_url%}
+    {% url 'customer-products' as products_url %}
+    {% url 'customer-profile' as profile_url %}
     <nav class="side-nav">
         <ul class="nav-bar nav flex-md-column nav-pills justify-content-around text-medium " id="nav-tab" role="tablist" aria-orientation="vertical">
           <li class="nav-item">
-            <a class="nav-link {% if request.path == courses_url %} active {%endif%}" href="{{ courses_url }}" role="tab" id="student-courses">Courses</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if request.path == schedule_url %} active {%endif%}" href="{{ schedule_url }}" role="tab" id="student-schedule">Schedule</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if request.path == progress_url %} active {%endif%}" href="{{ progress_url }}" role="tab" id="student-progress">Progress</a>
+            <a class="nav-link {% if request.path == products_url %} active {%endif%}" href="{{ products_url }}" role="tab" id="student-courses">Products</a>
           </li>
           <li class="nav-item">
               <a class="nav-item nav-link {% if request.path == profile_url %} active {%endif%}"  href="{{ profile_url }}" role="tab" id="profile-link">Profile</a>
-          </li>
-            <li class="nav-item mb-5">
-              <a class="nav-item nav-link {% if request.path == payment_url %} active {%endif%}"  href="{{ payment_url }}" role="tab" id="payment-link">Payment</a>
           </li>
         </ul>
         <div class="tab-content side-nav-content">

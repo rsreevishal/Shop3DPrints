@@ -1,73 +1,35 @@
-{% extends 'student/student-base.html' %}
+{% extends 'customer/customer-base.html' %}
 {% load static %}
 
 {% block student-head %}
-    <title>CMS Online Academy | Profile</title>
+    <title>Shop 3D Prints | Profile</title>
 {% endblock %}
 
 {% block student-body %}
     <div class="tab-pane fade show active" role="tabpanel" >
+        <h1 class="text-center">Profile</h1>
         <div class="row profile mx-2">
-            <!-- <div class="col-md-3 text-center">
-                <div class="profile-pic mt-2 mt-md-5">
-                    <img src="{% static 'images/test1.jpg' %}" class="img-thumbnail">
-                    <div class="edit"><a href="#"><i class="fa fa-pen fa-lg"></i></a></div>
-                </div>
-            </div> -->
             <div class="col-md-8 mx-md-3 my-2">
-                <form class="pt-lg-4" action="{% url 'student-profile' %}" method="post" id="student-profile-form">
+                <form class="pt-lg-4" action="{% url 'customer-profile' %}" method="post" id="customer-profile-form">
                     <div class="form-row">
                         <div class="col-6">
-                            <label for="pfname">Parent's First Name</label>
-                            <input type="text" id="pfname" name="parent_first_name"
-                                   class="form-control form-control-sm " placeholder="ex) John"
-                                   required value="{{ me.parent_first_name }}" readonly>
-                        </div>
-                        <div class="col-6">
-                            <label for="plname">Parent's Last Name</label>
-                            <input type="text" id="plname" name="parent_last_name" class="form-control form-control-sm"
-                                   placeholder="ex) Doe" required value="{{ me.parent_last_name }}" readonly>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="col-6">
-                            <label for="sfname">Student's First Name</label>
-                            <input type="text" id="sfname" name="student_first_name"
+                            <label for="fname">First Name</label>
+                            <input type="text" id="fname" name="first_name"
                                    class="form-control form-control-sm" placeholder="ex John" required
-                                   value="{{ me.student_first_name }}" readonly>
+                                   value="{{ me.first_name }}" readonly>
                         </div>
                         <div class="col-6">
-                            <label for="slname">Student's Last Name</label>
-                            <input type="text" id="slname" name="student_last_name" class="form-control form-control-sm"
-                                   placeholder="ex Doe" required value="{{ me.student_last_name }}" readonly>
+                            <label for="lname">Last Name</label>
+                            <input type="text" id="lname" name="last_name" class="form-control form-control-sm"
+                                   placeholder="ex Doe" required value="{{ me.last_name }}" readonly>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="col-6">
-                            <label for="student-email">Email</label>
-                            <input id="student-email", type="email" name="email" class="form-control form-control-sm"
+                            <label for="email">Email</label>
+                            <input id="email", type="email" name="email" class="form-control form-control-sm"
                                    required value="{{me.django_user.email}}" readonly
                             >
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="col-6">
-                            <label for="grade">Grade</label>
-                            <select id="grade" name="grade" class="form-control form-control-sm">
-                                <option value="1" {% if me.grade == 1 %}selected{% endif %}>Grade 1</option>
-                                <option value="2" {% if me.grade == 2 %}selected{% endif %}>Grade 2</option>
-                                <option value="3" {% if me.grade == 3 %}selected{% endif %}>Grade 3</option>
-                                <option value="4" {% if me.grade == 4 %}selected{% endif %}>Grade 4</option>
-                                <option value="5" {% if me.grade == 5 %}selected{% endif %}>Grade 5</option>
-                                <option value="6" {% if me.grade == 6 %}selected{% endif %}>Grade 6</option>
-                                <option value="7" {% if me.grade == 7 %}selected{% endif %}>Grade 7</option>
-                                <option value="8" {% if me.grade == 8 %}selected{% endif %}>Grade 8</option>
-                                <option value="9" {% if me.grade == 9 %}selected{% endif %}>Grade 9</option>
-                                <option value="10" {% if me.grade == 10 %}selected{% endif %}>Grade 10</option>
-                                <option value="11" {% if me.grade == 11 %}selected{% endif %}>Grade 11</option>
-                                <option value="12" {% if me.grade == 12 %}selected{% endif %}>Grade 12</option>
-                                <option value="13" {% if me.grade == 13 %}selected{% endif %}>College Student</option>
-                            </select>
                         </div>
                     </div>
                     <div class="form-row">
@@ -384,16 +346,6 @@
                             <input type="tel" id="cn" name="phone_number" class="form-control form-control-sm"
                                    placeholder="9999999999" required value="{{ me.phone_number }}">
                         </div>
-                        <div class="col-6 py-3">
-                            <label for="tz">Time Zone:</label>
-                            <select id="tz" name="timezone" class="form-control form-control-sm">
-                                {% for tz in timezones %}
-                                <option value="{{tz}}"
-                                        {% if tz == me.timezone|stringformat:"s" %}selected{% endif %}>
-                                    {{tz}}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
                     </div>
                     {% csrf_token %}
                     <div class="text-center">
@@ -406,7 +358,7 @@
 <script>
     $(document).ready(function(){
         // Update AJAX request
-        $("#student-profile-form").submit(function(e) {
+        $("#customer-profile-form").submit(function(e) {
             e.preventDefault();
             var form = $(this);
             var url = form.attr('action');
@@ -417,14 +369,14 @@
                success: function(data)
                {
                    if(data.type == "ERROR") {
-                    showAlert("Student profile", data.message);
+                    showAlert("Customer profile", data.message);
                    }
                    if(data.type == "SUCCESS") {
-                       showAlert("Student profile", data.message);
+                       showAlert("Customer profile", data.message);
                    }
                },
                error: function(data) {
-                showAlert("Student profile", data.responseJSON.message);
+                showAlert("Customer profile", data.responseJSON.message);
                }
             });
         });

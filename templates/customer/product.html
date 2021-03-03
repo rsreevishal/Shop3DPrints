@@ -1,203 +1,148 @@
-{% extends 'student/student-base.html' %}
+{% extends 'customer/customer-base.html' %}
 {% load static %}
 {% load api_extras %}
 
 {% block student-head %}
-    <title>CMS Online Academy | {{ enrollment.course.name }}</title>
+<title>Shop 3D Prints | Product Details</title>
 {% endblock %}
 
 {% block student-body %}
-<!--Test description popup-->
-<div class="modal fade" id="test-description-popup" data-backdrop="static" tabindex="-1" aria-labelledby="staticBackdropLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-md modal-reg">
-        <div class="modal-content ">
-            <div class="py-0 px-0 text-center text-medium">
-                <div class="close" style="float: right;" data-dismiss="modal" aria-label="Close">&times;</div>
-            </div>
-            <div class="text-center px-5 py-2">
-                <h3 class="text-center"><u>Description</u></h3>
-            </div>
-            <p class="text-center" id="test-description"></p>
-        </div>
-    </div>
+<!-- COURSE TITLE-->
+<div class="px-3">
+    <h3 class="text-center">
+        <a href="{% url 'customer-products' %}">
+            <i class="fas fa-arrow-circle-left" style="float: left;"></i>
+        </a>
+        {{ product.name }}
+    </h3>
 </div>
-    <!-- COURSE TITLE-->
-    <div class="px-3">
-        <h3 class="text-center">
-            <a href="{% url 'student-courses' %}">
-                <i class="fas fa-arrow-circle-left" style="float: left;"></i>
-            </a>
-             {{ enrollment.course.name }}
-        </h3>
+
+<!-- Details and Orders details TABS -->
+<nav>
+    <div class="courses-tabs nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active ml-1" id="nav-tests-tab" data-toggle="tab" href="#nav-tests"
+           role="tab" aria-controls="nav-tests" aria-selected="true">Details</a>
+        <a class="nav-item nav-link" id="nav-projects-tab" data-toggle="tab" href="#nav-projects"
+           role="tab" aria-controls="nav-projects" aria-selected="false">Orders</a>
     </div>
+</nav>
 
-    <!-- TESTS, ASSIGNMENTS, OVERVIEW TABS -->
-    <nav>
-        <div class="courses-tabs nav nav-tabs" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link active ml-1" id="nav-tests-tab" data-toggle="tab" href="#nav-tests"
-               role="tab" aria-controls="nav-tests" aria-selected="true">Tests</a>
-            <a class="nav-item nav-link" id="nav-projects-tab" data-toggle="tab" href="#nav-projects"
-               role="tab" aria-controls="nav-projects" aria-selected="false">Assignments</a>
-            <a class="nav-item nav-link" id="nav-overview-tab" data-toggle="tab" href="#nav-overview"
-               role="tab" aria-controls="nav-overview" aria-selected="false">Overview</a>
-        </div>
-    </nav>
+<!-- Details and Orders TAB CONTENTS -->
+<div class="tab-content">
 
-    <!-- TEST,ASSIGNMENTS, OVERVIEW TAB CONTENTS -->
-    <div class="tab-content">
-
-        <!-- TEST TAB CONTENTS -->
-        <div class="assignments tab-pane active" id="nav-tests" role="tabpanel"
-             aria-labelledby="nav-tests-tab">
-            <p class="text-info px-2">(Note: click on the cards to see the description)</p>
-            <div class="card-columns mx-auto px-3">
-
-                {% for exam in enrollment.course.exam_set.all %}
-                {% if exam.uploader == student_instructor%}
-                    <div class="card my-3  my-3 mx-auto" onclick="showDescription('{{exam.description}}')">
-                        <div class="card-body pb-0">
-                            <h5 class="card-title text-large">{{ exam.name }}</h5>
-                            <ul class="list-unstyled text-small">
-                                {% status exam me as status %}
-                                <li>Status: <strong
-                                        style="color:{% if status.0 == 'complete' %}green{% else %}red{% endif %}">{{ status.0 | title }}</strong>
-                                </li>
-                                <li>Score: <strong>{{ exam | grade:me }}</strong></li>
-                                <br/>
-                                <div class="text-center">
-                                    <a type="button" href={{exam.file_link}} class="form-btn custom-btn">View</a>
-                                </div>
-                            </ul>
-                        </div>
-                    </div>
-                {% endif %}
-                {% endfor %}
-
-            </div>
-            <!-- END TEST TAB CONTENTS -->
-        </div>
-
-        <!-- ASSIGNMENTS TAB CONTENTS -->
-        <div class="assignments tab-pane" id="nav-projects" role="tabpanel" aria-labelledby="nav-projects-tab">
-            <p class="text-info px-2">(Note: click on the cards to see the description)</p>
-            <div class="card-columns mx-auto px-3">
-                {% for project in enrollment.course.project_set.all %}
-                {% if project.uploader == student_instructor %}
-                    <div class="card my-3 mx-auto" onclick="showDescription('{{project.description}}')">
-                        <div class="card-body pb-0">
-                            <h5 class="card-title text-large">{{ project.name }}</h5>
-                            <ul class="list-unstyled text-small">
-                                {% status project me as status %}
-                                <li>Status: <strong
-                                        style="color:{% if status.0 == 'complete' %}green{% else %}red{% endif %}">{{ status.0 | title }}</strong>
-                                </li>
-                                <br/>
-                                <div class="text-center">
-                                    <a type="button" href={{project.file_link}} class="form-btn custom-btn">View</a>
-                                </div>
-                            </ul>
-                        </div>
-                    </div>
-                {% endif %}
-                {% endfor %}
-            </div>
-            <!-- END ASSIGNMENT TAB CONTENTS -->
-        </div>
-        <!-- OVERVIEW TAB CONTENTS -->
-        <div class="tab-pane" id="nav-overview" role="tabpanel" aria-labelledby="nav-overview-tab">
-
-            <div class="mx-5 my-3">
+    <!-- Details TAB CONTENTS -->
+    <div class="assignments tab-pane active" id="nav-tests" role="tabpanel"
+         aria-labelledby="nav-tests-tab">
+        <section class="container py-3">
+            <form action="{% url 'update_cart' product.pk %}" method="post" class="form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name">Title</label>
+                    <input type="text" value="{{product.name}}" class="form-control" name="name" id="name" required/>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea class="form-control" name="description" id="description"
+                              required>{{product.description}}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="material_list">Available materials</label>
+                    <select name="material" class="form-control" id="material_list" required>
+                        {% for cat_mat in category_material.all %}
+                        <option {% if product.material.pk == cat_mat.pk %} selected {% endif %}
+                                value="{{cat_mat.material.pk}}">{{ cat_mat.material.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="material_list">Density</label>
+                    <select name="density" class="form-control" id="density_list" required>
+                        {% for den in density_list.all %}
+                        <option {% if product.density.pk == den.pk %}selected {% endif %} value="{{den.pk}}">{{ den.value }}%
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="material_list">Layer Height</label>
+                    <select name="layer_height" class="form-control" id="layer_height_list" required>
+                        {% for lh in layer_height_list.all %}
+                        <option {% if product.layer_height.pk == lh.pk %} selected {% endif %} value="{{lh.pk}}">{{ lh.start_value }} - {{lh.end_value}} {{lh.unit}}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
                 <div class="row">
-                    <div class="col-md-4 col-lg-3">
-                        <h3 class="h3">{{ enrollment.course.name }}</h3>
+                    <div class="col">
+                        <label for="old_stl_file">Current STL file</label>
+                        <a class="text-primary" id="old_stl_file" href="{{product.stl_file.url}}">{{product.stl_file.name}}</a>
                     </div>
-                    <div class="col-md-5 col-lg-4">
-                        <p class="text-normal">Grade: <strong>{{ enrollment.course.get_grade_display }}</strong>&nbsp&nbsp&nbsp&nbspLevel:
-                            <strong>{{ enrollment.course.level }}</strong></p>
-                    </div>
-                </div>
-                <p class="text-normal">{{ enrollment.course.category.category }}</p>
-                <p class="text-medium mx-2">{{ enrollment.course.description }}</p>
-            </div>
-            <div class="row mx-4">
-                <div class="col-sm-6 col-md-5 highlights text-medium">
-                    <p class="text-large">Highlights</p>
-                    <ul class="list-unstyled " style="line-height: 30px;">
-                        {% for highlight in enrollment.course.highlight_list %}
-                            <li><i class="fas fa-check"></i> {{ highlight }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="col-sm-6  pl-sm-5 text-medium">
-                    <p class="text-large">Prerequisites</p>
-                    <ul class="list-unstyled " style="line-height: 30px;">
-                        {% for prereq in enrollment.course.prerequisite_list %}
-                            <li><i class="fas fa-hand-point-right fa-sm"></i> {{ prereq }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-            <section class="time-line-box py-4 px-3 ml-3">
-                <p class="text-large">Course Overview</p>
-                <div class="swiper-container py-4">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide">
-                            <div class="topic-title my-auto "><i class="fas fa-flag-checkered fa-3x"
-                                                                 style="color: #80c904"></i></div>
-                            <div class="topic-overview text-medium"><span></span></div>
-                        </div>
-                        {% for session in enrollment.course.session_list %}
-                            <div class="swiper-slide">
-                                <div class="topic-title my-auto text-large">Session {{ forloop.counter }}</div>
-                                <div class="topic-overview text-medium "><span>{{ session }}</span></div>
-                            </div>
-                        {% endfor %}
-                        <div class="swiper-slide">
-                            <div class="topic-title my-auto"><i class="fas fa-certificate fa-3x"
-                                                                style="color: #ffd400"></i></div>
-                            <div class="topic-overview text-medium"><span></span></div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="stl_file">Upload New CAD file (supported format: stl)</label>
+                            <input type="file" accept=".pdf, application/vnd.sealedmedia.softseal.pdf"
+                                   class="form-control-file"
+                                   id="stl_file" name="stl_file"/>
                         </div>
                     </div>
-                    <div class="swiper-pagination"></div>
                 </div>
-            </section>
-            <section class="projects py-3 mx-4">
-                <p class="text-large">Projects you will complete</p>
-                <div class="card-columns mx-auto">
-                    {% for project in enrollment.course.assignment_list %}
-                        <div class="card h-100 mx-auto">
-                            <div class="card-body">
-                                <h5>{{ project }}</h5>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </section>
-            <section class="tests pt-3 mx-4">
-                <p class="text-large">Tests you will take</p>
-                <div class="card-columns mx-auto">
-                    {% for exam in enrollment.course.exams_list %}
-                        <div class="card h-100 mx-auto">
-                            <div class="card-body">
-                                <h5>{{ exam }}</h5>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </section>
-
-            <!-- END OVERVIEW TAB CONTENTS -->
-        </div>
-        <!-- END TEST,ASSIGNMENTS, OVERVIEW TAB CONTENTS -->
+                <input type="number" value="{{me.pk}}" name="customer_id" hidden>
+                <input type="number" value="{{category.pk}}" name="category" hidden>
+                {% if me %}
+                <button type="submit" class="btn btn-large custom-btn">Update</button>
+                {% else %}
+                <button onclick="showAlert('Login required', 'Login or register to update products in cart')"
+                        class="btn btn-large custom-btn">Update
+                </button>
+                {% endif %}
+            </form>
+        </section>
     </div>
-    <!-- END ASSIGNMENTS HIDDEN TAB CONTENTS -->
-<!--<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>-->
-<script>
-    function showDescription(description) {
-    console.log(description);
-        $("#test-description").text(description);
-        $("#test-description-popup").modal('show');
-    }
-</script>
+
+    <!-- Orders TAB CONTENTS -->
+    <div class="assignments tab-pane" id="nav-projects" role="tabpanel" aria-labelledby="nav-projects-tab">
+        <div>
+            <form class="form">
+                <div class="form-group">
+                    <label for="quantity">Quantity</label>
+                    <input class="form-control" type="number" id="quantity" name="quantity">
+                </div>
+                <div class="form-group">
+                    <label for="provider">Service Provider</label>
+                    <select class="form-control" id="provider" name="service_provider">
+                        {% for sp in service_provider %}
+                            <option value="{{sp.pk}}">{{sp.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-large btn-success">Order now</button>
+            </form>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Service provider</th>
+                    <th scope="col">Ordered on</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ord in orders.all %}
+                    <tr>
+                        <td class="row">{{forloop.counter}}</td>
+                        <td>ord.product</td>
+                        <td>ord.quantity</td>
+                        <td>ord.service_provider</td>
+                        <td>ord.ordered_on</td>
+                        <td>ord.status</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
 {% endblock %}
