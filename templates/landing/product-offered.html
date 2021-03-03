@@ -2,53 +2,52 @@
 {% load static %}
 
 {% block head %}
-    <title>CMS Online Academy | Courses Offered</title>
+    <title>Shop 3D Prints | Products Offered</title>
 {% endblock %}
 
 {% block landing-body %}
-    <h1 class="text-center pt-3">{{ category.name }} Courses</h1>
+    <h1 class="text-center pt-3">{{ category.name }} Technology</h1>
+    <h3 class="text-center pt-3">Product details</h3>
     <section class="container py-3">
-        <ul class="list-unstyled list-inline " id="sub-cat">
-            <div class="text-center">
-                {% for subcategory in category.subcategory_set.all %}
-                    <a href="#{{ forloop.counter }}">
-                        <li class="list-inline-item heading text-center"><p>{{ subcategory.name }}</p></li>
-                    </a>
-                {% endfor %}
+        <form action="{% url 'add_to_cart' ?  %}" method="post" class="form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="name">Title</label>
+                <input type="text" class="form-control" name="name" id="name" required/>
             </div>
-        </ul>
-        <div data-spy="scroll" data-target="#sub-cat" data-offset="50">
-            {% for subcategory in category.subcategory_set.all %}
-                <section class="sub-cat-deck" id="{{ forloop.counter }}">
-                    <br>
-                    <h3 class="heading pt-5">{{ subcategory.name }}</h3>
-                    <hr>
-                    <div class="card-deck sub-cat-cards justify-content-center py-2">
-                        {% for course in subcategory.course_set.all %}
-                            <div class="card mx-auto">
-                                <a href="{% url 'product-details' course.id %}">
-                                    {% if course.thumbnail %}
-                                        <img src="{{ course.thumbnail.url}}" class="card-img-top" alt="course-img">
-                                    {% else %}
-                                        <img src="{% static 'images/300.png' %}" class="card-img-top" alt="course-img">
-                                    {% endif %}
-                                    <div class="card-body">
-{#                                        <div class="ribbon-container">#}
-{#                                            <div class="ribbon">trending</div>#}
-{#                                        </div>#}
-                                        <h5>{{ course.name.upper }}</h5>
-                                        <ul class="list-unstyled text-small">
-                                            <li>Category: <strong>{{ course.category.category }}</strong></li>
-                                            <li>Grade: <strong>{{ course.get_grade_display }}</strong></li>
-                                            <li>Level: <strong>{{ course.level }}</strong></li>
-                                        </ul>
-                                    </div>
-                                </a>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </section>
-            {% endfor %}
-        </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" name="description" id="description" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="material_list">Available materials</label>
+                <select name="material" class="form-control" id="material_list" required>
+                    {% for cat_mat in category_material.all %}
+                    <option value="{{cat_mat.material.pk}}">{{ cat_mat.material.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="material_list">Density</label>
+                <select name="density" class="form-control" id="density_list" required>
+                    {% for den in density_list.all %}
+                    <option value="{{den.pk}}">{{ den.value }}%</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="material_list">Layer Height</label>
+                <select name="layer_height" class="form-control" id="layer_height_list" required>
+                    {% for lh in layer_height_list.all %}
+                    <option value="{{lh.pk}}">{{ lh.start_value }} - {{lh.end_value}} {{lh.unit}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="stl_file">Upload CAD file (supported format: stl)</label>
+                <input type="file" class="form-control-file" id="stl_file" name="stl_file" required/>
+            </div>
+            <button type="submit" class="btn btn-large custom-btn">Add to product cart</button>
+        </form>
     </section>
 {% endblock %}

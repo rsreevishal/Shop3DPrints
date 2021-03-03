@@ -10,7 +10,8 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.views.decorators.csrf import csrf_exempt
 
 from django.conf import settings
-from api.models import AcademyUser, Category, Product, Order, Purchase, ServiceProvider, Customer, OrderStatus
+from api.models import AcademyUser, Category, Product, Order, Purchase, ServiceProvider, Customer, OrderStatus, \
+    CategoryMaterial, Density, LayerHeight
 from academy_backend import settings
 from api.forms import RegistrationForm, PurchaseForm, ServiceProviderForm
 
@@ -73,9 +74,14 @@ def product_category(request):
 
 def product_offered(request, category_id):
     category = Category.objects.get(id=category_id)
-
+    category_material = CategoryMaterial.objects.filter(category=category)
+    density_list = Density.objects.all()
+    layer_height_list = LayerHeight.objects.all()
     return standard_view('landing/product-offered.html', {
         'category': category,
+        'category_material': category_material,
+        'density_list': density_list,
+        'layer_height_list': layer_height_list
     })(request)
 
 
@@ -332,7 +338,6 @@ def checkout_webhook(request):
 
 @receiver(reset_password_token_created)
 def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
-
     # send an e-mail to the user
     context = {
         'current_user': reset_password_token.user,
@@ -441,3 +446,15 @@ def update_service_provider(request, service_provider_id=None):
                          {'form': form,
                           "service_provider_id": service_provider_id
                           })(request)
+
+
+def post_get(request, attr):
+    return request.POST.get(attr)
+
+
+def add_to_cart(request, customer_id: int = None):
+    if request.POST and request.FILES['stl_file']:
+        product = Product.parse_request(request)
+        product.customer = Customer.objects.get(id = customer_id)
+        product.save()
+    return standard_view('customer/cart.html', {})(request)

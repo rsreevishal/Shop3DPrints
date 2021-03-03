@@ -23,5 +23,6 @@ urlpatterns = [
     path('api/checkout-webhook', checkout_webhook, name='checkout-webhook'),
     path('api/query', email_query, name='query'),
     path('api/password_reset/', include('django_rest_passwordreset.urls'), name='password_reset'),
-    path('api/service_provider_register', service_provider_register, name="service_provider_register")
+    path('api/service_provider_register', service_provider_register, name="service_provider_register"),
+    path('api/customer/cart', add_to_cart, name='add_to_cart')
 ]

@@ -1,6 +1,6 @@
 from django.forms import ModelForm, DateInput, Form, CharField, IntegerField, Textarea
 
-from api.models import Customer, ServiceProvider
+from api.models import Customer, ServiceProvider, Product
 
 
 class RegistrationForm(ModelForm):

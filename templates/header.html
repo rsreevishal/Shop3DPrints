@@ -31,7 +31,7 @@
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     {% for category in all_categories %}
                         <a class="dropdown-item"
-                           href="{% url 'courses-offered' category.id %}">{{ category.name }}</a>
+                           href="{% url 'products-offered' category.id %}">{{ category.name }}</a>
                     {% endfor %}
                 </div>
             </li>
@@ -41,7 +41,6 @@
 
     <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent2" style="font-size: 15px;">
         <ul class="nav navbar-nav">
-            <li class="nav-item"><a class="nav-link text-light" href="{% url 'product-category' %}">Book a Free Trial</a></li>
             {% if request.user|has_group:"Student" %}
                 <li class="nav-item"><a class="nav-link text-light" href="{% url 'customer' %}" role="tab">Dashboard</a></li>
                 <li class="nav-item"><a class="nav-link text-light" href="{% url 'logout' %}">Logout</a></li>

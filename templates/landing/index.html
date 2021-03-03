@@ -113,7 +113,7 @@
         <h1 class="head" style="font-size: 25px;">Find what fascinates you</h1>
         <ul class="icon-text list-unstyled list-inline py-2">
             {% for category in all_categories %}
-                <a href="{% url 'product-offered' category.id %}">
+                <a href="{% url 'products-offered' category.id %}">
                     <li class="list-inline-item text-center">
                         {% if category.thumbnail %}
                             <img src="{{ category.thumbnail.url }}" alt="course-img"><br>{{ category.name }}

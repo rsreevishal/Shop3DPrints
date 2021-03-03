@@ -19,7 +19,7 @@
                 <h5>Categories</h5>
                 <ul class="list-unstyled text-small ">
                     {% for category in all_categories %}
-                        <li><a class="text-white" href="{% url 'courses-offered' category.id %}">{{ category.name }}</a></li>
+                        <li><a class="text-white" href="{% url 'products-offered' category.id %}">{{ category.name }}</a></li>
                     {% endfor %}
                 </ul>
             </div>
