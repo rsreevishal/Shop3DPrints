@@ -168,6 +168,7 @@ class OrderStatus(models.IntegerChoices):
     completed = 0
     cancelled = 1
     quoted = 2
+    pending = 3
 
 
 class Purchase(models.Model):

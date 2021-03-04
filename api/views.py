@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template import loader
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views.decorators.csrf import csrf_exempt
 
@@ -25,9 +26,9 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives
 from django.dispatch import receiver
-from django_rest_passwordreset.signals import reset_password_token_created, pre_password_reset, post_password_reset
+from django_rest_passwordreset.signals import reset_password_token_created
 from datetime import datetime
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import Group
 
 
@@ -90,6 +91,7 @@ def product_details(request, product_id):
     density_list = Density.objects.all()
     layer_height_list = LayerHeight.objects.all()
     orders = Order.objects.filter(product=product)
+    service_provider = ServiceProvider.objects.all()
     try:
         mode = request.GET["mode"]
     except MultiValueDictKeyError:
@@ -101,7 +103,8 @@ def product_details(request, product_id):
         'category_material': category_material,
         'density_list': density_list,
         'layer_height_list': layer_height_list,
-        'orders': orders
+        'orders': orders,
+        'service_provider': service_provider
     })(request)
 
 
@@ -428,3 +431,19 @@ def service_provider_orders(request):
     me = AcademyUser.get_for(request.user)
     orders = Order.objects.filter(service_provider=me)
     return standard_view('service_provider/orders.html', {"orders": orders})(request)
+
+
+def add_order(request):
+    if request.POST:
+        print(request.POST)
+        try:
+            product = Product.objects.get(pk=int(request.POST.get('product')))
+            quantity = int(request.POST.get('quantity'))
+            service_provider = ServiceProvider.objects.get(pk=int(request.POST.get('service_provider')))
+            order = Order(product=product, quantity=quantity, service_provider=service_provider,
+                          ordered_on=timezone.now(), order_status=OrderStatus.pending)
+            order.save()
+            return JsonResponse({"type": "SUCCESS", "message": "Your order is placed successfully"}, status=200)
+        except:
+            return JsonResponse({"type": "ERROR", "message": "Your order is failed. Try again"}, status=200)
+    return JsonResponse({"type": "ERROR", "message": "Your order is failed. Try again"}, status=200)

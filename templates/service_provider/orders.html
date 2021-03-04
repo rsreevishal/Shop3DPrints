@@ -23,11 +23,11 @@
         {% for ord in orders.all %}
         <tr>
             <td class="row">{{forloop.counter}}</td>
-            <td>ord.product</td>
-            <td>ord.quantity</td>
-            <td>ord.service_provider</td>
-            <td>ord.ordered_on</td>
-            <td>ord.status</td>
+            <td>{{ord.product}}</td>
+            <td>{{ord.quantity}}</td>
+            <td>{{ord.service_provider}}</td>
+            <td>{{ord.ordered_on}}</td>
+            <td>{{ord.order_status}}</td>
         </tr>
         {% endfor %}
         </tbody>

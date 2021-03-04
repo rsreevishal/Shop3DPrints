@@ -13,7 +13,7 @@ urlpatterns = [
     path('customer/profile', customer_profile, name='customer-profile'),
     path('service_provider', service_provider_base, name='service_provider'),
     path('service_provider/orders', service_provider_orders, name='service_provider_orders'),
-    path('service_provider/profile/edit/', update_service_provider,
+    path('api/service_provider/profile/edit/', update_service_provider,
          name='service_provider-profile-edit'),
     path('api/login', login, name='login'),
     path('api/register', register, name='register'),
@@ -24,5 +24,6 @@ urlpatterns = [
     path('api/query', email_query, name='query'),
     path('api/password_reset/', include('django_rest_passwordreset.urls'), name='password_reset'),
     path('api/customer/cart', add_to_cart, name='add_to_cart'),
-    path('api/customer/cart/<int:product_id>', update_cart, name='update_cart')
+    path('api/customer/cart/<int:product_id>', update_cart, name='update_cart'),
+    path('api/customer/order/', add_order, name="add_order")
 ]

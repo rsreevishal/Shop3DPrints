@@ -20,19 +20,19 @@
 <!-- Details and Orders details TABS -->
 <nav>
     <div class="courses-tabs nav nav-tabs" id="nav-tab" role="tablist">
-        <a class="nav-item nav-link active ml-1" id="nav-tests-tab" data-toggle="tab" href="#nav-tests"
-           role="tab" aria-controls="nav-tests" aria-selected="true">Details</a>
-        <a class="nav-item nav-link" id="nav-projects-tab" data-toggle="tab" href="#nav-projects"
-           role="tab" aria-controls="nav-projects" aria-selected="false">Orders</a>
+        <a class="nav-item nav-link active ml-1" id="nav-details-tab" data-toggle="tab" href="#nav-details"
+           role="tab" aria-controls="nav-details" aria-selected="true">Details</a>
+        <a class="nav-item nav-link" id="nav-orders-tab" data-toggle="tab" href="#nav-orders"
+           role="tab" aria-controls="nav-orders" aria-selected="false">Orders</a>
     </div>
 </nav>
 
 <!-- Details and Orders TAB CONTENTS -->
-<div class="tab-content">
+<div class="tab-content" id="tabs">
 
     <!-- Details TAB CONTENTS -->
-    <div class="assignments tab-pane active" id="nav-tests" role="tabpanel"
-         aria-labelledby="nav-tests-tab">
+    <div class="assignments tab-pane active" id="nav-details" role="tabpanel"
+         aria-labelledby="nav-details-tab">
         <section class="container py-3">
             <form action="{% url 'update_cart' product.pk %}" method="post" class="form" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -100,9 +100,10 @@
     </div>
 
     <!-- Orders TAB CONTENTS -->
-    <div class="assignments tab-pane" id="nav-projects" role="tabpanel" aria-labelledby="nav-projects-tab">
-        <div>
-            <form class="form">
+    <div class="assignments tab-pane" id="nav-orders" role="tabpanel" aria-labelledby="nav-orders-tab">
+        <div class="mx-3 my-3">
+            <form action="{% url 'add_order' %}" methos="post" class="form" id="order-form">
+                {% csrf_token %}
                 <div class="form-group">
                     <label for="quantity">Quantity</label>
                     <input class="form-control" type="number" id="quantity" name="quantity">
@@ -115,10 +116,12 @@
                         {% endfor %}
                     </select>
                 </div>
+                <input type="number" value="{{product.pk}}" name="product" hidden />
                 <button type="submit" class="btn btn-large btn-success">Order now</button>
             </form>
         </div>
-        <table class="table">
+        <div class="mx-3 my-3">
+            <table class="table">
             <thead>
                 <tr>
                     <th scope="col">#</th>
@@ -133,16 +136,54 @@
                 {% for ord in orders.all %}
                     <tr>
                         <td class="row">{{forloop.counter}}</td>
-                        <td>ord.product</td>
-                        <td>ord.quantity</td>
-                        <td>ord.service_provider</td>
-                        <td>ord.ordered_on</td>
-                        <td>ord.status</td>
+                        <td>{{ord.product}}</td>
+                        <td>{{ord.quantity}}</td>
+                        <td>{{ord.service_provider}}</td>
+                        <td>{{ord.ordered_on}}</td>
+                        {% if ord.order_status == 0 %}
+                        <td>Completed</td>
+                        {% elif ord.order_status == 1 %}
+                        <td>Cancelled</td>
+                        {% elif ord.order_status == 2 %}
+                        <td>Quoted</td>
+                        {% elif ord.order_status == 3 %}
+                        <td>Pending</td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
+        </div>
     </div>
-
 </div>
+<script>
+        $(document).ready(function(){
+        // Update AJAX request
+        $("#order-form").submit(function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            $.ajax({
+               type: "POST",
+               url: url,
+               data: form.serialize(),
+               success: function(data)
+               {
+                   if(data.type == "ERROR") {
+                    showAlert("Order status", data.message);
+                   }
+                   if(data.type == "SUCCESS") {
+                       showAlert("Order status", data.message);
+                       setTimeout(() => {
+                        window.location.reload();
+                       }, 3000)
+                   }
+               },
+               error: function(data) {
+                showAlert("Order status", data.responseJSON.message);
+               }
+            });
+        });
+    });
+</script>
 {% endblock %}
