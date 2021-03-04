@@ -69,14 +69,6 @@ def index(request):
         'fresh': fresh,
     })(request)
 
-
-def product_category(request):
-    categories = Category.objects.all()
-    return standard_view('landing/product-category.html', {
-        'categories': categories,
-    })(request)
-
-
 def product_offered(request, category_id):
     category = Category.objects.get(id=category_id)
     category_material = CategoryMaterial.objects.filter(category=category)

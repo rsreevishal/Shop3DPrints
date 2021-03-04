@@ -42,5 +42,5 @@ def status_class(status_id):
 
 @register.filter(name="status_name")
 def status_name(status_id):
-    status = ['Completed', 'Cancelled', 'Quoted', 'Pending', 'Shipped', 'Payed']
+    status = ['Completed', 'Cancelled', 'Quoted', 'Pending', 'Shipped', 'Paid']
     return status[int(status_id)]

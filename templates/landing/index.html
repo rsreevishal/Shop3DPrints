@@ -40,7 +40,7 @@
     <section class="container mt-4" >
         <div class="row">
             <div class="col-md-6 order-2 order-md-1">
-                <img src="{% static 'images/collage.jpg' %}"  class=" border-0 p-0 m-0" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="{% static 'images/index_img.jpg' %}"  class=" border-1 p-3 m-3" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
             <div class="col-md-6 my-auto order-1 order-md-2 text-center text-md-right py-4">
                 <h1>Shop 3d Prints</h1>
@@ -51,9 +51,8 @@
 					<span class="sub">Get productive.</span>
 				</span>
                 <br>
-                <button type="button" class="btn text-light custom-btn mt-2">
-                	<a href="{% url 'product-category' %}" class="text-white">Try Sample Products</a>
-                </button>
+                <button type="button" data-toggle="modal" data-target="#register-popup"
+                        class="btn text-light custom-btn mt-2">Register now</button>
             </div>
         </div>
     </section>
@@ -78,32 +77,27 @@
             <div class="centered text-center"><h1 class=" d-inline d-sm-none head">Why us?</h1></div>
             <p class="why-us-con pt-5"><span class="heading">1. Live and Interactive</span><br>We specialize in offering
                 one-on-one tailored products specifically for your requirements. </p>
-            <p class="why-us-con"><span class="heading">2. Personalized Products</span><br>Your kid will have a personal
-                instructor who will stay with them throughout the duration of the course, giving a real learning
-                experience. Because of this, the instructor would also learn about your kid’s needs and concentrate on
-                areas they struggle with. </p>
-            <p class="why-us-con"><span class="heading">3. Print Anything</span><br>From coding to music, we cover a
-                wide range of subjects, from programming to music, with a plethora of courses under each topic! CMS
-                Online Academy is a one-stop-shop for all your kid's learning needs.</p>
+            <p class="why-us-con"><span class="heading">2. Great quality</span><br>Our products are made with high
+            quality materials and with high precision.
+            </p>
+            <p class="why-us-con"><span class="heading">3. Print Anything</span><br>From action figures to
+                mechanical parts, we cover a wide range of commodities.</p>
         </div>
         <div class="row">
             <div id="why-us" class="col-sm-6 list-group d-none d-sm-inline centered text-center">
                 <h1 class="head">Why us?</h1>
                 <a class="list-group-item list-group-item-action text-medium text-white" href="#point1" onclick="return false;" >1. Live and Interactive</a>
-                <a class="list-group-item list-group-item-action text-medium text-white" href="#point2" onclick="return false;">2. Personalized
-                    Products</a>
-                <a class="list-group-item list-group-item-action text-medium text-white" href="#point3" onclick="return false;">3. Learn Anything</a>
+                <a class="list-group-item list-group-item-action text-medium text-white" href="#point2" onclick="return false;">2. Great quality</a>
+                <a class="list-group-item list-group-item-action text-medium text-white" href="#point3" onclick="return false;">3. Print Anything</a>
             </div>
             <div class="col-sm-6 my-auto py-5 scrollable d-none d-sm-inline" data-spy="scroll" data-target="#why-us"
                  data-offset="50">
                 <p id="point1">We specialize in offering
                 one-on-one tailored products specifically for your requirements.</p>
-                <p id="point2">Your kid will have a personal instructor who will stay with them throughout the duration
-                    of the course, giving a real learning experience. Because of this, the instructor would also learn
-                    about your kid’s needs and concentrate on areas they struggle with. </p>
-                <p id="point3">From coding to music, we cover a wide range of subjects, from programming to music, with
-                    a plethora of courses under each topic! CMS Online Academy is a one-stop-shop for all your kid's
-                    learning needs.</p>
+                <p id="point2">Our products are made with high
+            quality materials and with high precision.</p>
+                <p id="point3">From action figures to
+                mechanical parts, we cover a wide range of commodities.</p>
             </div>
         </div>
     </section>
@@ -130,7 +124,7 @@
 
     <!-- TRENDING COURSES -->
     <section class="card-group py-5">
-        {% for course in trending %}
+        {% for product in trending %}
             <div class=" card trending-course" id="{% if forloop.counter0 %}pink{% else %}blue{% endif %}-trend"
                  style="margin-bottom: 0px;">
                 <img src="{% static 'images/banner1.jpg' %}" class="card-img" alt="course-img">
@@ -138,14 +132,11 @@
                     <div class="ribbon-container">
                         <div class="ribbon">trending</div>
                     </div>
-                    <h5 class="text-white">{{ course.name }}</h5>
+                    <h5 class="text-white">{{ product.name }}</h5>
                     <ul class="list-unstyled text-small text-white">
-                        <li>Category: <strong>{{ course.category.category }}</strong></li>
-                        <li>Grade: <strong>{{ course.get_grade_display }}</strong></li>
-                        <li>Level: <strong>{{ course.level }}</strong></li>
+                        <li>Category: <strong>{{ product.category }}</strong></li>
+                        <li>Material: <strong>{{ product.material }}</strong></li>
                     </ul>
-                    <button type="button" class="btn btn-outline-light find-out-btn-light p-1 px-3">Find out more
-                    </button>
                 </div>
             </div>
         {% endfor %}
@@ -181,100 +172,6 @@
             </div>
         </div>
     </section> -->
-
-    <!-- TESTIMONIALS -->
-
-    <section class="testimonials pb-5 text-center centered">
-        <h1 class="head">Testimonials</h1>
-        <div id="carousel-test" class="carousel slide" data-ride="carousel" pause="hover">
-            <!-- <ol class="carousel-indicators">
-                <li data-target="#carousel-test" data-slide-to="0" class="active"></li>
-                <li data-target="#carousel-test" data-slide-to="1"></li>
-                <li data-target="#carousel-test" data-slide-to="2"></li>
-            </ol> -->
-            <div class="carousel-inner pt-5 pb-5">
-                <div class="carousel-item active" data-interval="5000">
-                    <center>
-                        <div class="items">
-                            <div class="card">
-                                <div class="card-body"><p class="p-4 text-small-bold">
-                                    <br>
-                                    "Before taking the class all I knew is variables and Printing statements. After your class I know many things like defining functions and if statements. I really liked your class because many of the projects were really fun and you're very friendly and helpful."
-                                    P.S - looking forward to learn new things.
-                                    Thank you for being my teacher,
-                                    <br><em class="text-tiny">-Suven Ponduri (8 yrs).</em></p>
-                                </div>
-<!--                                 <img src="{% static 'images/test1.jpg' %}"/> -->
-                            </div>
-                            <div class="card">
-                                <div class="card-body"><p class="p-4 text-small-bold"><br>My kids who are 15yrs old and 11 yrs old took Python programming classes with Dhivya for 2 months during the 2020 summer season. They enjoyed learning the programming and was able to easily grasp the concepts and the credit goes to Dhivya.
- Dhivya's  dedication and commitment in her teaching is extraordinary. She  always makes sure the kids understand the concept clearly  by asking questions in the class and giving weekly assignments. I would love to continue with her and recommend her to my friends.<br><em class="text-tiny">-Jayashree Gunaseelan<br>Pennsylvania, USA</em></p></div>
-<!--                                 <img src="{% static 'images/test2.jpg' %}"/> -->
-                            </div>
-                            <div class="card">
-                                <div class="card-body"><p class="p-4 text-small-bold"><br><br>I am a beginner in coding.I had some difficulties and when I found this platform it helped me solve all my doubts.
-and my Instructor gave assignments which were very helpful.I have learned a lot!<br><em class="text-tiny">-Ashwin and Aswath</em></p></div>
-<!--                                 <img src="{% static 'images/test3.jpg' %}"/> -->
-                            </div>
-                        </div>
-                    </center>
-                </div>
-<!--                 <div class="carousel-item " data-interval="5000">
-                    <center>
-                        <div class="d-block w-100">
-                            <div class="img mx-3 ">
-                                <div class="img__overlay"><p><br>My son is truly able to get a real classroom experience
-                                    through live classes.<br><em>-Michael, <br>Father of 3rd grader</em></p></div>
-                                <img src="{% static 'images/test1.jpg' %}"/>
-                            </div>
-                            <div class="img mx-3 d-none d-md-inline-flex">
-                                <div class="img__overlay"><p><br>I noticed a tremendous improvement in my daughters
-                                    enthusiasm and outlook towards active learning thanks to your website!<br><em>-Anu,
-                                        <br>Mother of 5th grader</em></p></div>
-                                <img src="{% static 'images/test2.jpg' %}"/>
-                            </div>
-                            <div class="img  mx-3 d-none d-lg-inline-flex">
-                                <div class="img__overlay"><p><br><br>Live classes have really helped my kid to stay
-                                    focused and really engage in every session. Kudos to the team :)<br><em>-Vanya, <br>Mother
-                                        of 1st grader</em></p></div>
-                                <img src="{% static 'images/test3.jpg' %}"/>
-                            </div>
-                        </div>
-                    </center>
-                </div>
-                <div class="carousel-item" data-interval="5000">
-                    <center>
-                        <div class="d-block w-100">
-                            <div class="img mx-3 ">
-                                <div class="img__overlay"><p><br>My son is truly able to get a real classroom experience
-                                    through live classes.<br><em>-Michael, <br>Father of 3rd grader</em></p></div>
-                                <img src="{% static 'images/test1.jpg' %}"/>
-                            </div>
-                            <div class="img mx-3 d-none d-md-inline-flex">
-                                <div class="img__overlay"><p><br>I noticed a tremendous improvement in my daughters
-                                    enthusiasm and outlook towards active learning thanks to your website!<br><em>-Anu,
-                                        <br>Mother of 5th grader</em></p></div>
-                                <img src="{% static 'images/test2.jpg' %}"/>
-                            </div>
-                            <div class="img  mx-3 d-none d-lg-inline-flex">
-                                <div class="img__overlay"><p><br><br>Live classes have really helped my kid to stay
-                                    focused and really engage in every session. Kudos to the team :)<br><em>-Vanya, <br>Mother
-                                        of 1st grader</em></p></div>
-                                <img src="{% static 'images/test3.jpg' %}"/>
-                            </div>
-                        </div>
-                    </center>
-                </div> -->
-                <!-- <a class="carousel-control-prev" href="#carousel-test" role="button" data-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#carousel-test" role="button" data-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                </a> -->
-            </div>
-    </section>
 
     <!-- WANT TO KNOW MORE -->
     <section class="px-5 py-5 know">
