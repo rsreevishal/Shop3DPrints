@@ -482,6 +482,13 @@ def generate_quote(request, order_id: int = None):
                 settings.DEFAULT_FROM_EMAIL, [order.product.customer.django_user.email])
             email.attach_file(f'media/invoice/{file_name}')
             email.send()
+            status_names = ["Completed", "Cancelled", "Quoted", "Pending", "Shipped", "Payed"]
+            try:
+                wapp = WhatsAppMessage()
+                wapp.send_message(f'whatsapp:+{order.product.customer.country}{order.product.customer.phone_number}',
+                                  f'Your order status is: {status_names[order.order_status]} check your mail')
+            except Exception as e:
+                print(e)
             return JsonResponse({"type": "SUCCESS",
                                  "message": "Successfully generated quote and sent to customer email."}, status=200)
     except Exception as e:
