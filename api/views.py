@@ -33,6 +33,8 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import Group
 from weasyprint import HTML
 
+from .whatsapp import WhatsAppMessage
+
 
 def redirect_view(path_name):
     def view(request, **kwargs):
@@ -494,16 +496,23 @@ def service_provider_update_status(request, order_id: int = None):
         if 'comments' in request.POST:
             order.comments = request.POST.get('comments')
         order.save()
+        status_names = ["Completed", "Cancelled", "Quoted", "Pending", "Shipped", "Payed"]
         try:
             message = render_to_string('status_update_template.html', {
                 'order': order,
-                'status_name': ["Completed", "Cancelled", "Quoted", "Pending", "Shipped", "Payed"][order.order_status],
+                'status_name': status_names[order.order_status],
                 'project_title': settings.PROJECT_TITLE
             })
             print(f"Message: {message}")
             email_from = settings.EMAIL_HOST_USER
             to_email = [order.product.customer.django_user.email]
             send_mail(f"{settings.PROJECT_TITLE} status update", message, email_from, to_email)
+        except Exception as e:
+            print(e)
+        try:
+            wapp = WhatsAppMessage()
+            wapp.send_message(f'whatsapp:+{order.product.customer.country}{order.product.customer.phone_number}',
+                              f'Your order status is: {status_names[order.order_status]}')
         except Exception as e:
             print(e)
         return JsonResponse({"type": "SUCCESS", "message": "Order status is updated successfully."}, status=200)
