@@ -20,3 +20,4 @@ pillow==8.1.1
 django-extensions
 django-timezone-field
 pytz-convert
+WeasyPrint

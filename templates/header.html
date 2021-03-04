@@ -29,13 +29,13 @@
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Print now
                 </a>
-                {% endif %}
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     {% for category in all_categories %}
                         <a class="dropdown-item"
                            href="{% url 'products-offered' category.id %}">{{ category.name }}</a>
                     {% endfor %}
                 </div>
+                {% endif %}
             </li>
         </ul>
     </div>

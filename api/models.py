@@ -92,7 +92,7 @@ class Material(models.Model):
     cost = models.FloatField()
 
     def __str__(self):
-        return f"{self.name}, cost: {self.cost}"
+        return f"{self.name}"
 
 
 class CategoryMaterial(models.Model):
@@ -108,7 +108,7 @@ class Density(models.Model):
     cost = models.FloatField()
 
     def __str__(self):
-        return f"{self.value}%, cost: {self.cost}"
+        return f"{self.value}%"
 
 
 class Unit(models.TextChoices):
@@ -124,7 +124,7 @@ class LayerHeight(models.Model):
     cost = models.FloatField()
 
     def __str__(self):
-        return f"{self.start_value}-{self.end_value}, cost: {self.cost}"
+        return f"{self.start_value}-{self.end_value} {self.unit}"
 
 
 def validate_file_extension(value):
@@ -138,7 +138,6 @@ class Product(models.Model):
     density = models.ForeignKey(Density, on_delete=models.CASCADE)
     material = models.ForeignKey(Material, on_delete=models.CASCADE)
     layer_height = models.ForeignKey(LayerHeight, on_delete=models.CASCADE)
-    total_price = models.PositiveSmallIntegerField(help_text='Price of the product')
     description = models.TextField(max_length=512)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     stl_file = models.FileField(upload_to="stl/", blank=True, default=None, null=True,
@@ -153,13 +152,6 @@ class Product(models.Model):
                        layer_height=LayerHeight.objects.get(id=int(request.POST.get('layer_height'))),
                        created_on=timezone.now())
 
-    def get_total_price(self):
-        def value(val):  # helper function
-            return val if val else 0.0
-
-        return value(self.category.cost) + value(self.density.cost) + value(self.material.cost) \
-               + value(self.layer_height.cost)
-
     def __str__(self):
         return self.name
 
@@ -169,13 +161,8 @@ class OrderStatus(models.IntegerChoices):
     cancelled = 1
     quoted = 2
     pending = 3
-
-
-class Purchase(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    datetime = models.DateTimeField()
-    stripe_id = models.CharField(max_length=128)
-    confirmed = models.BooleanField(default=False)
+    shipped = 4
+    payed = 5
 
 
 class Order(models.Model):
@@ -184,3 +171,17 @@ class Order(models.Model):
     service_provider = models.ForeignKey(ServiceProvider, on_delete=models.CASCADE)
     ordered_on = models.DateTimeField(default=timezone.now())
     order_status = models.IntegerField(choices=OrderStatus.choices)
+    additional_value = models.CharField(max_length=200, null=True)
+    additional_cost = models.FloatField(null=True, default=0)
+    total_cost = models.FloatField(null=True, default=0)
+    comments = models.TextField(max_length=500, null=True)
+    invoice_generated = models.BooleanField(default=False)
+    invoice_file_name = models.CharField(max_length=250, null=True)
+    cancel_reason = models.CharField(max_length=250, null=True)
+
+
+class Purchase(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    datetime = models.DateTimeField()
+    stripe_id = models.CharField(max_length=128)
+    confirmed = models.BooleanField(default=False)

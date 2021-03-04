@@ -32,3 +32,15 @@ def user_name(user):
 def my_pk(user):
     me = AcademyUser.get_for(user)
     return me.pk
+
+
+@register.filter(name="status_class")
+def status_class(status_id):
+    status = ['table-primary', 'table-danger', 'table-warning', 'table-secondary', 'table-success', 'table-dark']
+    return status[int(status_id)]
+
+
+@register.filter(name="status_name")
+def status_name(status_id):
+    status = ['Completed', 'Cancelled', 'Quoted', 'Pending', 'Shipped', 'Payed']
+    return status[int(status_id)]

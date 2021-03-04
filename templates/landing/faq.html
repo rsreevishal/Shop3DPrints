@@ -2,57 +2,43 @@
 {% load static %}
 
 {% block head %}
-    <title>CMS Online Academy | FAQ</title>
+<title>CMS Online Academy | FAQ</title>
 {% endblock %}
 
 {% block landing-body %}
-    <!-- FAQ -->
-    <section class="faq container py-3">
-        <div class="text-center"><h1 class="head">FAQ</h1></div>
+<!-- FAQ -->
+<section class="faq container py-3">
+    <div class="text-center"><h1 class="head">FAQ</h1></div>
 
-        <div class="card-columns pt-3 centered">
-            <div class="card mx-auto">
-                <div class="card-body">
-                    <h5 class="card-title">What materials do you offer?</h5>
-                    <p class="card-text">We have different materials for our 3D printing service and our laser cutting service with several available finishes. For our 3D printing service, we have PLA, ABS Plastic, Carbon fiber, Clear Resin, Grey Resin, Tough Resin, Nylon 66,  aluminum, titanium, stainless steel.</p>
-                </div>
-            </div>
-            <div class="card  mx-auto">
-                <div class="card-body">
-                    <h5 class="card-title">Why was my order or an object in my order canceled?</h5>
-                    <p class="card-text">The main reason why an object could be canceled are when the objects are too fragile to be printed without causing a risk to our 3D production, The object is cantilevered and if the object was printed it would not be to the customer's satisfaction.In the case of any cancellation, you should check your emails as an email is sent with a reason for the cancellation.</p>
-                </div>
-            </div>
-            <div class="card  mx-auto">
-                <div class="card-body">
-                    <h5 class="card-title">How are prices calculated?</h5>
-                    <p class="card-text">Pricing is based on a series of factors, including: volume of the object, the size, the amount of raw material used, the labor (mainly post printing) and multiple other factors. These are the major factors that can affect the price.The cost of your 3D print is automatically calculated the moment you upload your 3D file to our site. The calculations are interactive and will change as you modify your personalized object and 3D printing options (if no 3D file is provided, a precise price quote cannot be established).</p>
-                </div>
-            </div>
-            <div class="card  mx-auto">
-                <div class="card-body">
-                    <h5 class="card-title">Payment Methods</h5>
-                    <p class="card-text">You can also pay via credit card (Visa, Master Card, or Carte Bleu) using Stripe, a secure payment system,</p>
-                </div>
-            </div>
-    <!--            <div class="card mx-auto">-->
-    <!--                <div class="card-body">-->
-    <!--                    <h5 class="card-title">How frequent are these classes?</h5>-->
-    <!--                    <p class="card-text">These are live online classes. One session is an hour long.  You can choose a batch as per your convenience. </p>-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--            <div class="card mx-auto">-->
-    <!--                <div class="card-body">-->
-    <!--                    <h5 class="card-title">What if something goes wrong before, during or after I have done my activities?</h5>-->
-    <!--                    <p class="card-text">Don’t worry and feel free to contact us by mail or send a query through our website(add the link). At CMS Online Academy, we are always happy to help if there is any problem, question or doubt..</p>-->
-    <!--                </div>-->
-    <!--            </div>-->
-<!--            <div class="card  mx-auto">-->
-<!--                <div class="card-body">-->
-<!--                    <h5 class="card-title">Where will the classes take place?</h5>-->
-<!--                    <p class="card-text">You can take these classes from anywhere as per your convenience. The class will take place on Google Meet. The link will be available in your dashboard.</p>-->
-<!--                </div>-->
-<!--            </div>-->
-        </div>
-    </section>
+    <ul class="list-group list-group-flush mx-auto">
+        <li class="list-group-item">
+            <h3>What materials do you offer?</h3>
+            <p>We have different materials for our 3D printing service and our laser cutting service
+                with several available finishes. For our 3D printing service, we have PLA, ABS Plastic, Carbon fiber,
+                Clear Resin, Grey Resin, Tough Resin, Nylon 66, aluminum, titanium, stainless steel.</p>
+        </li>
+        <li class="list-group-item">
+            <h3>Why was my order or an object in my order canceled?</h3>
+            <p>The main reason why an object could be canceled are when the objects are too fragile to
+                be printed without causing a risk to our 3D production, The object is cantilevered and if the object was
+                printed it would not be to the customer's satisfaction.In the case of any cancellation, you should check
+                your emails as an email is sent with a reason for the cancellation.</p>
+        </li>
+        <li class="list-group-item">
+            <h3>How are prices calculated?</h3>
+            <p>Pricing is based on a series of factors, including: volume of the object, the size, the
+                amount of raw material used, the labor (mainly post printing) and multiple other factors. These are the
+                major factors that can affect the price.The cost of your 3D print is automatically calculated the moment
+                you upload your 3D file to our site. The calculations are interactive and will change as you modify your
+                personalized object and 3D printing options (if no 3D file is provided, a precise price quote cannot be
+                established).</p>
+        </li>
+        <li class="list-group-item">
+            <h3>Payment Methods</h3>
+            <p>You can also pay via credit card (Visa, Master Card, or Carte Bleu) using Stripe, a
+                secure payment system,</p>
+        </li>
+    </ul>
+
+</section>
 {% endblock %}

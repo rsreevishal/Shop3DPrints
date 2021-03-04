@@ -130,24 +130,22 @@
                     <th scope="col">Service provider</th>
                     <th scope="col">Ordered on</th>
                     <th scope="col">Status</th>
+                    <th scope="col">Comments</th>
+                    <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for ord in orders.all %}
-                    <tr>
+                    <tr class="{{ord.order_status|status_class}}">
                         <td class="row">{{forloop.counter}}</td>
                         <td>{{ord.product}}</td>
                         <td>{{ord.quantity}}</td>
                         <td>{{ord.service_provider}}</td>
                         <td>{{ord.ordered_on}}</td>
-                        {% if ord.order_status == 0 %}
-                        <td>Completed</td>
-                        {% elif ord.order_status == 1 %}
-                        <td>Cancelled</td>
-                        {% elif ord.order_status == 2 %}
-                        <td>Quoted</td>
-                        {% elif ord.order_status == 3 %}
-                        <td>Pending</td>
+                        <td>{{ord.order_status|status_name}}</td>
+                        <td>{{ord.comments}}</td>
+                        {% if ord.order_status == 2%}
+                        <td><button onclick="stripe_pay({{ord.pk}})" class="btn-sm btn-success">Pay</button></td>
                         {% endif %}
                     </tr>
                 {% endfor %}
@@ -156,6 +154,7 @@
         </div>
     </div>
 </div>
+<script src="https://js.stripe.com/v3/"></script>
 <script>
         $(document).ready(function(){
         // Update AJAX request
@@ -185,5 +184,19 @@
             });
         });
     });
+    function stripe_pay(order_id) {
+        console.log(order_id);
+        var stripe = Stripe("{{ stripe_pk }}");
+        $.post('{% url 'checkout' %}', {"order_id": order_id, csrfmiddlewaretoken: '{{ csrf_token }}'}, function(response) {
+            const session = JSON.parse(response);
+                stripe.redirectToCheckout({sessionId: session.id});
+                showAlert("Payment successful", session.message, () => {
+                    window.location.replace("{% url 'customer-products' %}");
+                });
+        }).fail(function (data) {
+            var res = JSON.parse(data.responseText);
+            showAlert("Payment failed", res.message);
+        });
+    }
 </script>
 {% endblock %}

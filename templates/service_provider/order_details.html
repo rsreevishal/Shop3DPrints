@@ -1,0 +1,244 @@
+{% extends 'service_provider/service_provider-base.html' %}
+{% load static %}
+{% load api_extras %}
+
+{% block instructor-head %}
+<title>Shop 3D Prints | Orders</title>
+{% endblock %}
+
+{% block instructor-body %}
+<div class="container-fluid">
+    <div class="px-3">
+        <h1 class="text-center">
+            <a href="{% url 'service_provider_orders' %}">
+                <i class="fas fa-arrow-circle-left" style="float: left;"></i>
+            </a>
+            Order details
+        </h1>
+    </div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Columns</th>
+            <th scope="col">Values</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Customer</td>
+            <td>{{order.product.customer}}</td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td>{{order.product.name}}</td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td>{{order.product.description}}</td>
+        </tr>
+        <tr>
+            <td>Material</td>
+            <td>{{order.product.material}}</td>
+        </tr>
+        <tr>
+            <td>Density</td>
+            <td>{{order.product.density}}</td>
+        </tr>
+        <tr>
+            <td>Layer height</td>
+            <td>{{order.product.layer_height}}</td>
+        </tr>
+        <tr>
+            <td>Stl file</td>
+            <td><a class="text-primary" id="stl_file" href="{{order.product.stl_file.url}}">{{order.product.stl_file.name}}</a>
+            </td>
+        </tr>
+        <tr>
+            <td>Shipping address</td>
+            <td>{{order.product.customer.address}}</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <hr/>
+    {% if order.order_status != 5 and order.order_status != 0 and order.order_status != 4 %}
+    <h1 class="mx-2 text-center">Cost details</h1>
+    <form method="post" action="{% url 'quote_order' order.pk %}" class="form" id="generate-quote-form">
+        {% csrf_token %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Components</th>
+                <th scope="col">Value</th>
+                <th scope="col">Price</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Material</td>
+                <td>{{order.product.material}}</td>
+                <td>Rs. {{order.product.material.cost}}</td>
+            </tr>
+            <tr>
+                <td>Density</td>
+                <td>{{order.product.density}}</td>
+                <td>Rs. {{order.product.density.cost}}</td>
+            </tr>
+            <tr>
+                <td>Layer height</td>
+                <td>{{order.product.layer_height}}</td>
+                <td>Rs. {{order.product.layer_height.cost}}</td>
+            </tr>
+            <tr>
+                <td>Quantity</td>
+                <td>{{order.quantity}}</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>Additional charge</td>
+                <td><input class="form-control" type="text" name="additional_value"/></td>
+                <td>Rs.<input class="form-control-md" type="number" id="ad_cost" name="additional_cost"/></td>
+            </tr>
+            <tr class="table-info">
+                <td>Total cost</td>
+                <td id="total_cost_val"></td>
+                <td>-</td>
+            </tr>
+            </tbody>
+        </table>
+        <hr/>
+        <div class="form-group">
+            <h1 class="mx-2 text-center">Comments and Reviews</h1>
+            <textarea class="form-control" name="comments" placeholder="Enter your comments here"></textarea>
+        </div>
+        <input id="total_cost" type="number" name="total_cost" hidden/>
+        <button type="submit" class="btn btn-large btn-success">Send quote</button>
+    </form>
+    <hr/>
+    <h1 class="mx-2 text-center">Cancel order</h1>
+    <form action="{% url 'service_provider_update_status' order.pk %}" class="form" method="post" id="cancel-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="cancel_reason">Reason</label>
+            <textarea class="form-control" id="cancel_reason" name="comments" placeholder="Enter your reason here"></textarea>
+            <input type="number" value="1" name="status_id" hidden/>
+        </div>
+        <button type="submit" class="btn btn-large btn-danger">Cancel order</button>
+    </form>
+    <hr/>
+    {% else %}
+    <h1 class="mx-2 text-center">Status update</h1>
+    <form action="{% url 'service_provider_update_status' order.pk %}" class="form" method="post" id="status-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="status">Update status</label>
+            <select id="status" name="status_id" class="form-control">
+                <option value="">None</option>
+                <option {% if order.order_status == 0 %} selected {% endif %} value="0">Completed</option>
+                <option {% if order.order_status == 4 %} selected {% endif %} value="4">Shipped</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="cancel_reason">Comment</label>
+            <textarea class="form-control" id="status_comment" name="comments" placeholder="Enter your comments here"></textarea>
+        </div>
+        <button type="submit" class="btn btn-large btn-success">Update status</button>
+    </form>
+    {% endif %}
+</div>
+<script>
+    $(document).ready(function() {
+        var total_cost = {{ total_cost }};
+        $("#total_cost").val(total_cost);
+        $("#total_cost_val").text("Rs. " + total_cost);
+        $("#ad_cost").keyup(function() {
+            var value = parseFloat(total_cost) + parseFloat($(this).val());
+            if(value) {
+               $("#total_cost_val").text("Rs. " + value);
+               $("#total_cost").val(value);
+            } else {
+                $("#total_cost").val(total_cost);
+                $("#total_cost_val").text("Rs. " + total_cost);
+            }
+        });
+        $("#ad_cost").change(function() {
+            var value = parseFloat(total_cost) + parseFloat($(this).val());
+            if(value) {
+               $("#total_cost_val").text("Rs. " + value);
+               $("#total_cost").val(value);
+            } else {
+                $("#total_cost").val(total_cost);
+                $("#total_cost_val").text("Rs. " + total_cost);
+            }
+        });
+        $("#generate-quote-form").submit(function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            $.ajax({
+               type: "POST",
+               url: url,
+               data: form.serialize(),
+               success: function(data)
+               {
+                   if(data.type == "ERROR") {
+                    showAlert("Quote", data.message);
+                   }
+                   if(data.type == "SUCCESS") {
+                       showAlert("Quote", data.message);
+                   }
+               },
+               error: function(data) {
+                showAlert("Quote", data.responseJSON.message);
+               }
+            });
+        });
+        $("#cancel-form").submit(function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            $.ajax({
+               type: "POST",
+               url: url,
+               data: form.serialize(),
+               success: function(data)
+               {
+                   if(data.type == "ERROR") {
+                    showAlert("Order", data.message);
+                   }
+                   if(data.type == "SUCCESS") {
+
+                       showAlert("Order", data.message);
+                   }
+               },
+               error: function(data) {
+                showAlert("Order", data.responseJSON.message);
+               }
+            });
+        });
+        $("#status-form").submit(function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            $.ajax({
+               type: "POST",
+               url: url,
+               data: form.serialize(),
+               success: function(data)
+               {
+                   if(data.type == "ERROR") {
+                    showAlert("Order", data.message);
+                   }
+                   if(data.type == "SUCCESS") {
+
+                       showAlert("Order", data.message);
+                   }
+               },
+               error: function(data) {
+                showAlert("Order", data.responseJSON.message);
+               }
+            });
+        });
+    });
+</script>
+{% endblock %}

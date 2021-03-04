@@ -1,0 +1,102 @@
+<html>
+<head>
+    <title>{{file_name}}</title>
+</head>
+<body>
+<div class="container-fluid">
+    <h1 class="mx-2">Order details</h1>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Columns</th>
+            <th scope="col">Values</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Customer</td>
+            <td>{{order.product.customer}}</td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td>{{order.product.name}}</td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td>{{order.product.description}}</td>
+        </tr>
+        <tr>
+            <td>Material</td>
+            <td>{{order.product.material}}</td>
+        </tr>
+        <tr>
+            <td>Density</td>
+            <td>{{order.product.density}}</td>
+        </tr>
+        <tr>
+            <td>Layer height</td>
+            <td>{{order.product.layer_height}}</td>
+        </tr>
+        <tr>
+            <td>Stl file</td>
+            <td>{{order.product.stl_file.name}}</td>
+        </tr>
+        <tr>
+            <td>Shipping address</td>
+            <td>{{order.product.customer.address}}</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <hr/>
+    <h1 class="mx-2">Cost details</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Components</th>
+            <th scope="col">Value</th>
+            <th scope="col">Price</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Material</td>
+            <td>{{order.product.material}}</td>
+            <td>Rs. {{order.product.material.cost}}</td>
+        </tr>
+        <tr>
+            <td>Density</td>
+            <td>{{order.product.density}}</td>
+            <td>Rs. {{order.product.density.cost}}</td>
+        </tr>
+        <tr>
+            <td>Layer height</td>
+            <td>{{order.product.layer_height}}</td>
+            <td>Rs. {{order.product.layer_height.cost}}</td>
+        </tr>
+        <tr>
+            <td>Quantity</td>
+            <td>{{order.quantity}}</td>
+            <td>-</td>
+        </tr>
+        <tr>
+            <td>Additional charge</td>
+            <td>{{ order.additional_value }}</td>
+            <td>Rs. {{ order.additional_cost }}</td>
+        </tr>
+        <tr class="table-info">
+            <td>Total cost</td>
+            <td id="total_cost_val">Rs. {{order.total_cost}}</td>
+            <td>-</td>
+        </tr>
+        </tbody>
+    </table>
+    <hr/>
+    <div class="form-group">
+        <h1 class="mx-2">Comments and Reviews</h1>
+        <textarea class="form-control" name="comments">{{order.comments}}</textarea>
+    </div>
+    <hr/>
+</div>
+</body>
+</html>

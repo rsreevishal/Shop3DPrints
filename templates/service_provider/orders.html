@@ -8,29 +8,35 @@
 
 {% block instructor-body %}
 <div class="container-fluid">
-    <table class="table">
+    <h1 class="mx-2">Order details</h1>
+    <table class="table table-hover">
         <thead>
         <tr>
             <th scope="col">#</th>
             <th scope="col">Product</th>
             <th scope="col">Quantity</th>
-            <th scope="col">Service provider</th>
+            <th scope="col">Customer</th>
             <th scope="col">Ordered on</th>
             <th scope="col">Status</th>
         </tr>
         </thead>
         <tbody>
         {% for ord in orders.all %}
-        <tr>
+        <tr class='clickable-row {{ord.order_status|status_class}}' data-href="{% url 'service_provider_order_details' ord.pk %}">
             <td class="row">{{forloop.counter}}</td>
             <td>{{ord.product}}</td>
             <td>{{ord.quantity}}</td>
-            <td>{{ord.service_provider}}</td>
+            <td>{{ord.product.customer}}</td>
             <td>{{ord.ordered_on}}</td>
-            <td>{{ord.order_status}}</td>
+            <td>{{ord.order_status|status_name}}</td>
         </tr>
         {% endfor %}
         </tbody>
     </table>
 </div>
+<script>
+    $(".clickable-row").click(function() {
+        window.location = $(this).data("href");
+    });
+</script>
 {% endblock %}

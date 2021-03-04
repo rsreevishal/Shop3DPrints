@@ -1,4 +1,5 @@
 import json
+import uuid
 import stripe
 from django.db import IntegrityError
 from django.contrib.auth import login as django_login, logout as django_logout, authenticate
@@ -21,7 +22,7 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from .tokens import account_activation_token
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives
@@ -30,6 +31,7 @@ from django_rest_passwordreset.signals import reset_password_token_created
 from datetime import datetime
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import Group
+from weasyprint import HTML
 
 
 def redirect_view(path_name):
@@ -47,6 +49,7 @@ def standard_view(template_name, ctx=None):
         template = loader.get_template(template_name)
         context = {
             'me': AcademyUser.get_for(request.user),
+            'all_categories': Category.objects.all(),
             **kwargs,
             **ctx,
         }
@@ -56,7 +59,7 @@ def standard_view(template_name, ctx=None):
 
 
 def index(request):
-    trending = Product.objects.order_by('-purchase')[:2]
+    trending = Product.objects.order_by('-order')[:2]
     fresh = Product.objects.order_by('-id')[:3]
 
     return standard_view('landing/index.html', {
@@ -92,14 +95,9 @@ def product_details(request, product_id):
     layer_height_list = LayerHeight.objects.all()
     orders = Order.objects.filter(product=product)
     service_provider = ServiceProvider.objects.all()
-    try:
-        mode = request.GET["mode"]
-    except MultiValueDictKeyError:
-        mode = 1
     return standard_view('customer/product.html', {
         'product': product,
         'stripe_pk': settings.STRIPE_PUBLISHABLE_KEY,
-        'mode': mode,
         'category_material': category_material,
         'density_list': density_list,
         'layer_height_list': layer_height_list,
@@ -255,14 +253,11 @@ def email_query(request):
 
 
 def checkout(request):
-    form = PurchaseForm(request.POST)
-    if form.is_valid():
-        start_time, end_time = form.cleaned_data["time"].split(",")
-        date_time = datetime.strptime(f'{form.cleaned_data["date"]} {start_time}', '%m/%d/%Y %I:%M %p')
+    try:
+        order = Order.objects.get(pk=int(request.POST.get("order_id")))
         purchase = Purchase(
-            product=Product.objects.get(pk=form.cleaned_data["product"]),
-            datetime=date_time,
-            customer=AcademyUser.get_for(request.user)
+            order=order,
+            datetime=timezone.now()
         )
         try:
             checkout_session = stripe.checkout.Session.create(
@@ -270,22 +265,22 @@ def checkout(request):
                 line_items=[
                     {
                         'price_data': {
-                            'currency': 'usd',
-                            'unit_amount': purchase.product.total_price_usd * 100,
+                            'currency': 'inr',
+                            'unit_amount': int(purchase.order.total_cost * 100),
                             'product_data': {
-                                'name': purchase.product.name,
+                                'name': purchase.order.product.name,
                             },
                         },
                         'quantity': 1,
                     }
                 ],
                 mode='payment',
-                success_url=settings.STRIPE_DOMAIN + reverse('index'),  # TODO: Success
-                cancel_url=settings.STRIPE_DOMAIN + reverse('index'),
-                api_key=settings.STRIPE_API_KEY,
-                metadata={"order_status": OrderStatus.pending}
+                success_url=settings.STRIPE_DOMAIN + reverse('customer-products'),  # TODO: Success
+                cancel_url=settings.STRIPE_DOMAIN + reverse('customer-products'),
+                api_key=settings.STRIPE_API_KEY
             )
         except Exception as e:
+            print(f"Couldn't checkout: {e}")
             return HttpResponse(str(e), status=403)
 
         purchase.stripe_id = checkout_session.stripe_id
@@ -295,15 +290,9 @@ def checkout(request):
             return JsonResponse(
                 {"type": "ERROR", "message": "Sorry! You cannot order. Check if you have already ordered this item."},
                 status=400)
-        order = Order(
-            customer=purchase.customer,
-            product=purchase.product,
-            purchase=purchase,
-            order_status=OrderStatus.pending
-        )
-        order.save()
         return HttpResponse(json.dumps({'id': checkout_session.id, 'order_status': OrderStatus.pending}))
-    else:
+    except Exception as e:
+        print(f"Couldn't checkout: {e}")
         return HttpResponse("Not valid data", status=403)
 
 
@@ -326,17 +315,14 @@ def checkout_webhook(request):
         return HttpResponse(status=400)
     # Handle the checkout.session.completed event
     if event['type'] == 'checkout.session.completed':
-        order_status = int(event.data.object.metadata["order_status"])
-        print(f"Data: {event.data.object.metadata}")
-        if order_status == OrderStatus.pending:
-            session = event['data']['object']
-            purchase = Purchase.objects.get(stripe_id=session.id)
-            purchase.confirmed = True
-            purchase.save()
-            order = Order.objects.get(purchase=purchase)
-            order.order_status = OrderStatus.accepted
-            order.save()
-            print(session)
+        session = event['data']['object']
+        purchase = Purchase.objects.get(stripe_id=session.id)
+        purchase.confirmed = True
+        purchase.save()
+        order = purchase.order
+        order.order_status = OrderStatus.payed
+        order.save()
+        print(session)
     # Passed signature verification
     return HttpResponse(status=200)
 
@@ -404,7 +390,6 @@ def add_to_cart(request):
         product.category = category
         stl_file = request.FILES['stl_file']
         product.stl_file = stl_file
-        product.total_price = product.get_total_price()
         product.save()
     return HttpResponseRedirect(reverse('customer-products'))
 
@@ -421,7 +406,7 @@ def update_cart(request, product_id: int):
         try:
             stl_file = request.FILES['stl_file']
             old_product.stl_file = stl_file
-        except:
+        except Exception as e:
             pass
         old_product.save()
     return HttpResponseRedirect(reverse('customer-products'))
@@ -444,6 +429,84 @@ def add_order(request):
                           ordered_on=timezone.now(), order_status=OrderStatus.pending)
             order.save()
             return JsonResponse({"type": "SUCCESS", "message": "Your order is placed successfully"}, status=200)
-        except:
+        except Exception as e:
             return JsonResponse({"type": "ERROR", "message": "Your order is failed. Try again"}, status=200)
     return JsonResponse({"type": "ERROR", "message": "Your order is failed. Try again"}, status=200)
+
+
+def service_provider_order_details(request, order_id: int = None):
+    try:
+        order = Order.objects.get(pk=order_id)
+        product = order.product
+        total_cost = (product.material.cost + product.density.cost + product.layer_height.cost) * order.quantity
+        return standard_view('service_provider/order_details.html', {"order": order, "total_cost": total_cost})(request)
+    except Exception as e:
+        print(e)
+        return HttpResponseRedirect(reverse('service_provider_orders'))
+
+
+def html_to_pdf_view(order, file_name):
+    try:
+        html_string = render_to_string('service_provider/invoice_template.html',
+                                       {"order": order, "file_name": file_name})
+        html = HTML(string=html_string)
+        html.write_pdf(target=f'media/invoice/{file_name}')
+        return True
+    except Exception as e:
+        print(f"Error occured in pdf: {e}")
+        return False
+
+
+def generate_quote(request, order_id: int = None):
+    try:
+        if request.POST:
+            order = Order.objects.get(pk=order_id)
+            if request.POST.get('additional_value'):
+                order.additional_value = request.POST.get('additional_value')
+            if request.POST.get('additional_cost'):
+                order.additional_cost = float(request.POST.get('additional_cost'))
+            if request.POST.get('total_cost'):
+                order.total_cost = float(request.POST.get('total_cost'))
+            if request.POST.get('comments'):
+                order.comments = request.POST.get('comments')
+            file_name = f'{str(uuid.uuid4())}.pdf'
+            if html_to_pdf_view(order, file_name):
+                order.invoice_generated = True
+                order.invoice_file_name = file_name
+                order.order_status = OrderStatus.quoted
+            order.save()
+            email = EmailMessage(
+                'Your order was received', f'Hello {order.product.customer}. We processed your invoice',
+                settings.DEFAULT_FROM_EMAIL, [order.product.customer.django_user.email])
+            email.attach_file(f'media/invoice/{file_name}')
+            email.send()
+            return JsonResponse({"type": "SUCCESS",
+                                 "message": "Successfully generated quote and sent to customer email."}, status=200)
+    except Exception as e:
+        print(e)
+        return JsonResponse({"type": "ERROR", "message": "Failed to generate quote."}, status=200)
+
+
+def service_provider_update_status(request, order_id: int = None):
+    try:
+        order = Order.objects.get(pk=order_id)
+        order.order_status = int(request.POST.get('status_id'))
+        if 'comments' in request.POST:
+            order.comments = request.POST.get('comments')
+        order.save()
+        try:
+            message = render_to_string('status_update_template.html', {
+                'order': order,
+                'status_name': ["Completed", "Cancelled", "Quoted", "Pending", "Shipped", "Payed"][order.order_status],
+                'project_title': settings.PROJECT_TITLE
+            })
+            print(f"Message: {message}")
+            email_from = settings.EMAIL_HOST_USER
+            to_email = [order.product.customer.django_user.email]
+            send_mail(f"{settings.PROJECT_TITLE} status update", message, email_from, to_email)
+        except Exception as e:
+            print(e)
+        return JsonResponse({"type": "SUCCESS", "message": "Order status is updated successfully."}, status=200)
+    except Exception as e:
+        print(e)
+        return JsonResponse({"type": "ERROR", "message": "Order status update failed."}, status=200)
