@@ -7,6 +7,7 @@
     {% endblock %}
 {% endblock %}
 {% block body %}
+    {% include 'landing/modals/chatbox.html' %}
     {% url 'customer-products' as products_url %}
     {% url 'customer-profile' as profile_url %}
     <nav class="side-nav">

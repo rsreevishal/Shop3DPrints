@@ -1,0 +1,66 @@
+<!-- Chat box -->
+<div class="modal fade" id="chatbox-popup" aria-labelledby="staticBackdropLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="card modal-content ">
+            <div class="card-body mx-3 my-3">
+                <h1>Chat with Ram</h1>
+                <br/>
+                <div style="height: 310px;">
+                    <ul class="list-group" id="chat-messages"
+                        style="max-height:300px; margin-bottom: 10px; overflow:scroll; -webkit-overflow-scrolling: touch;">
+                        <li class="list-group-item ">Hi how can I help you?</li>
+                    </ul>
+                </div>
+                <br/>
+                <form action="{% url 'chat_bot' %}" class="form" method="post" id="chat-box-form">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="message-box" name="message"
+                                       placeholder="Enter your message" required/>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <button type="submit" class="btn-lg btn-success">Send</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        $("#chat-box-form").submit(function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            $.ajax({
+               type: "POST",
+               url: url,
+               data: form.serialize(),
+               success: function(data)
+               {
+                   if(data.type == "ERROR") {
+                    $("#chat-messages").append(`<li class="text-right list-group-item ">${data.message}</li>`);
+                    $("#chat-messages").append(`<li class="list-group-item ">${data.response}</li>`);
+                   }
+                   if(data.type == "SUCCESS") {
+                    $("#chat-messages").append(`<li class="text-right list-group-item ">${data.message}</li>`);
+                    $("#chat-messages").append(`<li class="list-group-item ">${data.response}</li>`);
+                   }
+               },
+               error: function(data) {
+                $("#chat-messages").append(`<li class="text-right list-group-item ">${data.responseJSON.message}</li>`);
+                $("#chat-messages").append(`<li class="list-group-item ">${data.responseJSON.response}</li>`);
+               }
+            });
+        });
+    });
+
+
+
+
+</script>

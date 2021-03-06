@@ -21,6 +21,8 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
+
+from .chatbot.chatbot import ChatBot
 from .tokens import account_activation_token
 from django.core.mail import send_mail, EmailMessage
 from django.core.validators import validate_email
@@ -518,3 +520,16 @@ def service_provider_update_status(request, order_id: int = None):
     except Exception as e:
         print(e)
         return JsonResponse({"type": "ERROR", "message": "Order status update failed."}, status=200)
+
+
+def chat_bot(request):
+    if request.POST:
+        try:
+            chatbot = ChatBot()
+            res = chatbot.chat_bot_response(request.POST.get("message"))
+            return JsonResponse({"type": "SUCCESS", "message": request.POST.get("message"), "response": res},
+                                status=200)
+        except Exception as e:
+            print(e)
+            return JsonResponse({"type": "ERROR", "message": request.POST.get("message"), "response": ""}, status=200)
+    return JsonResponse({"type": "ERROR", "message": "Can't process", "response": "Can't process"}, status=200)

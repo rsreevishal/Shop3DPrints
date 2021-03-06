@@ -7,36 +7,7 @@
 {% endblock %}
 
 {% block landing-body %}
-    <!-- <section class="banner-top">
-        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" pause="hover">
-            <ol class="carousel-indicators">
-                <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-            </ol>
-            <div class="carousel-inner">
-                <div class="carousel-item active" data-interval="3000">``
-                    <img src="{% static 'images/top1.jpg' %}" class="d-block w-100" alt="banner1">
-                </div>
-                <div class="carousel-item " data-interval="3000">
-                    <img src="{% static 'images/top1.jpg' %}" class="d-block w-100" alt="banner2">
-                </div>
-                <div class="carousel-item" data-interval="3000">
-                    <img src="{% static 'images/top1.jpg' %}" class="d-block w-100 " alt="banner3">
-                </div>
-            </div>
-            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-            </a>
-            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-            </a>
-        </div>
-    </section> -->
-
-    <!-- BOOK A FREE TRIAL -->
+    <!-- Register now -->
     <section class="container mt-4" >
         <div class="row">
             <div class="col-md-6 order-2 order-md-1">
@@ -56,21 +27,6 @@
             </div>
         </div>
     </section>
-
-    <!-- REGISTER WITH US -->
-<!--     <div class="card register-section text-white w-100 h-100">
-        <img src="{% static 'images/register.jpg' %}" class="card-img img-fluid" alt="register">
-        <div class="card-img-overlay">
-            <div class="container">
-                <h1 class="card-title ">Register with us</h1>
-                <p class="card-text lead ">Learning made fun.<br>Learning made impactful.</p>
-                <button type="button" class="btn btn-outline-light " data-toggle="modal" data-target="#register-popup">
-                    Register
-                </button>
-            </div>
-        </div>
-    </div> -->
-
     <!-- WHY US -->
     <section class="why-us px-5 py-5 mb-5" style="background: linear-gradient(to right, #033E8C , #0059BF); color: white;">
         <div class="container d-block d-sm-none">
@@ -141,38 +97,6 @@
             </div>
         {% endfor %}
     </section>
-
-
-    <!-- FRESH COURSES -->
-<!--     <section class=" container py-3">
-        <div class="row">
-            <div class="col-12 col-lg-2 my-auto pb-2 centered text-center">
-                <h1 class="head">Fresh Courses</h1>
-            </div>
-            <div class="col-12 col-lg-10 centered text-center">
-                <div class="row justify-content-around">
-                    {% for course in fresh %}
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                            <a href="#">
-                                <div class="card fresh-course hvr-grow">
-                                    <img src="{% static 'images/300.png' %}" class="card-img" alt="course-img">
-                                    <div class="card-img-overlay img__overlay-fresh">
-                                        <h5>{{ course.name }}</h5>
-                                        <ul class="list-unstyled text-small">
-                                            <li><strong>{{ course.category.category }}</strong></li>
-                                            <li>Grade: <strong>{{ course.get_grade_display }}</strong></li>
-                                            <li>Level: <strong>{{ course.level }}</strong></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </section> -->
-
     <!-- WANT TO KNOW MORE -->
     <section class="px-5 py-5 know">
         <h1>Want to know more?</h1>

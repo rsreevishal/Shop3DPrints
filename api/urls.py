@@ -28,5 +28,6 @@ urlpatterns = [
     path('api/customer/order/', add_order, name="add_order"),
     path('api/service_provider/quote/order/<int:order_id>', generate_quote, name="quote_order"),
     path('api/service_provider/order/<int:order_id>/status', service_provider_update_status,
-         name='service_provider_update_status')
+         name='service_provider_update_status'),
+    path('api/chat-bot', chat_bot, name='chat_bot')
 ]

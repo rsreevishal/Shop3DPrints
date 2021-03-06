@@ -26,6 +26,7 @@
 {% endblock %}
 
 {% block body %}
+    {% include 'landing/modals/chatbox.html' %}
     {% url 'service_provider' as base_url %}
     {% url 'service_provider_orders' as orders_url %}
     {% url 'service_provider-profile-edit' as profile_url %}
