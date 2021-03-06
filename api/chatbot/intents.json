@@ -1,0 +1,171 @@
+{
+   "intents":[
+      {
+         "tag":"greeting",
+         "patterns":[
+            "Hi there",
+            "How are you",
+            "Is anyone there?",
+            "Hey",
+            "Hola",
+            "Hello",
+            "Good day"
+         ],
+         "responses":[
+            "Hello, thanks for asking",
+            "Good to see you again",
+            "Hi there, how can I help?"
+         ],
+         "context":[
+            ""
+         ]
+      },
+      {
+         "tag":"goodbye",
+         "patterns":[
+            "Bye",
+            "See you later",
+            "Goodbye",
+            "Nice chatting to you, bye",
+            "Till next time"
+         ],
+         "responses":[
+            "See you!",
+            "Have a nice day",
+            "Bye! Come back again soon."
+         ],
+         "context":[
+            ""
+         ]
+      },
+      {
+         "tag":"thanks",
+         "patterns":[
+            "Thanks",
+            "Thank you",
+            "That's helpful",
+            "Awesome, thanks",
+            "Thanks for helping me"
+         ],
+         "responses":[
+            "Happy to help!",
+            "Any time!",
+            "My pleasure"
+         ],
+         "context":[
+            ""
+         ]
+      },
+      {
+         "tag":"noanswer",
+         "patterns":[
+            
+         ],
+         "responses":[
+            "Sorry, can't understand you",
+            "Please give me more info",
+            "Not sure I understand"
+         ],
+         "context":[
+            ""
+         ]
+      },
+      {
+         "tag":"options",
+         "patterns":[
+            "How you could help me?",
+            "What you can do?",
+            "What help you provide?",
+            "How you can be helpful?",
+            "What support is offered"
+         ],
+         "responses":[
+            "I can guide you through Login Problems,Services provided for 3D printing,Payment Confirmation",
+            "Offering support for Payment Confirmation,Services Provided or any other support needed :)"
+         ],
+         "context":[
+            ""
+         ]
+      },
+      {
+         "tag":"3D Printing Services",
+         "patterns":[
+            "Find services",
+            "3D printing technologies",
+            "3D Print services",
+            "List Services",
+            "Printing service"
+         ],
+         "responses":[
+            "We offer 3D printing services for FDM,SLA,SLS,DLMS"
+         ],
+         "context":[
+            ""
+         ]
+      },
+      {
+         "tag":"Login Support",
+         "patterns":[
+            "Not logging in",
+            "No log in",
+            "Login not working",
+            "Forgot username or password",
+            "Login Trouble"
+         ],
+         "responses":[
+            "Please verify email and password again :)",
+            "Nothing's working huh?,Contact us @shop3Dprints@gmail.com"
+         ],
+         "context":[
+            ""
+         ]
+      },
+      {
+         "tag":"Account Search",
+         "patterns":[
+            "How to order",
+            "Help ordering",
+            "Order Assistance"
+         ],
+         "responses":[
+            "You can order on our website or using our app",
+            "Order at shop3Dprints Website or Shop3Dprints app :)"
+         ],
+         "context":[
+            ""
+         ]
+      },
+     
+      {
+         "tag":"Payment confirmation",
+         "patterns":[
+            "What is my payment status ",
+            "Payment done?",
+            "Payment status",
+            "Money transfered",
+            "Pay receipt"
+         ],
+         "responses":[
+            "Please check your whatsapp or mail for confirmation"
+         ],
+         "context":[
+            ""
+         ]
+      },
+      {
+         "tag":"Other queries",
+         "patterns":[
+            "Cannot find services additional help",
+            "More help",
+            "Help me",
+            "Customer care"
+         ],
+         "responses":[
+            "Please contact us at shop3Dprint@gmail.com for further assistance"
+         ],
+         "context":[
+            ""
+         ]
+      }
+   ]
+}
