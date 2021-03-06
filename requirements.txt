@@ -20,3 +20,11 @@ pillow==8.1.1
 django-extensions
 django-timezone-field
 pytz-convert
+nltk
+numpy
+keras
+pandas
+matplotlib
+scipy
+scikit-learn
+tensorflow
