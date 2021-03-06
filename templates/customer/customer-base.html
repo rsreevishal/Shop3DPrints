@@ -2,26 +2,34 @@
 {% load static %}
 
 {% block head %}
-    <link rel="stylesheet" type="text/css" href="{% static 'styles/student.css' %}">
-    {% block student-head %}
-    {% endblock %}
+<link rel="stylesheet" type="text/css" href="{% static 'styles/student.css' %}">
+{% block student-head %}
+{% endblock %}
 {% endblock %}
 {% block body %}
-    {% include 'landing/modals/chatbox.html' %}
-    {% url 'customer-products' as products_url %}
-    {% url 'customer-profile' as profile_url %}
-    <nav class="side-nav">
-        <ul class="nav-bar nav flex-md-column nav-pills justify-content-around text-medium " id="nav-tab" role="tablist" aria-orientation="vertical">
-          <li class="nav-item">
-            <a class="nav-link {% if request.path == products_url %} active {%endif%}" href="{{ products_url }}" role="tab" id="student-courses">Products</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-item nav-link {% if request.path == profile_url %} active {%endif%}"  href="{{ profile_url }}" role="tab" id="profile-link">Profile</a>
-          </li>
-        </ul>
-        <div class="tab-content side-nav-content">
-                {% block student-body %} {# lol #}
-                {% endblock %}
-        </div>
-    </nav>
+{% include 'landing/modals/chatbox.html' %}
+{% url 'customer-orders' as orders_url %}
+{% url 'customer-products' as products_url %}
+{% url 'customer-profile' as profile_url %}
+<nav class="side-nav">
+    <ul class="nav-bar nav flex-md-column nav-pills justify-content-around text-medium " id="nav-tab" role="tablist"
+        aria-orientation="vertical">
+        <li class="nav-item">
+            <a class="nav-link {% if request.path == orders_url %} active {%endif%}" href="{{ orders_url }}"
+               role="tab" id="student-orders">Orders</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if request.path == products_url %} active {%endif%}" href="{{ products_url }}"
+               role="tab" id="student-courses">Products</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-item nav-link {% if request.path == profile_url %} active {%endif%}" href="{{ profile_url }}"
+               role="tab" id="profile-link">Profile</a>
+        </li>
+    </ul>
+    <div class="tab-content side-nav-content">
+        {% block student-body %} {# lol #}
+        {% endblock %}
+    </div>
+</nav>
 {% endblock %}

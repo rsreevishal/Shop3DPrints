@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG")
 
-ALLOWED_HOSTS = ["127.0.0.1", "656724941ba3.ngrok.io"]
+ALLOWED_HOSTS = ["127.0.0.1", "970e3b39061a.ngrok.io"]
 
 PROJECT_TITLE = "Shop 3D Prints"
 # Application definition

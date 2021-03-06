@@ -8,12 +8,12 @@
 
 {% block instructor-body %}
 <div class="container-fluid">
-    <div class="px-3">
+    <div class="px-1">
         <h1 class="text-center">
             <a href="{% url 'service_provider_orders' %}">
                 <i class="fas fa-arrow-circle-left" style="float: left;"></i>
             </a>
-            Order details
+            <u>Order details</u>
         </h1>
     </div>
     <table class="table table-hover">
@@ -62,7 +62,7 @@
     </table>
     <hr/>
     {% if order.order_status != 5 and order.order_status != 0 and order.order_status != 4 %}
-    <h1 class="mx-2 text-center">Cost details</h1>
+    <h1 class="mx-2 text-center"><u>Cost details</u></h1>
     <form method="post" action="{% url 'quote_order' order.pk %}" class="form" id="generate-quote-form">
         {% csrf_token %}
         <table class="table">
@@ -108,14 +108,14 @@
         </table>
         <hr/>
         <div class="form-group">
-            <h1 class="mx-2 text-center">Comments and Reviews</h1>
+            <h1 class="mx-2 text-center"><u>Comments and Reviews</u></h1>
             <textarea class="form-control" name="comments" placeholder="Enter your comments here"></textarea>
         </div>
         <input id="total_cost" type="number" name="total_cost" hidden/>
         <button type="submit" class="btn btn-large btn-success">Send quote</button>
     </form>
     <hr/>
-    <h1 class="mx-2 text-center">Cancel order</h1>
+    <h1 class="mx-2 text-center"><u>Cancel order</u></h1>
     <form action="{% url 'service_provider_update_status' order.pk %}" class="form" method="post" id="cancel-form">
         {% csrf_token %}
         <div class="form-group">
@@ -127,7 +127,7 @@
     </form>
     <hr/>
     {% else %}
-    <h1 class="mx-2 text-center">Status update</h1>
+    <h1 class="mx-2 text-center"><u>Status update</u></h1>
     <form action="{% url 'service_provider_update_status' order.pk %}" class="form" method="post" id="status-form">
         {% csrf_token %}
         <div class="form-group">

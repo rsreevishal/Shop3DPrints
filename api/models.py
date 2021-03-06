@@ -128,7 +128,7 @@ class LayerHeight(models.Model):
 
 
 def validate_file_extension(value):
-    if not value.name.endswith('.pdf'):
+    if not value.name.endswith('.stl'):
         raise ValidationError(u'Error message')
 
 

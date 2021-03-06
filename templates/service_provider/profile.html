@@ -19,23 +19,28 @@
 }
 
 
+
 </style>
 {% endblock %}
 
 {% block instructor-body %}
 <div class="container-fluid">
-    <form method="post" action="{% url 'service_provider-profile-edit' %}" id="service_provider-profile-form">
-        {% csrf_token %}
-        <label for="instructor-form"><h3>Update profile</h3></label>
-        <table class="form form-table" id="instructor-form">
-            {{ form.as_p }}
-            <tr>
-                <td colspan="2">
-                    <button class="btn custom-btn" type="submit"> Update</button>
-                </td>
-            </tr>
-        </table>
-    </form>
+    <div class="row">
+        <div class="col-lg-10 col-md-10 col-sm-8">
+            <form method="post" action="{% url 'service_provider-profile-edit' %}" id="service_provider-profile-form">
+                {% csrf_token %}
+                <label for="instructor-form"><h3><u>Update profile</u></h3></label>
+                <table class="form form-table" id="instructor-form">
+                    {{ form.as_p }}
+                    <tr>
+                        <td>
+                            <button class="btn custom-btn" type="submit">Update</button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
     <hr/>
 </div>
 <script>
@@ -64,5 +69,6 @@
             });
         });
     });
+
 </script>
 {% endblock %}

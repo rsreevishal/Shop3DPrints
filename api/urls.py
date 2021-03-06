@@ -10,6 +10,7 @@ urlpatterns = [
     path('customer', redirect_view('customer-products'), name='customer'),
     path('customer/products', customer_products, name='customer-products'),
     path('customer/profile', customer_profile, name='customer-profile'),
+    path('customer/orders', customer_orders, name='customer-orders'),
     path('service_provider', service_provider_base, name='service_provider'),
     path('service_provider/orders', service_provider_orders, name='service_provider_orders'),
     path('service_provider/orders/<int:order_id>', service_provider_order_details, name='service_provider_order_details'),

@@ -1,33 +1,32 @@
-{% extends 'service_provider/service_provider-base.html' %}
+{% extends 'customer/customer-base.html' %}
 {% load static %}
 {% load api_extras %}
 
-{% block instructor-head %}
+{% block student-head  %}
 <title>Shop 3D Prints | Orders</title>
 {% endblock %}
 
-{% block instructor-body %}
+{% block student-body %}
 <div class="container-fluid">
-    <h1 class="mx-2"><u>Order details</u></h1>
+    <h1 class="mx-2"><u>Orders</u></h1>
     <div class="row">
-        <div class="col-lg-8 col-md-8 col-sm-6">
+        <div class="col-lg-12 col-md-12 col-sm-12">
             <table class="table table-hover">
                 <thead class="thead-dark">
                 <tr>
                     <th scope="col">Product</th>
                     <th scope="col">Quantity</th>
-                    <th scope="col">Customer</th>
+                    <th scope="col">Service provider</th>
                     <th scope="col">Ordered on</th>
                     <th scope="col">Status</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for ord in orders.all %}
-                <tr class='clickable-row {{ord.order_status|status_class}}'
-                    data-href="{% url 'service_provider_order_details' ord.pk %}">
+                <tr class='{{ord.order_status|status_class}}'>
                     <td>{{ord.product}}</td>
                     <td>{{ord.quantity}}</td>
-                    <td>{{ord.product.customer}}</td>
+                    <td>{{ord.service_provider}}</td>
                     <td>{{ord.ordered_on}}</td>
                     <td>{{ord.order_status|status_name}}</td>
                 </tr>
@@ -37,10 +36,4 @@
         </div>
     </div>
 </div>
-<script>
-    $(".clickable-row").click(function() {
-        window.location = $(this).data("href");
-    });
-
-</script>
 {% endblock %}

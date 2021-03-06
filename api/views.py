@@ -4,6 +4,7 @@ import stripe
 from django.db import IntegrityError
 from django.contrib.auth import login as django_login, logout as django_logout, authenticate
 from django.contrib.auth.models import User
+from django.db.models import Sum
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template import loader
 from django.urls import reverse
@@ -30,7 +31,7 @@ from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives
 from django.dispatch import receiver
 from django_rest_passwordreset.signals import reset_password_token_created
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import Group
 from weasyprint import HTML
@@ -71,6 +72,7 @@ def index(request):
         'fresh': fresh,
     })(request)
 
+
 def product_offered(request, category_id):
     category = Category.objects.get(id=category_id)
     category_material = CategoryMaterial.objects.filter(category=category)
@@ -107,6 +109,15 @@ def customer_products(request):
     products = Product.objects.filter(customer=me)
     return standard_view('customer/products.html', {
         'products': products
+    })(request)
+
+
+def customer_orders(request):
+    me = AcademyUser.get_for(request.user)
+    prod_ids = [products.pk for products in Product.objects.filter(customer=me)]
+    orders = Order.objects.filter(product__in=prod_ids)
+    return standard_view('customer/orders.html', {
+        'orders': orders
     })(request)
 
 
@@ -351,9 +362,49 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
     msg.send()
 
 
+def sunday_to_today_revenue(date):
+    tmp = date
+    revenues = [get_total_revenue(tmp)]
+    while tmp.weekday() != 6:
+        tmp = tmp - timedelta(days=1)
+        revenues.append(get_total_revenue(tmp))
+    return revenues
+
+
+def get_total_revenue(date):
+    revenue = 0
+    for row in Purchase.objects.filter(datetime__date=date):
+        revenue += row.order.total_cost
+    return revenue
+
+
+def sunday_to_today_orders(date):
+    tmp = date
+    orders = [get_total_orders(tmp)]
+    while tmp.weekday() != 6:
+        tmp = tmp - timedelta(days=1)
+        orders.append(get_total_orders(tmp))
+    return orders
+
+
+def get_total_orders(date):
+    return len(Order.objects.filter(ordered_on__date=date))
+
+
 def service_provider_base(request):
     me = AcademyUser.get_for(request.user)
-    return render(request, 'service_provider/service_provider-base.html', {"service_provider_id": me.pk})
+    total_revenue = 0
+    for row in Purchase.objects.all():
+        total_revenue += row.order.total_cost
+    total_orders = len(Order.objects.all())
+    today_orders = get_total_orders(timezone.now().date())
+    today_revenue = get_total_revenue(timezone.now().date())
+    week_revenue = sunday_to_today_revenue(timezone.now().date())
+    week_orders = sunday_to_today_orders(timezone.now().date())
+    return render(request, 'service_provider/service_provider-base.html',
+                  {"service_provider_id": me.pk, "total_revenue": total_revenue, "total_orders": total_orders,
+                   "today_orders": today_orders, "today_revenue": today_revenue, "week_revenue": week_revenue,
+                   "week_orders": week_orders})
 
 
 def update_service_provider(request):

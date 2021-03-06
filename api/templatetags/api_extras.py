@@ -36,7 +36,7 @@ def my_pk(user):
 
 @register.filter(name="status_class")
 def status_class(status_id):
-    status = ['table-primary', 'table-danger', 'table-warning', 'table-secondary', 'table-success', 'table-dark']
+    status = ['table-primary', 'table-danger', 'table-warning', 'table-secondary', 'table-dark', 'table-success']
     return status[int(status_id)]
 
 

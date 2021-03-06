@@ -2,8 +2,8 @@
 
 {% load static %}
 {% block head %}
-    <link rel="stylesheet" type="text/css" href="{% static 'styles/student.css' %}">
-    <style type="text/css">
+<link rel="stylesheet" type="text/css" href="{% static 'styles/student.css' %}">
+<style type="text/css">
         @media(max-width: 400px){
 
              .side-nav .flex-md-column{
@@ -18,26 +18,119 @@
                 margin-left: 0px;
                 margin-top: 50px;
               }
-        }
-    </style>
-    {% block instructor-head %}
-    {% endblock %}
+
+</style>
+{% block instructor-head %}
+{% endblock %}
 
 {% endblock %}
 
 {% block body %}
-    {% include 'landing/modals/chatbox.html' %}
-    {% url 'service_provider' as base_url %}
-    {% url 'service_provider_orders' as orders_url %}
-    {% url 'service_provider-profile-edit' as profile_url %}
-    <nav class="side-nav">
-        <div class="nav flex-md-column nav-pills justify-content-around text-medium" role="tablist" aria-orientation="vertical">
-            <a class="nav-link {% if request.path == orders_url %} active {%endif%}" href="{{ orders_url }}" role="tab" >Orders</a>
-            <a class="nav-link mb-md-5 {% if request.path == profile_url %} active {%endif%}" href="{{ profile_url }}" role="tab">Profile</a>
+{% include 'landing/modals/chatbox.html' %}
+{% url 'service_provider' as base_url %}
+{% url 'service_provider_orders' as orders_url %}
+{% url 'service_provider-profile-edit' as profile_url %}
+<nav class="side-nav">
+    <div class="nav flex-md-column nav-pills justify-content-around text-medium" role="tablist"
+         aria-orientation="vertical">
+        <a class="nav-link {% if request.path == base_url %} active {%endif%}" href="{{ base_url }}" role="tab">Dashboard</a>
+        <a class="nav-link {% if request.path == orders_url %} active {%endif%}" href="{{ orders_url }}" role="tab">Orders</a>
+        <a class="nav-link mb-md-5 {% if request.path == profile_url %} active {%endif%}" href="{{ profile_url }}"
+           role="tab">Profile</a>
+    </div>
+</nav>
+<div class="tab-content side-nav-content">
+    {% block instructor-body %} {# lol #}
+    <div class="container-fluid">
+        <h1 class="text-left px-2 py-2"><u>Dashboard</u></h1>
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <h4 class="px-2 py-2">Weekly revenue</h4>
+                <canvas id="myChart1"></canvas>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <h4 class="px-2 py-2">Weekly orders</h4>
+                <canvas id="myChart2"></canvas>
+            </div>
         </div>
-        <div class="tab-content side-nav-content">
-                {% block instructor-body %} {# lol #}
-                {% endblock %}
+        <div class="row">
+            <div class="col">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">Variables</th>
+                        <th scope="col">Values</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Total revenue</td>
+                        <td>Rs. {{ total_revenue }}</td>
+                    </tr>
+                    <tr>
+                        <td>Revenue today</td>
+                        <td>Rs. {{ today_revenue }}</td>
+                    </tr>
+                    <tr>
+                        <td>Total orders</td>
+                        <td>{{ total_orders }}</td>
+                    </tr>
+                    <tr>
+                        <td>Orders today</td>
+                        <td>{{ today_orders }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </nav>
+    </div>
+    {% endblock %}
+</div>
+<script>
+    var ctx1 = document.getElementById('myChart1').getContext('2d');
+    var ctx2 = document.getElementById('myChart2').getContext('2d');
+    var data1 = {
+            labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
+            datasets: [{
+                label: 'Revenue',
+                data: {{ week_revenue }}
+            }]
+        };
+    var options1 = {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        };
+    var data2 = {
+            labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
+            datasets: [{
+                label: 'Orders',
+                data: {{ week_orders }}
+            }]
+    };
+    var options2 = {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        };
+    var myChart = new Chart(ctx1, {
+        type: 'bar',
+        data: data1,
+        options: options1
+    });
+    var myChart = new Chart(ctx2, {
+        type: 'bar',
+        data: data2,
+        options: options2
+    });
+
+</script>
 {% endblock %}

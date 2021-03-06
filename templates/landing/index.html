@@ -66,9 +66,9 @@
                 <a href="{% url 'products-offered' category.id %}">
                     <li class="list-inline-item text-center">
                         {% if category.thumbnail %}
-                            <img src="{{ category.thumbnail.url }}" alt="course-img"><br>{{ category.name }}
+                            <img src="{{ category.thumbnail.url }}" alt="service-img"><br>{{ category.name }}
                         {% else %}
-                            <img src="{% static 'images/300.png' %}" alt="course-img">
+                            <img src="{% static 'images/300.png' %}" alt="service-img">
                         {% endif %}
                     </li>
                 </a>
