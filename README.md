@@ -25,6 +25,6 @@ you are in the project root directory)
 9. Run `python manage.py runserver` to locally run the application
 
 ## Strip-CLI
-1. Go to stripe cli and run -  `./stripe` login and login to your account
+1. Go to stripe cli and run -  `./stripe login` and login to your account
 2. Forward the events to local using - `./stripe listen --forward-to 127.0.0.1:8000/api/checkout-webhook`
 3. Copy the secret_key starts with `whsec_` from the terminal and paste it in the .env file
